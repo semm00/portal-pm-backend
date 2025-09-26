@@ -16,6 +16,8 @@ const transporter = nodemailer.createTransport({
     user: process.env.GMAIL_USER,
     pass: process.env.GMAIL_PASS,
   },
+  logger: true,
+  debug: true,
 });
 
 const FRONTEND_URL = process.env.FRONTEND_URL || "https://portal-pm.vercel.app";
@@ -53,10 +55,23 @@ export const sendVerificationEmail = async (user: User): Promise<void> => {
     </div>
   `;
 
-  await transporter.sendMail({
+  const mailOptions = {
     from: `"Portal PM" <${process.env.GMAIL_USER}>`,
     to: user.email,
     subject: "Verifique seu e-mail - Portal PM",
     html: emailHtml,
-  });
+  };
+
+  try {
+    console.log(`[LOG] Preparando para enviar e-mail para: ${user.email}`);
+    console.log(
+      "[LOG] Opções de e-mail:",
+      JSON.stringify(mailOptions, null, 2)
+    );
+    const info = await transporter.sendMail(mailOptions);
+    console.log(`[LOG] E-mail enviado. Resposta do servidor: ${info.response}`);
+  } catch (error) {
+    console.error("[ERRO] Falha ao enviar e-mail via emailService:", error);
+    throw error; // Re-lança o erro para ser tratado pelo chamador
+  }
 };

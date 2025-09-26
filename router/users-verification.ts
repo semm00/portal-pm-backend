@@ -13,6 +13,9 @@ const JWT_SECRET: Secret = rawJwtSecret;
 // Enviar e-mail de verificação
 router.post("/send-verification", async (req, res) => {
   const { email } = req.body;
+  console.log(
+    `[LOG] Recebida solicitação para reenviar verificação para: ${email}`
+  );
   if (!email)
     return res
       .status(400)
@@ -31,7 +34,13 @@ router.post("/send-verification", async (req, res) => {
   }
 
   try {
+    console.log(
+      `[LOG] Tentando enviar e-mail de verificação para o usuário com ID: ${user.id}`
+    );
     await sendVerificationEmail(user);
+    console.log(
+      `[LOG] E-mail de verificação enviado com sucesso para: ${user.email}`
+    );
     return res.json({
       success: true,
       message: "E-mail de verificação reenviado com sucesso.",
