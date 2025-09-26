@@ -10,14 +10,12 @@ const JWT_EXPIRES_IN: SignOptions["expiresIn"] =
 
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
-  port: 465,
-  secure: true, // true for 465, false for other ports
+  port: 587,
+  secure: false, // use `true` for port 465, `false` for all other ports
   auth: {
     user: process.env.GMAIL_USER,
     pass: process.env.GMAIL_PASS,
   },
-  logger: true,
-  debug: true,
 });
 
 const FRONTEND_URL = process.env.FRONTEND_URL || "https://portal-pm.vercel.app";
@@ -64,10 +62,6 @@ export const sendVerificationEmail = async (user: User): Promise<void> => {
 
   try {
     console.log(`[LOG] Preparando para enviar e-mail para: ${user.email}`);
-    console.log(
-      "[LOG] Opções de e-mail:",
-      JSON.stringify(mailOptions, null, 2)
-    );
     const info = await transporter.sendMail(mailOptions);
     console.log(`[LOG] E-mail enviado. Resposta do servidor: ${info.response}`);
   } catch (error) {
