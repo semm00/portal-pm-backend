@@ -9,30 +9,30 @@ const JWT_SECRET: Secret = rawJwtSecret;
 const JWT_EXPIRES_IN: SignOptions["expiresIn"] =
   (process.env.JWT_EXPIRES_IN as SignOptions["expiresIn"]) ?? "1d";
 
-const SMTP_HOST = process.env.SMTP_HOST ?? "smtp.gmail.com";
-const SMTP_PORT = Number(process.env.SMTP_PORT ?? 587); // Mudar para 587 (TLS)
+const SMTP_HOST = process.env.SMTP_HOST ?? "smtp.sendgrid.net";
+const SMTP_PORT = Number(process.env.SMTP_PORT ?? 587);
 const SMTP_SECURE = process.env.SMTP_SECURE
   ? process.env.SMTP_SECURE === "true"
-  : false; // Para porta 587, secure: false
+  : false;
 
 const transporter = nodemailer.createTransport({
   host: SMTP_HOST,
   port: SMTP_PORT,
   secure: SMTP_SECURE,
   auth: {
-    user: process.env.GMAIL_USER,
-    pass: process.env.GMAIL_PASS,
+    user: process.env.SMTP_USER ?? "apikey", // Para SendGrid, user é 'apikey'
+    pass: process.env.SMTP_PASS ?? process.env.GMAIL_PASS, // Usar SMTP_PASS para a chave de API
   },
-  connectionTimeout: 30_000, // Aumentar para 30s
+  connectionTimeout: 30_000,
   greetingTimeout: 30_000,
-  socketTimeout: 60_000, // Adicionar socketTimeout
+  socketTimeout: 60_000,
   tls: {
-    rejectUnauthorized: false, // Para evitar problemas com certificados
+    rejectUnauthorized: false,
   },
 });
 
 const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
-const GMAIL_USER = process.env.GMAIL_USER;
+const EMAIL_FROM = process.env.EMAIL_FROM ?? "noreply@portalpm.com"; // E-mail verificado no SendGrid
 const LOGO_PATH = path.resolve(__dirname, "../router/public/logo-portal.png");
 
 export const sendVerificationEmail = async (user: User): Promise<void> => {
@@ -57,7 +57,7 @@ export const sendVerificationEmail = async (user: User): Promise<void> => {
   `;
 
   await transporter.sendMail({
-    from: `"Portal PM" <${GMAIL_USER}>`,
+    from: `"Portal PM" <${EMAIL_FROM}>`,
     to: user.email,
     subject: "Verificação de E-mail - Portal PM",
     html: emailHtml,
