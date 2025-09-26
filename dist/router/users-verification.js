@@ -5,22 +5,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const prisma_1 = require("../generated/prisma");
-const nodemailer_1 = __importDefault(require("nodemailer"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const emailService_1 = require("../services/emailService");
 const router = (0, express_1.Router)();
 const prisma = new prisma_1.PrismaClient();
 const rawJwtSecret = process.env.JWT_SECRET;
 if (!rawJwtSecret)
     throw new Error("JWT_SECRET não definido no arquivo .env");
 const JWT_SECRET = rawJwtSecret;
-const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN ?? "1d";
-const transporter = nodemailer_1.default.createTransport({
-    service: "gmail",
-    auth: {
-        user: process.env.GMAIL_USER,
-        pass: process.env.GMAIL_PASS,
-    },
-});
 // Enviar e-mail de verificação
 router.post("/send-verification", async (req, res) => {
     const { email } = req.body;
@@ -33,17 +25,24 @@ router.post("/send-verification", async (req, res) => {
         return res
             .status(404)
             .json({ success: false, message: "Usuário não encontrado." });
-    const token = jsonwebtoken_1.default.sign({ sub: user.id, email: user.email }, JWT_SECRET, {
-        expiresIn: JWT_EXPIRES_IN,
-    });
-    const verifyUrl = `${process.env.FRONTEND_URL}/profile/verify-email?token=${token}`;
-    await transporter.sendMail({
-        from: process.env.GMAIL_USER,
-        to: email,
-        subject: "Verificação de e-mail - Portal PM",
-        html: `<p>Olá,</p><p>Para verificar seu e-mail, clique <a href="${verifyUrl}">aqui</a>.</p>`,
-    });
-    return res.json({ success: true, message: "E-mail de verificação enviado." });
+    if (user.emailVerified) {
+        return res
+            .status(400)
+            .json({ success: false, message: "Este e-mail já foi verificado." });
+    }
+    try {
+        await (0, emailService_1.sendVerificationEmail)(user);
+        return res.json({
+            success: true,
+            message: "E-mail de verificação reenviado com sucesso.",
+        });
+    }
+    catch (error) {
+        console.error("Falha ao reenviar e-mail de verificação:", error);
+        return res
+            .status(500)
+            .json({ success: false, message: "Falha ao reenviar e-mail." });
+    }
 });
 // Verificar e-mail
 router.post("/verify-email", async (req, res) => {

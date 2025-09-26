@@ -15,6 +15,7 @@ if (!rawJwtSecret)
     throw new Error("JWT_SECRET não definido no arquivo .env");
 const JWT_SECRET = rawJwtSecret;
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN ?? "7d";
+const sanitizeUser = ({ passwordHash: _ignored, ...user }) => user;
 router.post("/login/google", async (req, res) => {
     const { idToken } = req.body;
     if (!idToken) {
@@ -44,11 +45,18 @@ router.post("/login/google", async (req, res) => {
                     email: payload.email,
                     avatarUrl: payload.picture,
                     passwordHash: "google-oauth",
+                    emailVerified: true,
                 },
             });
         }
+        else if (!user.emailVerified) {
+            user = await prisma.user.update({
+                where: { id: user.id },
+                data: { emailVerified: true },
+            });
+        }
         const token = jsonwebtoken_1.default.sign({ sub: user.id, email: user.email, username: user.username }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
-        return res.json({ success: true, user, token });
+        return res.json({ success: true, user: sanitizeUser(user), token });
     }
     catch (err) {
         return res

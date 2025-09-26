@@ -24,6 +24,7 @@ const buildToken = (user) => jsonwebtoken_1.default.sign({
     email: user.email,
     username: user.username,
 }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+const emailService_1 = require("../services/emailService");
 router.post("/register", async (req, res) => {
     const { fullName, username, email, password } = req.body;
     if (!fullName || !username || !email || !password) {
@@ -52,13 +53,21 @@ router.post("/register", async (req, res) => {
             passwordHash,
         },
     });
-    const token = buildToken(user);
+    let emailSent = false;
+    try {
+        await (0, emailService_1.sendVerificationEmail)(user);
+        emailSent = true;
+    }
+    catch (error) {
+        console.error("Falha ao enviar e-mail de verificação:", error);
+    }
     return res.status(201).json({
         success: true,
-        user: toSanitizedUser(user),
-        token,
+        message: "Cadastro realizado! Não conseguimos enviar o e-mail automaticamente. Clique em 'Reenviar e-mail' na tela de login para tentar novamente.",
+        emailSent,
     });
 });
+// ... (imports e código anterior)
 router.post("/login", async (req, res) => {
     const { email, password } = req.body;
     if (!email || !password) {
@@ -79,6 +88,13 @@ router.post("/login", async (req, res) => {
         return res.status(401).json({
             success: false,
             message: "Credenciais inválidas.",
+        });
+    }
+    if (!user.emailVerified) {
+        return res.status(403).json({
+            success: false,
+            message: "Seu e-mail ainda não foi verificado.",
+            code: "EMAIL_NOT_VERIFIED",
         });
     }
     const token = buildToken(user);

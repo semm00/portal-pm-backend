@@ -10,10 +10,10 @@ const JWT_EXPIRES_IN: SignOptions["expiresIn"] =
   (process.env.JWT_EXPIRES_IN as SignOptions["expiresIn"]) ?? "1d";
 
 const SMTP_HOST = process.env.SMTP_HOST ?? "smtp.gmail.com";
-const SMTP_PORT = Number(process.env.SMTP_PORT ?? 465);
+const SMTP_PORT = Number(process.env.SMTP_PORT ?? 587); // Mudar para 587 (TLS)
 const SMTP_SECURE = process.env.SMTP_SECURE
   ? process.env.SMTP_SECURE === "true"
-  : SMTP_PORT === 465;
+  : false; // Para porta 587, secure: false
 
 const transporter = nodemailer.createTransport({
   host: SMTP_HOST,
@@ -23,8 +23,12 @@ const transporter = nodemailer.createTransport({
     user: process.env.GMAIL_USER,
     pass: process.env.GMAIL_PASS,
   },
-  connectionTimeout: 15_000,
-  greetingTimeout: 15_000,
+  connectionTimeout: 30_000, // Aumentar para 30s
+  greetingTimeout: 30_000,
+  socketTimeout: 60_000, // Adicionar socketTimeout
+  tls: {
+    rejectUnauthorized: false, // Para evitar problemas com certificados
+  },
 });
 
 const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
