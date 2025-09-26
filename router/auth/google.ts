@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { OAuth2Client } from "google-auth-library";
-import { PrismaClient } from "../../generated/prisma";
+import { PrismaClient, User } from "../../generated/prisma";
 import jwt, { SignOptions, Secret } from "jsonwebtoken";
 
 const router = Router();
@@ -12,6 +12,8 @@ if (!rawJwtSecret) throw new Error("JWT_SECRET não definido no arquivo .env");
 const JWT_SECRET: Secret = rawJwtSecret;
 const JWT_EXPIRES_IN: SignOptions["expiresIn"] =
   (process.env.JWT_EXPIRES_IN as SignOptions["expiresIn"]) ?? "7d";
+
+const sanitizeUser = ({ passwordHash: _ignored, ...user }: User) => user;
 
 router.post("/login/google", async (req, res) => {
   const { idToken } = req.body;
@@ -44,7 +46,13 @@ router.post("/login/google", async (req, res) => {
           email: payload.email,
           avatarUrl: payload.picture,
           passwordHash: "google-oauth",
+          emailVerified: true,
         },
+      });
+    } else if (!user.emailVerified) {
+      user = await prisma.user.update({
+        where: { id: user.id },
+        data: { emailVerified: true },
       });
     }
 
@@ -53,7 +61,7 @@ router.post("/login/google", async (req, res) => {
       JWT_SECRET,
       { expiresIn: JWT_EXPIRES_IN }
     );
-    return res.json({ success: true, user, token });
+    return res.json({ success: true, user: sanitizeUser(user), token });
   } catch (err) {
     return res
       .status(401)

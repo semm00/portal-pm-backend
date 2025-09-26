@@ -86,23 +86,20 @@ router.post("/register", async (req, res) => {
     },
   });
 
-  // Enviar e-mail de verificação
+  let emailSent = false;
   try {
     await sendVerificationEmail(user);
-    return res.status(201).json({
-      success: true,
-      message:
-        "Cadastro realizado com sucesso! Um e-mail de verificação foi enviado para sua caixa de entrada.",
-    });
+    emailSent = true;
   } catch (error) {
     console.error("Falha ao enviar e-mail de verificação:", error);
-    // Opcional: deletar usuário se o e-mail falhar, ou deixar para reenvio.
-    return res.status(500).json({
-      success: false,
-      message:
-        "Usuário criado, mas falha ao enviar e-mail de verificação. Contate o suporte.",
-    });
   }
+
+  return res.status(201).json({
+    success: true,
+    message:
+      "Cadastro realizado! Não conseguimos enviar o e-mail automaticamente. Clique em 'Reenviar e-mail' na tela de login para tentar novamente.",
+    emailSent,
+  });
 });
 
 // ... (imports e código anterior)

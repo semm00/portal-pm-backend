@@ -5,6 +5,7 @@ import cors, { CorsOptions } from "cors";
 import usersRouter from "./router/users";
 import usersRecoveryRouter from "./router/users-recovery";
 import usersVerificationRouter from "./router/users-verification";
+import googleAuthRouter from "./router/auth/google";
 
 const app = express();
 
@@ -28,6 +29,7 @@ app.get("/health", (_req, res) => {
 app.use("/api/users", usersRouter);
 app.use("/api/users", usersRecoveryRouter);
 app.use("/api/users", usersVerificationRouter);
+app.use("/api/users", googleAuthRouter);
 
 const PORT = Number(process.env.PORT ?? 4000);
 

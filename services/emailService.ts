@@ -1,3 +1,4 @@
+import path from "node:path";
 import nodemailer from "nodemailer";
 import jwt, { SignOptions, Secret } from "jsonwebtoken";
 import { User } from "../generated/prisma";
@@ -8,16 +9,27 @@ const JWT_SECRET: Secret = rawJwtSecret;
 const JWT_EXPIRES_IN: SignOptions["expiresIn"] =
   (process.env.JWT_EXPIRES_IN as SignOptions["expiresIn"]) ?? "1d";
 
+const SMTP_HOST = process.env.SMTP_HOST ?? "smtp.gmail.com";
+const SMTP_PORT = Number(process.env.SMTP_PORT ?? 465);
+const SMTP_SECURE = process.env.SMTP_SECURE
+  ? process.env.SMTP_SECURE === "true"
+  : SMTP_PORT === 465;
+
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: SMTP_HOST,
+  port: SMTP_PORT,
+  secure: SMTP_SECURE,
   auth: {
     user: process.env.GMAIL_USER,
     pass: process.env.GMAIL_PASS,
   },
+  connectionTimeout: 15_000,
+  greetingTimeout: 15_000,
 });
 
 const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
 const GMAIL_USER = process.env.GMAIL_USER;
+const LOGO_PATH = path.resolve(__dirname, "../router/public/logo-portal.png");
 
 export const sendVerificationEmail = async (user: User): Promise<void> => {
   const token = jwt.sign({ sub: user.id, email: user.email }, JWT_SECRET, {
@@ -48,7 +60,7 @@ export const sendVerificationEmail = async (user: User): Promise<void> => {
     attachments: [
       {
         filename: "logo-portal.png",
-        path: "public/logo-portal.png",
+        path: LOGO_PATH,
         cid: "logo-portal",
       },
     ],
