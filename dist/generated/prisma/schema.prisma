@@ -15,12 +15,13 @@ datasource db {
 }
 
 model User {
-  id           String   @id @default(cuid())
-  fullName     String
-  username     String   @unique
-  email        String   @unique
-  passwordHash String
-  avatarUrl    String?  @db.Text
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id            String   @id @default(cuid())
+  fullName      String
+  username      String   @unique
+  email         String   @unique
+  passwordHash  String
+  emailVerified Boolean  @default(false)
+  avatarUrl     String?  @db.Text
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }

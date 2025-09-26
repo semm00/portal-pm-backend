@@ -3,6 +3,8 @@ import express from "express";
 import cors, { CorsOptions } from "cors";
 
 import usersRouter from "./router/users";
+import usersRecoveryRouter from "./router/users-recovery";
+import usersVerificationRouter from "./router/users-verification";
 
 const app = express();
 
@@ -24,6 +26,8 @@ app.get("/health", (_req, res) => {
 });
 
 app.use("/api/users", usersRouter);
+app.use("/api/users", usersRecoveryRouter);
+app.use("/api/users", usersVerificationRouter);
 
 const PORT = Number(process.env.PORT ?? 4000);
 
