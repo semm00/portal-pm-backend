@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { PrismaClient } from "../generated/prisma";
-import nodemailer from "nodemailer";
-import jwt, { SignOptions, Secret } from "jsonwebtoken";
+import jwt, { Secret } from "jsonwebtoken";
+import { sendVerificationEmail } from "../services/emailService";
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -9,16 +9,6 @@ const prisma = new PrismaClient();
 const rawJwtSecret = process.env.JWT_SECRET;
 if (!rawJwtSecret) throw new Error("JWT_SECRET não definido no arquivo .env");
 const JWT_SECRET: Secret = rawJwtSecret;
-const JWT_EXPIRES_IN: SignOptions["expiresIn"] =
-  (process.env.JWT_EXPIRES_IN as SignOptions["expiresIn"]) ?? "1d";
-
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.GMAIL_USER,
-    pass: process.env.GMAIL_PASS,
-  },
-});
 
 // Enviar e-mail de verificação
 router.post("/send-verification", async (req, res) => {
@@ -34,19 +24,24 @@ router.post("/send-verification", async (req, res) => {
       .status(404)
       .json({ success: false, message: "Usuário não encontrado." });
 
-  const token = jwt.sign({ sub: user.id, email: user.email }, JWT_SECRET, {
-    expiresIn: JWT_EXPIRES_IN,
-  });
-  const verifyUrl = `${process.env.FRONTEND_URL}/profile/verify-email?token=${token}`;
+  if (user.emailVerified) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Este e-mail já foi verificado." });
+  }
 
-  await transporter.sendMail({
-    from: process.env.GMAIL_USER,
-    to: email,
-    subject: "Verificação de e-mail - Portal PM",
-    html: `<p>Olá,</p><p>Para verificar seu e-mail, clique <a href="${verifyUrl}">aqui</a>.</p>`,
-  });
-
-  return res.json({ success: true, message: "E-mail de verificação enviado." });
+  try {
+    await sendVerificationEmail(user);
+    return res.json({
+      success: true,
+      message: "E-mail de verificação reenviado com sucesso.",
+    });
+  } catch (error) {
+    console.error("Falha ao reenviar e-mail de verificação:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Falha ao reenviar e-mail." });
+  }
 });
 
 // Verificar e-mail
