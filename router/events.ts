@@ -90,6 +90,8 @@ router.post("/", requireAuth, async (req, res) => {
     const location = sanitizeString(req.body?.location);
     const startDate = parseDate(req.body?.startDate);
     const endDate = parseDate(req.body?.endDate) ?? startDate;
+    const startTime = sanitizeString(req.body?.startTime);
+    const endTime = sanitizeString(req.body?.endTime);
 
     if (!title) {
       return res.status(400).json({
@@ -119,6 +121,13 @@ router.post("/", requireAuth, async (req, res) => {
       });
     }
 
+    if (startTime && endTime && endTime < startTime) {
+      return res.status(400).json({
+        success: false,
+        message: "Horário final não pode ser anterior ao inicial.",
+      });
+    }
+
     const event = await prisma.event.create({
       data: {
         title,
@@ -127,6 +136,8 @@ router.post("/", requireAuth, async (req, res) => {
         location: location || null,
         startDate,
         endDate,
+        startTime: startTime || null,
+        endTime: endTime || null,
         status: EventStatus.PENDING,
       },
     });
