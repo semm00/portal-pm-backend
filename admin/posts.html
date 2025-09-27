@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Painel de Posts - Portal PM</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #f4f6fb;
+        --card: #ffffff;
+        --text: #1e293b;
+        --muted: #64748b;
+        --primary: #0a4ea1;
+        --warning: #f97316;
+        --danger: #dc2626;
+        --border: #e2e8f0;
+      }
+
+      * {
+        box-sizing: border-box;
+        font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+      }
+
+      header {
+        padding: 2rem 1.5rem 1rem;
+        background: linear-gradient(135deg, #0a4ea1, #153b69);
+        color: #fff;
+        box-shadow: 0 6px 18px rgba(10, 78, 161, 0.25);
+      }
+
+      header h1 {
+        margin: 0 0 0.5rem;
+        font-size: 2rem;
+      }
+
+      header p {
+        margin: 0;
+        max-width: 560px;
+        color: rgba(255, 255, 255, 0.75);
+      }
+
+      main {
+        padding: 1.5rem;
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        gap: 1.5rem;
+      }
+
+      section {
+        background: var(--card);
+        border-radius: 18px;
+        padding: 1.5rem;
+        box-shadow: 0 24px 48px rgba(15, 23, 42, 0.04);
+        border: 1px solid var(--border);
+      }
+
+      section h2 {
+        margin-top: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .controls {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        margin-bottom: 1rem;
+      }
+
+      .controls input {
+        flex: 1 1 220px;
+        padding: 0.65rem 0.85rem;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+      }
+
+      button.action {
+        border: none;
+        border-radius: 999px;
+        padding: 0.6rem 1.1rem;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        background: var(--primary);
+        color: #fff;
+      }
+
+      button.action:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 12px 22px rgba(10, 78, 161, 0.18);
+      }
+
+      .post-card {
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 1.25rem;
+        margin-bottom: 1rem;
+        background: linear-gradient(145deg, #ffffff, #f8fbff);
+        box-shadow: 0 18px 32px rgba(15, 23, 42, 0.06);
+      }
+
+      .post-card header {
+        background: transparent;
+        color: inherit;
+        padding: 0;
+        box-shadow: none;
+      }
+
+      .post-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin: 0.75rem 0;
+        color: var(--muted);
+        font-size: 0.85rem;
+      }
+
+      .post-content {
+        line-height: 1.6;
+        white-space: pre-wrap;
+        margin-bottom: 1rem;
+      }
+
+      .post-media,
+      .post-poll {
+        margin: 0.75rem 0;
+      }
+
+      .media-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+      }
+
+      .media-list a {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.35rem 0.75rem;
+        border-radius: 999px;
+        border: 1px solid rgba(10, 78, 161, 0.2);
+        font-size: 0.8rem;
+        text-decoration: none;
+        color: var(--primary);
+        background: rgba(10, 78, 161, 0.08);
+      }
+
+      .media-list a:hover {
+        background: rgba(10, 78, 161, 0.14);
+      }
+
+      .poll-list {
+        margin-top: 0.5rem;
+        padding-left: 1rem;
+      }
+
+      .poll-list li {
+        margin-bottom: 0.35rem;
+      }
+
+      .post-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.6rem;
+      }
+
+      .post-actions button {
+        border: none;
+        padding: 0.55rem 1rem;
+        border-radius: 999px;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .approve {
+        background: #16a34a;
+        color: #fff;
+      }
+
+      .reject {
+        background: var(--danger);
+        color: #fff;
+      }
+
+      .alert-toggle {
+        background: var(--warning);
+        color: #fff;
+      }
+
+      .refresh {
+        background: var(--primary);
+        color: #fff;
+      }
+
+      .post-actions button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 10px 18px rgba(15, 23, 42, 0.12);
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+        padding: 0.2rem 0.65rem;
+        font-size: 0.75rem;
+        background: rgba(10, 78, 161, 0.08);
+        color: var(--primary);
+        font-weight: 600;
+      }
+
+      .reports {
+        background: rgba(220, 38, 38, 0.08);
+        color: var(--danger);
+      }
+
+      .empty-state {
+        text-align: center;
+        color: var(--muted);
+        padding: 2rem 1rem;
+        border: 1px dashed var(--border);
+        border-radius: 12px;
+      }
+
+      textarea {
+        width: 100%;
+        min-height: 80px;
+        margin-top: 0.5rem;
+        padding: 0.75rem;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        resize: vertical;
+      }
+
+      @media (max-width: 768px) {
+        header {
+          padding: 1.75rem 1rem;
+        }
+
+        main {
+          padding: 1rem;
+        }
+
+        .post-actions {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .post-actions button {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Painel de Posts</h1>
+      <p>
+        Aprove, rejeite ou marque alertas para posts enviados pela comunidade.
+        As denúncias ficam disponíveis para revisão rápida.
+      </p>
+    </header>
+
+    <main>
+      <section>
+        <h2>Autenticação</h2>
+        <div class="controls">
+          <input
+            type="password"
+            id="token-input"
+            placeholder="Cole aqui o token de acesso (Bearer)"
+          />
+          <button class="action" id="save-token">Salvar token</button>
+          <button class="action" id="clear-token">Limpar token</button>
+          <button class="action" id="refresh-all">Recarregar listas</button>
+        </div>
+        <small style="color: var(--muted)">
+          O token é armazenado apenas neste navegador (localStorage). As ações
+          de aprovação exigem um token válido.
+        </small>
+      </section>
+
+      <section>
+        <h2>Posts pendentes <span id="pending-count" class="badge">0</span></h2>
+        <div id="pending-posts" class="posts-container"></div>
+      </section>
+
+      <section>
+        <h2>
+          Posts denunciados
+          <span id="reported-count" class="badge reports">0</span>
+        </h2>
+        <div id="reported-posts" class="posts-container"></div>
+      </section>
+    </main>
+
+    <template id="post-template">
+      <article class="post-card">
+        <div class="post-header">
+          <strong class="author"></strong>
+          <span class="badge status"></span>
+        </div>
+        <div class="post-meta"></div>
+        <div class="post-content"></div>
+        <div class="post-media"></div>
+        <div class="post-poll"></div>
+        <div class="post-reports"></div>
+        <div class="post-actions"></div>
+      </article>
+    </template>
+
+    <script>
+      const tokenInput = document.getElementById("token-input");
+      const saveTokenButton = document.getElementById("save-token");
+      const clearTokenButton = document.getElementById("clear-token");
+      const refreshButton = document.getElementById("refresh-all");
+      const pendingContainer = document.getElementById("pending-posts");
+      const reportedContainer = document.getElementById("reported-posts");
+      const pendingCount = document.getElementById("pending-count");
+      const reportedCount = document.getElementById("reported-count");
+      const template = document.getElementById("post-template");
+
+      const TOKEN_STORAGE_KEY = "portalpm.admin.token";
+
+      let authToken = localStorage.getItem(TOKEN_STORAGE_KEY) || "";
+      if (authToken) {
+        tokenInput.value = authToken;
+      }
+
+      const withAuthHeaders = (headers = {}) => {
+        if (!authToken) return headers;
+        return { ...headers, Authorization: `Bearer ${authToken}` };
+      };
+
+      const formatDateTime = (value) => {
+        if (!value) return "";
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return "";
+        return date.toLocaleString("pt-BR", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+      };
+
+      const renderEmptyState = (container, message) => {
+        container.innerHTML = `<div class="empty-state">${message}</div>`;
+      };
+
+      const createButton = (label, className, onClick) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.textContent = label;
+        button.className = className;
+        button.addEventListener("click", onClick);
+        return button;
+      };
+
+      const buildPostCard = (post, options = {}) => {
+        const clone = template.content.cloneNode(true);
+        const card = clone.querySelector(".post-card");
+        const author = clone.querySelector(".author");
+        const statusBadge = clone.querySelector(".status");
+        const meta = clone.querySelector(".post-meta");
+        const content = clone.querySelector(".post-content");
+        const mediaWrapper = clone.querySelector(".post-media");
+        const pollWrapper = clone.querySelector(".post-poll");
+        const reportsWrapper = clone.querySelector(".post-reports");
+        const actions = clone.querySelector(".post-actions");
+
+        author.textContent = post.authorName ?? "Morador";
+        const statusLabels = {
+          PENDING: "Pendente",
+          APPROVED: "Aprovado",
+          REJECTED: "Rejeitado",
+        };
+        statusBadge.textContent = statusLabels[post.status] || post.status;
+        statusBadge.style.background =
+          post.status === "APPROVED"
+            ? "rgba(22, 163, 74, 0.12)"
+            : post.status === "PENDING"
+            ? "rgba(10, 78, 161, 0.12)"
+            : "rgba(220, 38, 38, 0.12)";
+        statusBadge.style.color =
+          post.status === "APPROVED"
+            ? "#16a34a"
+            : post.status === "PENDING"
+            ? "#0a4ea1"
+            : "#dc2626";
+
+        const metaParts = [];
+        metaParts.push(`Enviado em ${formatDateTime(post.createdAt)}`);
+        if (post.location) metaParts.push(`Local: ${post.location}`);
+        if (post.eventDate)
+          metaParts.push(`Evento: ${formatDateTime(post.eventDate)}`);
+        metaParts.push(`Categoria: ${post.category}`);
+        metaParts.push(`${post.likes ?? 0} curtida(s)`);
+        metaParts.push(`${post.shares ?? 0} compartilhamento(s)`);
+        if (post.alertUsers) metaParts.push("⚠️ Alerta aos moradores");
+        if (post.reportsCount > 0)
+          metaParts.push(`${post.reportsCount} denúncia(s)`);
+        meta.textContent = metaParts.join(" • ");
+
+        content.textContent = post.content;
+
+        if (mediaWrapper) {
+          mediaWrapper.innerHTML = "";
+          if (Array.isArray(post.media) && post.media.length) {
+            const title = document.createElement("strong");
+            title.textContent = "Mídias anexadas:";
+            mediaWrapper.appendChild(title);
+
+            const list = document.createElement("div");
+            list.className = "media-list";
+            post.media.forEach((item, index) => {
+              const link = document.createElement("a");
+              link.href = item.url;
+              link.target = "_blank";
+              link.rel = "noopener noreferrer";
+              const isVideo = item.mimeType?.startsWith("video/");
+              link.textContent = isVideo
+                ? `Vídeo ${index + 1}`
+                : `Imagem ${index + 1}`;
+              list.appendChild(link);
+            });
+            mediaWrapper.appendChild(list);
+          } else {
+            mediaWrapper.remove();
+          }
+        }
+
+        if (pollWrapper) {
+          pollWrapper.innerHTML = "";
+          const hasPoll =
+            post.poll &&
+            post.poll.question &&
+            Array.isArray(post.poll.options) &&
+            post.poll.options.length;
+
+          if (hasPoll) {
+            const title = document.createElement("strong");
+            title.textContent = `Enquete: ${post.poll.question}`;
+            pollWrapper.appendChild(title);
+
+            const list = document.createElement("ul");
+            list.className = "poll-list";
+            post.poll.options.forEach((option) => {
+              const li = document.createElement("li");
+              li.textContent = `${option.text} — ${option.votes} voto(s)`;
+              list.appendChild(li);
+            });
+            pollWrapper.appendChild(list);
+          } else {
+            pollWrapper.remove();
+          }
+        }
+
+        if (Array.isArray(post.reports) && post.reports.length) {
+          const title = document.createElement("strong");
+          title.textContent = "Denúncias:";
+          reportsWrapper.appendChild(title);
+          const list = document.createElement("ul");
+          list.style.paddingLeft = "1.2rem";
+          list.style.margin = "0.5rem 0 0";
+          post.reports.forEach((report) => {
+            const li = document.createElement("li");
+            li.textContent =
+              report.reason ||
+              `Registro em ${formatDateTime(report.createdAt)}`;
+            list.appendChild(li);
+          });
+          reportsWrapper.appendChild(list);
+        }
+
+        if (options.onApprove) {
+          actions.appendChild(
+            createButton("Aprovar", "approve", () => options.onApprove(post))
+          );
+        }
+
+        if (options.onReject) {
+          actions.appendChild(
+            createButton("Rejeitar", "reject", () => options.onReject(post))
+          );
+        }
+
+        if (options.onToggleAlert) {
+          const label = post.alertUsers ? "Remover alerta" : "Alertar usuários";
+          actions.appendChild(
+            createButton(label, "alert-toggle", () =>
+              options.onToggleAlert(post)
+            )
+          );
+        }
+
+        if (options.onRefresh) {
+          actions.appendChild(
+            createButton("Atualizar", "refresh", options.onRefresh)
+          );
+        }
+
+        return card;
+      };
+
+      const fetchJson = async (url, options = {}) => {
+        const response = await fetch(url, {
+          ...options,
+          headers: withAuthHeaders({
+            "Content-Type": "application/json",
+            ...(options.headers || {}),
+          }),
+        });
+
+        const data = await response.json().catch(() => ({ success: false }));
+
+        if (!response.ok) {
+          const message = data.message || "Falha ao processar requisição.";
+          throw new Error(message);
+        }
+
+        return data;
+      };
+
+      const loadPendingPosts = async () => {
+        pendingContainer.innerHTML = "Carregando...";
+        try {
+          const data = await fetchJson(
+            "/api/posts?status=PENDING&includeReports=1"
+          );
+          const posts = data.posts || [];
+          pendingCount.textContent = posts.length;
+
+          if (!posts.length) {
+            renderEmptyState(
+              pendingContainer,
+              "Nenhum post pendente de aprovação."
+            );
+            return;
+          }
+
+          pendingContainer.innerHTML = "";
+          posts.forEach((post) => {
+            const card = buildPostCard(post, {
+              onApprove: () => handleApprove(post.id),
+              onReject: () => handleReject(post.id),
+              onToggleAlert: () => handleToggleAlert(post),
+              onRefresh: refreshAll,
+            });
+            pendingContainer.appendChild(card);
+          });
+        } catch (error) {
+          renderEmptyState(
+            pendingContainer,
+            error.message || "Erro ao carregar pendentes."
+          );
+        }
+      };
+
+      const loadReportedPosts = async () => {
+        reportedContainer.innerHTML = "Carregando...";
+        try {
+          const data = await fetchJson("/api/posts/reports/all");
+          const posts = data.posts || [];
+          reportedCount.textContent = posts.length;
+
+          if (!posts.length) {
+            renderEmptyState(
+              reportedContainer,
+              "Nenhum post denunciado até o momento."
+            );
+            return;
+          }
+
+          reportedContainer.innerHTML = "";
+          posts.forEach((post) => {
+            const card = buildPostCard(post, {
+              onApprove:
+                post.status !== "APPROVED"
+                  ? () => handleApprove(post.id)
+                  : null,
+              onToggleAlert: () => handleToggleAlert(post),
+              onRefresh: refreshAll,
+            });
+            reportedContainer.appendChild(card);
+          });
+        } catch (error) {
+          renderEmptyState(
+            reportedContainer,
+            error.message || "Erro ao carregar denúncias."
+          );
+        }
+      };
+
+      const handleApprove = async (postId) => {
+        if (!authToken) {
+          alert("Informe o token antes de aprovar um post.");
+          return;
+        }
+
+        try {
+          await fetchJson(`/api/posts/${postId}/approve`, {
+            method: "PATCH",
+            body: JSON.stringify({}),
+          });
+          refreshAll();
+        } catch (error) {
+          alert(error.message || "Erro ao aprovar o post.");
+        }
+      };
+
+      const handleReject = async (postId) => {
+        if (!authToken) {
+          alert("Informe o token antes de rejeitar um post.");
+          return;
+        }
+
+        const reason = prompt("Informe o motivo da rejeição (opcional):");
+
+        try {
+          await fetchJson(`/api/posts/${postId}/reject`, {
+            method: "PATCH",
+            body: JSON.stringify({ reason }),
+          });
+          refreshAll();
+        } catch (error) {
+          alert(error.message || "Erro ao rejeitar o post.");
+        }
+      };
+
+      const handleToggleAlert = async (post) => {
+        if (!authToken) {
+          alert("Informe o token antes de alterar alertas.");
+          return;
+        }
+
+        try {
+          await fetchJson(`/api/posts/${post.id}/alert`, {
+            method: "PATCH",
+            body: JSON.stringify({ alertUsers: !post.alertUsers }),
+          });
+          refreshAll();
+        } catch (error) {
+          alert(error.message || "Erro ao atualizar alerta do post.");
+        }
+      };
+
+      const refreshAll = () => {
+        loadPendingPosts();
+        loadReportedPosts();
+      };
+
+      saveTokenButton.addEventListener("click", () => {
+        authToken = tokenInput.value.trim();
+        if (!authToken) {
+          alert("Cole um token válido.");
+          return;
+        }
+        localStorage.setItem(TOKEN_STORAGE_KEY, authToken);
+        alert("Token salvo com sucesso.");
+      });
+
+      clearTokenButton.addEventListener("click", () => {
+        authToken = "";
+        tokenInput.value = "";
+        localStorage.removeItem(TOKEN_STORAGE_KEY);
+        alert("Token removido.");
+      });
+
+      refreshButton.addEventListener("click", refreshAll);
+
+      document.addEventListener("DOMContentLoaded", () => {
+        refreshAll();
+      });
+    </script>
+  </body>
+</html>

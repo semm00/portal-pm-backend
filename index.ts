@@ -9,6 +9,7 @@ import googleAuthRouter from "./router/auth/google";
 import profileRouter from "./router/profile";
 import newsRouter from "./router/news";
 import eventsRouter from "./router/events";
+import postsRouter from "./router/posts";
 
 const app = express();
 
@@ -37,6 +38,7 @@ app.use("/api/users", googleAuthRouter);
 app.use("/api/profile", profileRouter);
 app.use("/api/news", newsRouter);
 app.use("/api/events", eventsRouter);
+app.use("/api/posts", postsRouter);
 
 const PORT = Number(process.env.PORT ?? 4000);
 
