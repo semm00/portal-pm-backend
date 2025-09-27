@@ -30,7 +30,8 @@ const extractAccessToken = (req) => {
     if (typeof req.query.accessToken === "string") {
         return req.query.accessToken;
     }
-    if (req.body && typeof req.body.accessToken === "string") {
+    if (req.body &&
+        typeof req.body.accessToken === "string") {
         return req.body.accessToken.trim();
     }
     return undefined;
@@ -152,7 +153,10 @@ router.put("/me", async (req, res) => {
         console.error("Erro ao atualizar perfil:", error);
         return res
             .status(500)
-            .json({ success: false, message: "Não foi possível atualizar o perfil." });
+            .json({
+            success: false,
+            message: "Não foi possível atualizar o perfil.",
+        });
     }
 });
 router.post("/me/avatar", upload.single("avatar"), async (req, res) => {

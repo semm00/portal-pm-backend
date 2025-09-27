@@ -11,6 +11,7 @@ const users_recovery_1 = __importDefault(require("./router/users-recovery"));
 const users_verification_1 = __importDefault(require("./router/users-verification"));
 const google_1 = __importDefault(require("./router/auth/google"));
 const profile_1 = __importDefault(require("./router/profile"));
+const news_1 = __importDefault(require("./router/news"));
 const app = (0, express_1.default)();
 const allowedOrigins = process.env.CORS_ORIGIN?.split(",")
     .map((origin) => origin.trim())
@@ -22,6 +23,7 @@ const corsOptions = {
 };
 app.use((0, cors_1.default)(corsOptions));
 app.use(express_1.default.json());
+app.use("/admin", express_1.default.static("admin"));
 app.get("/health", (_req, res) => {
     res.json({ status: "ok" });
 });
@@ -30,6 +32,7 @@ app.use("/api/users", users_recovery_1.default);
 app.use("/api/users", users_verification_1.default);
 app.use("/api/users", google_1.default);
 app.use("/api/profile", profile_1.default);
+app.use("/api/news", news_1.default);
 const PORT = Number(process.env.PORT ?? 4000);
 app.listen(PORT, () => {
     console.log(`🚀 Server ready on http://localhost:${PORT}`);

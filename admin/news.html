@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Painel de Notícias - Admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #f7f7f7;
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        max-width: 600px;
+        margin: 40px auto;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px #0001;
+        padding: 32px;
+      }
+      h1 {
+        color: #0a4ea1;
+        margin-bottom: 24px;
+      }
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 32px;
+      }
+      label {
+        font-weight: bold;
+      }
+      input,
+      button {
+        padding: 8px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+      }
+      button {
+        background: #0a4ea1;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        font-weight: bold;
+      }
+      button:hover {
+        background: #153b69;
+      }
+      .status {
+        margin-bottom: 16px;
+        font-size: 14px;
+      }
+      .status.success {
+        color: #15803d;
+      }
+      .status.error {
+        color: #b91c1c;
+      }
+      .news-list {
+        margin-top: 24px;
+      }
+      .news-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 16px;
+        background: #f3f3f3;
+        border-radius: 8px;
+        padding: 8px;
+      }
+      .news-img {
+        width: 60px;
+        height: 40px;
+        object-fit: cover;
+        border-radius: 6px;
+      }
+      .news-title {
+        flex: 1;
+        font-weight: bold;
+      }
+      .news-source {
+        font-size: 12px;
+        color: #555;
+      }
+      .remove-btn {
+        background: #e53e3e;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        padding: 6px 12px;
+        cursor: pointer;
+      }
+      .remove-btn:hover {
+        background: #c53030;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Painel de Notícias</h1>
+      <div id="status" class="status"></div>
+      <form id="news-form">
+        <label for="image">Imagem de capa</label>
+        <input type="file" id="image" name="image" accept="image/*" required />
+        <label for="title">Título</label>
+        <input type="text" id="title" name="title" required />
+        <label for="source">Fonte</label>
+        <input type="text" id="source" name="source" required />
+        <label for="url">Link</label>
+        <input type="url" id="url" name="url" required />
+        <button type="submit">Enviar notícia</button>
+      </form>
+      <div class="news-list" id="news-list">
+        <!-- Notícias renderizadas aqui -->
+      </div>
+    </div>
+    <script>
+      const statusEl = document.getElementById("status");
+
+      function setStatus(message, type = "") {
+        statusEl.textContent = message;
+        statusEl.className = `status ${type}`;
+        if (!message) {
+          statusEl.removeAttribute("class");
+          statusEl.classList.add("status");
+        }
+      }
+
+      async function fetchNews() {
+        try {
+          const res = await fetch("/api/news", { cache: "no-store" });
+          if (!res.ok) throw new Error("Falha ao carregar notícias");
+          const data = await res.json();
+          return data.news || [];
+        } catch (error) {
+          console.error(error);
+          setStatus("Erro ao carregar notícias.", "error");
+          return [];
+        }
+      }
+      async function renderNews() {
+        const list = document.getElementById("news-list");
+        list.innerHTML = "";
+        const items = await fetchNews();
+        if (!items.length) {
+          list.innerHTML = "<p>Nenhuma notícia cadastrada.</p>";
+          return;
+        }
+        items.forEach((n) => {
+          const div = document.createElement("div");
+          div.className = "news-item";
+          div.innerHTML = `
+          <img src="${n.imageUrl}" alt="img" class="news-img" />
+          <span class="news-title">${n.title}</span>
+          <span class="news-source">${n.source}</span>
+          <a href="${n.url}" target="_blank">🔗</a>
+          <button class="remove-btn" data-id="${n.id}">Remover</button>
+        `;
+          div.querySelector(".remove-btn").onclick = async () => {
+            if (!confirm("Remover esta notícia?")) return;
+            try {
+              const res = await fetch(`/api/news/${n.id}`, {
+                method: "DELETE",
+              });
+              if (!res.ok) throw new Error("Falha ao remover");
+              setStatus("Notícia removida com sucesso.", "success");
+              renderNews();
+            } catch (error) {
+              console.error(error);
+              setStatus("Erro ao remover notícia.", "error");
+            }
+          };
+          list.appendChild(div);
+        });
+      }
+      document.getElementById("news-form").onsubmit = async (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const fd = new FormData(form);
+        setStatus("Enviando notícia...", "");
+        try {
+          const res = await fetch("/api/news", { method: "POST", body: fd });
+          if (!res.ok) {
+            const errorData = await res.json().catch(() => ({}));
+            throw new Error(errorData.message || "Falha ao enviar notícia");
+          }
+          form.reset();
+          setStatus("Notícia cadastrada com sucesso!", "success");
+          renderNews();
+        } catch (error) {
+          console.error(error);
+          const message =
+            error instanceof Error ? error.message : "Erro ao enviar notícia.";
+          setStatus(message, "error");
+        }
+      };
+      renderNews().then(() => {
+        setStatus("");
+      });
+    </script>
+  </body>
+</html>

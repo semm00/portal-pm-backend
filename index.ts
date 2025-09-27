@@ -7,6 +7,7 @@ import usersRecoveryRouter from "./router/users-recovery";
 import usersVerificationRouter from "./router/users-verification";
 import googleAuthRouter from "./router/auth/google";
 import profileRouter from "./router/profile";
+import newsRouter from "./router/news";
 
 const app = express();
 
@@ -22,6 +23,7 @@ const corsOptions: CorsOptions = {
 
 app.use(cors(corsOptions));
 app.use(express.json());
+app.use("/admin", express.static("admin"));
 
 app.get("/health", (_req, res) => {
   res.json({ status: "ok" });
@@ -32,6 +34,7 @@ app.use("/api/users", usersRecoveryRouter);
 app.use("/api/users", usersVerificationRouter);
 app.use("/api/users", googleAuthRouter);
 app.use("/api/profile", profileRouter);
+app.use("/api/news", newsRouter);
 
 const PORT = Number(process.env.PORT ?? 4000);
 
