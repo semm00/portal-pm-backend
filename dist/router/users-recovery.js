@@ -25,7 +25,10 @@ router.post("/forgot-password", async (req, res) => {
     if (!user) {
         return res
             .status(200)
-            .json({ success: true, message: "Se o e-mail existir, enviaremos instruções." });
+            .json({
+            success: true,
+            message: "Se o e-mail existir, enviaremos instruções.",
+        });
     }
     const supabase = (0, supabaseClient_1.createSupabaseServerClient)();
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
@@ -35,7 +38,10 @@ router.post("/forgot-password", async (req, res) => {
         console.error("Supabase resetPasswordForEmail error:", error);
         return res
             .status(500)
-            .json({ success: false, message: "Não foi possível enviar as instruções." });
+            .json({
+            success: false,
+            message: "Não foi possível enviar as instruções.",
+        });
     }
     return res.json({ success: true, message: "E-mail de recuperação enviado." });
 });
@@ -56,9 +62,7 @@ router.post("/reset-password", async (req, res) => {
         });
         if (error) {
             console.error("Supabase updateUserById error:", error);
-            return res
-                .status(400)
-                .json({ success: false, message: error.message });
+            return res.status(400).json({ success: false, message: error.message });
         }
         if (payload.email) {
             await prisma.user.updateMany({

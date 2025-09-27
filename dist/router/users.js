@@ -103,7 +103,8 @@ router.post("/register", async (req, res) => {
             fullName,
             username,
             emailVerified: Boolean(supabaseUser.email_confirmed_at),
-            avatarUrl: supabaseUser.user_metadata?.avatarUrl,
+            avatarUrl: supabaseUser.user_metadata
+                ?.avatarUrl,
             supabaseId: supabaseUser.id,
         },
         create: {
@@ -111,7 +112,8 @@ router.post("/register", async (req, res) => {
             username,
             email: supabaseUser.email,
             emailVerified: Boolean(supabaseUser.email_confirmed_at),
-            avatarUrl: supabaseUser.user_metadata?.avatarUrl,
+            avatarUrl: supabaseUser.user_metadata
+                ?.avatarUrl,
             supabaseId: supabaseUser.id,
         },
     });

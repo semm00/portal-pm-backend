@@ -36,9 +36,7 @@ router.post("/send-verification", async (req, res) => {
         });
         if (error) {
             console.error("Supabase resend error:", error);
-            return res
-                .status(500)
-                .json({ success: false, message: error.message });
+            return res.status(500).json({ success: false, message: error.message });
         }
         return res.json({
             success: true,
@@ -63,6 +61,7 @@ router.post("/verify-email", async (req, res) => {
     }
     try {
         const supabase = (0, supabaseClient_1.createSupabaseServerClient)();
+        const supabaseAdmin = (0, supabaseClient_1.createSupabaseAdminClient)();
         const { data, error } = await supabase.auth.verifyOtp({
             email,
             token,
@@ -70,9 +69,34 @@ router.post("/verify-email", async (req, res) => {
         });
         if (error) {
             console.error("Supabase verifyOtp error:", error);
-            return res
-                .status(400)
-                .json({ success: false, message: error.message });
+            const existingUser = await prisma.user.findUnique({ where: { email } });
+            const fallbackAlreadyVerified = Boolean(existingUser?.emailVerified);
+            let adminUserEmailConfirmed = false;
+            if (existingUser?.supabaseId) {
+                const { data: adminData, error: adminError } = await supabaseAdmin.auth.admin.getUserById(existingUser.supabaseId);
+                if (adminError) {
+                    console.error("Supabase admin getUserById error:", adminError);
+                }
+                adminUserEmailConfirmed = Boolean(adminData?.user?.email_confirmed_at ?? false);
+            }
+            const alreadyVerified = fallbackAlreadyVerified || adminUserEmailConfirmed;
+            if (!alreadyVerified) {
+                return res
+                    .status(400)
+                    .json({ success: false, message: error.message });
+            }
+            await prisma.user.updateMany({
+                where: { email },
+                data: {
+                    emailVerified: true,
+                    supabaseId: existingUser?.supabaseId,
+                },
+            });
+            return res.json({
+                success: true,
+                message: "E-mail já estava verificado.",
+                alreadyVerified: true,
+            });
         }
         const supabaseUser = data.user;
         if (supabaseUser?.email) {
@@ -84,6 +108,7 @@ router.post("/verify-email", async (req, res) => {
         return res.json({
             success: true,
             message: "E-mail verificado com sucesso.",
+            alreadyVerified: false,
         });
     }
     catch (err) {
