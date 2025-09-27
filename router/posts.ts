@@ -596,6 +596,94 @@ router.post("/:id/share", async (req, res) => {
   }
 });
 
+router.post("/:id/poll/vote", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { optionId } = req.body as { optionId?: string };
+
+    if (!optionId) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Informe a opção desejada." });
+    }
+
+    const post = await prisma.post.findUnique({
+      where: { id },
+      select: {
+        pollQuestion: true,
+        pollOptions: true,
+        status: true,
+      },
+    });
+
+    if (!post) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Post não encontrado." });
+    }
+
+    if (post.status !== PostStatus.APPROVED) {
+      return res.status(400).json({
+        success: false,
+        message: "Somente enquetes de posts publicados podem receber votos.",
+      });
+    }
+
+    if (!Array.isArray(post.pollOptions) || !post.pollOptions.length) {
+      return res.status(400).json({
+        success: false,
+        message: "Esta publicação não possui enquete ativa.",
+      });
+    }
+
+    const updatedOptions = post.pollOptions.map((option: any) => {
+      if (!option || typeof option !== "object") return option;
+      if (option.id !== optionId) return option;
+
+      const currentVotes = Number.isFinite(option.votes)
+        ? Number(option.votes)
+        : 0;
+
+      return {
+        ...option,
+        votes: currentVotes + 1,
+      };
+    });
+
+    const optionExists = updatedOptions.some(
+      (option: any) => option?.id === optionId
+    );
+
+    if (!optionExists) {
+      return res.status(404).json({
+        success: false,
+        message: "Opção da enquete não encontrada.",
+      });
+    }
+
+    await prisma.post.update({
+      where: { id },
+      data: {
+        pollOptions: updatedOptions,
+      },
+    });
+
+    return res.json({
+      success: true,
+      poll: {
+        question: post.pollQuestion,
+        options: updatedOptions,
+      },
+    });
+  } catch (error) {
+    console.error("Failed to vote on poll", error);
+    res.status(500).json({
+      success: false,
+      message: "Não foi possível registrar o voto. Tente novamente.",
+    });
+  }
+});
+
 router.delete("/:id", requireAdminSecret, async (req, res) => {
   try {
     const { id } = req.params;
