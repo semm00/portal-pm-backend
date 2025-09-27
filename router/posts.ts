@@ -80,7 +80,9 @@ const normalizeStatus = (value: unknown): PostStatus | null | "ALL" => {
 
 const mapPostResponse = (post: any) => ({
   id: post.id,
+  authorId: post.authorId,
   authorName: post.authorName,
+  authorUsername: post.author?.username || null,
   authorAvatarUrl: post.authorAvatarUrl,
   content: post.content,
   category: post.category,
@@ -763,9 +765,10 @@ router.post("/:id/poll/vote", async (req, res) => {
   }
 });
 
-router.delete("/:id", requireAdminSecret, async (req, res) => {
+router.delete("/:id", requireAuth, async (req, res) => {
   try {
     const { id } = req.params;
+    const userId = (req as AuthenticatedRequest).authUser!.id;
 
     const post = await prisma.post.findUnique({
       where: { id },
@@ -776,6 +779,14 @@ router.delete("/:id", requireAdminSecret, async (req, res) => {
       return res
         .status(404)
         .json({ success: false, message: "Post não encontrado." });
+    }
+
+    // Verificar se o usuário é o autor ou admin
+    if (post.authorId !== userId) {
+      return res.status(403).json({
+        success: false,
+        message: "Você não tem permissão para excluir este post.",
+      });
     }
 
     if (post.status !== PostStatus.APPROVED) {
