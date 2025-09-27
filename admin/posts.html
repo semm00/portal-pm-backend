@@ -204,6 +204,17 @@
         color: #fff;
       }
 
+      .delete {
+        background: rgba(220, 38, 38, 0.08);
+        color: var(--danger);
+        border: 1px solid rgba(220, 38, 38, 0.3);
+      }
+
+      .delete:hover {
+        background: rgba(220, 38, 38, 0.16);
+        box-shadow: 0 10px 18px rgba(220, 38, 38, 0.18);
+      }
+
       .post-actions button:hover {
         transform: translateY(-1px);
         box-shadow: 0 10px 18px rgba(15, 23, 42, 0.12);
@@ -279,22 +290,29 @@
         <div class="controls">
           <input
             type="password"
-            id="token-input"
-            placeholder="Cole aqui o token de acesso (Bearer)"
+            id="secret-input"
+            placeholder="Digite a senha administrativa"
           />
-          <button class="action" id="save-token">Salvar token</button>
-          <button class="action" id="clear-token">Limpar token</button>
+          <button class="action" id="save-secret">Salvar senha</button>
+          <button class="action" id="clear-secret">Limpar senha</button>
           <button class="action" id="refresh-all">Recarregar listas</button>
         </div>
         <small style="color: var(--muted)">
-          O token é armazenado apenas neste navegador (localStorage). As ações
-          de aprovação exigem um token válido.
+          A senha é armazenada apenas neste navegador (localStorage). As ações
+          administrativas exigem a senha correta.
         </small>
       </section>
 
       <section>
         <h2>Posts pendentes <span id="pending-count" class="badge">0</span></h2>
         <div id="pending-posts" class="posts-container"></div>
+      </section>
+
+      <section>
+        <h2>
+          Posts publicados <span id="approved-count" class="badge">0</span>
+        </h2>
+        <div id="approved-posts" class="posts-container"></div>
       </section>
 
       <section>
@@ -322,26 +340,28 @@
     </template>
 
     <script>
-      const tokenInput = document.getElementById("token-input");
-      const saveTokenButton = document.getElementById("save-token");
-      const clearTokenButton = document.getElementById("clear-token");
+      const secretInput = document.getElementById("secret-input");
+      const saveSecretButton = document.getElementById("save-secret");
+      const clearSecretButton = document.getElementById("clear-secret");
       const refreshButton = document.getElementById("refresh-all");
       const pendingContainer = document.getElementById("pending-posts");
+      const approvedContainer = document.getElementById("approved-posts");
       const reportedContainer = document.getElementById("reported-posts");
       const pendingCount = document.getElementById("pending-count");
+      const approvedCount = document.getElementById("approved-count");
       const reportedCount = document.getElementById("reported-count");
       const template = document.getElementById("post-template");
 
-      const TOKEN_STORAGE_KEY = "portalpm.admin.token";
+      const ADMIN_SECRET_STORAGE_KEY = "portalpm.admin.secret";
 
-      let authToken = localStorage.getItem(TOKEN_STORAGE_KEY) || "";
-      if (authToken) {
-        tokenInput.value = authToken;
+      let adminSecret = localStorage.getItem(ADMIN_SECRET_STORAGE_KEY) || "";
+      if (adminSecret) {
+        secretInput.value = adminSecret;
       }
 
       const withAuthHeaders = (headers = {}) => {
-        if (!authToken) return headers;
-        return { ...headers, Authorization: `Bearer ${authToken}` };
+        if (!adminSecret) return headers;
+        return { ...headers, "x-admin-secret": adminSecret };
       };
 
       const formatDateTime = (value) => {
@@ -507,6 +527,12 @@
           );
         }
 
+        if (options.onDelete) {
+          actions.appendChild(
+            createButton("Excluir", "delete", () => options.onDelete(post))
+          );
+        }
+
         if (options.onRefresh) {
           actions.appendChild(
             createButton("Atualizar", "refresh", options.onRefresh)
@@ -570,6 +596,40 @@
         }
       };
 
+      const loadApprovedPosts = async () => {
+        approvedContainer.innerHTML = "Carregando...";
+        try {
+          const data = await fetchJson(
+            "/api/posts?status=APPROVED&includeReports=1"
+          );
+          const posts = data.posts || [];
+          approvedCount.textContent = posts.length;
+
+          if (!posts.length) {
+            renderEmptyState(
+              approvedContainer,
+              "Nenhum post publicado disponível."
+            );
+            return;
+          }
+
+          approvedContainer.innerHTML = "";
+          posts.forEach((post) => {
+            const card = buildPostCard(post, {
+              onToggleAlert: () => handleToggleAlert(post),
+              onDelete: () => handleDelete(post.id),
+              onRefresh: refreshAll,
+            });
+            approvedContainer.appendChild(card);
+          });
+        } catch (error) {
+          renderEmptyState(
+            approvedContainer,
+            error.message || "Erro ao carregar posts publicados."
+          );
+        }
+      };
+
       const loadReportedPosts = async () => {
         reportedContainer.innerHTML = "Carregando...";
         try {
@@ -593,6 +653,8 @@
                   ? () => handleApprove(post.id)
                   : null,
               onToggleAlert: () => handleToggleAlert(post),
+              onDelete:
+                post.status === "APPROVED" ? () => handleDelete(post.id) : null,
               onRefresh: refreshAll,
             });
             reportedContainer.appendChild(card);
@@ -606,8 +668,8 @@
       };
 
       const handleApprove = async (postId) => {
-        if (!authToken) {
-          alert("Informe o token antes de aprovar um post.");
+        if (!adminSecret) {
+          alert("Informe a senha administrativa antes de aprovar um post.");
           return;
         }
 
@@ -623,8 +685,8 @@
       };
 
       const handleReject = async (postId) => {
-        if (!authToken) {
-          alert("Informe o token antes de rejeitar um post.");
+        if (!adminSecret) {
+          alert("Informe a senha administrativa antes de rejeitar um post.");
           return;
         }
 
@@ -642,8 +704,8 @@
       };
 
       const handleToggleAlert = async (post) => {
-        if (!authToken) {
-          alert("Informe o token antes de alterar alertas.");
+        if (!adminSecret) {
+          alert("Informe a senha administrativa antes de alterar alertas.");
           return;
         }
 
@@ -658,26 +720,48 @@
         }
       };
 
+      const handleDelete = async (postId) => {
+        if (!adminSecret) {
+          alert("Informe a senha administrativa antes de excluir um post.");
+          return;
+        }
+
+        const confirmed = confirm(
+          "Tem certeza que deseja excluir este post aprovado? Esta ação não pode ser desfeita."
+        );
+        if (!confirmed) return;
+
+        try {
+          await fetchJson(`/api/posts/${postId}`, {
+            method: "DELETE",
+          });
+          refreshAll();
+        } catch (error) {
+          alert(error.message || "Erro ao excluir o post.");
+        }
+      };
+
       const refreshAll = () => {
         loadPendingPosts();
+        loadApprovedPosts();
         loadReportedPosts();
       };
 
-      saveTokenButton.addEventListener("click", () => {
-        authToken = tokenInput.value.trim();
-        if (!authToken) {
-          alert("Cole um token válido.");
+      saveSecretButton.addEventListener("click", () => {
+        adminSecret = secretInput.value.trim();
+        if (!adminSecret) {
+          alert("Informe uma senha antes de salvar.");
           return;
         }
-        localStorage.setItem(TOKEN_STORAGE_KEY, authToken);
-        alert("Token salvo com sucesso.");
+        localStorage.setItem(ADMIN_SECRET_STORAGE_KEY, adminSecret);
+        alert("Senha salva com sucesso.");
       });
 
-      clearTokenButton.addEventListener("click", () => {
-        authToken = "";
-        tokenInput.value = "";
-        localStorage.removeItem(TOKEN_STORAGE_KEY);
-        alert("Token removido.");
+      clearSecretButton.addEventListener("click", () => {
+        adminSecret = "";
+        secretInput.value = "";
+        localStorage.removeItem(ADMIN_SECRET_STORAGE_KEY);
+        alert("Senha removida.");
       });
 
       refreshButton.addEventListener("click", refreshAll);
