@@ -5,63 +5,49 @@ const prisma_1 = require("../generated/prisma");
 const supabaseClient_1 = require("../services/supabaseClient");
 const router = (0, express_1.Router)();
 const prisma = new prisma_1.PrismaClient();
-const FRONTEND_URL = process.env.FRONTEND_URL ?? "http://localhost:3000";
 // Enviar e-mail de verificação
-router.post("/send-verification", async (req, res) => {
-    const { email } = req.body;
-    console.log(`[LOG] Recebida solicitação para reenviar verificação para: ${email}`);
-    if (!email)
-        return res
-            .status(400)
-            .json({ success: false, message: "E-mail obrigatório." });
-    const user = await prisma.user.findUnique({ where: { email } });
-    if (!user) {
-        return res
-            .status(404)
-            .json({ success: false, message: "Usuário não encontrado." });
-    }
-    if (user.emailVerified) {
-        return res
-            .status(400)
-            .json({ success: false, message: "Este e-mail já foi verificado." });
-    }
-    try {
-        const supabase = (0, supabaseClient_1.createSupabaseServerClient)();
-        const { error } = await supabase.auth.resend({
-            type: "signup",
-            email,
-            options: {
-                emailRedirectTo: `${FRONTEND_URL}/profile/verification`,
+router.post("/verify-email", async (req, res) => {
+    const { token, email, type, accessToken } = req.body;
+    const supabase = (0, supabaseClient_1.createSupabaseServerClient)();
+    const supabaseAdmin = (0, supabaseClient_1.createSupabaseAdminClient)();
+    const markEmailAsVerified = async (userEmail, supabaseId) => {
+        if (!userEmail)
+            return;
+        await prisma.user.updateMany({
+            where: { email: userEmail },
+            data: {
+                emailVerified: true,
+                ...(supabaseId ? { supabaseId } : {}),
             },
         });
-        if (error) {
-            console.error("Supabase resend error:", error);
-            return res.status(500).json({ success: false, message: error.message });
-        }
-        return res.json({
-            success: true,
-            message: "E-mail de verificação reenviado com sucesso.",
-        });
-    }
-    catch (error) {
-        console.error("Falha ao reenviar e-mail de verificação:", error);
-        return res
-            .status(500)
-            .json({ success: false, message: "Falha ao reenviar e-mail." });
-    }
-});
-// Verificar e-mail
-router.post("/verify-email", async (req, res) => {
-    const { token, email, type } = req.body;
-    if (!token || !email) {
-        return res.status(400).json({
-            success: false,
-            message: "Token e e-mail são obrigatórios.",
-        });
-    }
+    };
     try {
-        const supabase = (0, supabaseClient_1.createSupabaseServerClient)();
-        const supabaseAdmin = (0, supabaseClient_1.createSupabaseAdminClient)();
+        if (accessToken) {
+            const { data: userData, error: getUserError } = await supabase.auth.getUser(accessToken);
+            if (getUserError || !userData.user?.email) {
+                console.error("Supabase getUser error:", getUserError);
+                return res
+                    .status(400)
+                    .json({ success: false, message: "Token inválido ou expirado." });
+            }
+            const supabaseUser = userData.user;
+            const alreadyVerified = Boolean(supabaseUser.email_confirmed_at);
+            await markEmailAsVerified(supabaseUser.email, supabaseUser.id);
+            return res.json({
+                success: true,
+                message: alreadyVerified
+                    ? "E-mail já estava verificado."
+                    : "E-mail verificado com sucesso.",
+                alreadyVerified,
+                email: supabaseUser.email,
+            });
+        }
+        if (!token || !email) {
+            return res.status(400).json({
+                success: false,
+                message: "Token e e-mail são obrigatórios.",
+            });
+        }
         const { data, error } = await supabase.auth.verifyOtp({
             email,
             token,
@@ -72,12 +58,14 @@ router.post("/verify-email", async (req, res) => {
             const existingUser = await prisma.user.findUnique({ where: { email } });
             const fallbackAlreadyVerified = Boolean(existingUser?.emailVerified);
             let adminUserEmailConfirmed = false;
+            let adminUserId = existingUser?.supabaseId ?? undefined;
             if (existingUser?.supabaseId) {
                 const { data: adminData, error: adminError } = await supabaseAdmin.auth.admin.getUserById(existingUser.supabaseId);
                 if (adminError) {
                     console.error("Supabase admin getUserById error:", adminError);
                 }
                 adminUserEmailConfirmed = Boolean(adminData?.user?.email_confirmed_at ?? false);
+                adminUserId = adminData?.user?.id ?? adminUserId;
             }
             const alreadyVerified = fallbackAlreadyVerified || adminUserEmailConfirmed;
             if (!alreadyVerified) {
@@ -85,30 +73,22 @@ router.post("/verify-email", async (req, res) => {
                     .status(400)
                     .json({ success: false, message: error.message });
             }
-            await prisma.user.updateMany({
-                where: { email },
-                data: {
-                    emailVerified: true,
-                    supabaseId: existingUser?.supabaseId,
-                },
-            });
+            await markEmailAsVerified(email, adminUserId);
             return res.json({
                 success: true,
                 message: "E-mail já estava verificado.",
                 alreadyVerified: true,
+                email,
             });
         }
         const supabaseUser = data.user;
-        if (supabaseUser?.email) {
-            await prisma.user.updateMany({
-                where: { email: supabaseUser.email },
-                data: { emailVerified: true, supabaseId: supabaseUser.id },
-            });
-        }
+        const userEmail = supabaseUser?.email ?? email;
+        await markEmailAsVerified(userEmail, supabaseUser?.id);
         return res.json({
             success: true,
             message: "E-mail verificado com sucesso.",
             alreadyVerified: false,
+            email: userEmail,
         });
     }
     catch (err) {
