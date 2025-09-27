@@ -205,15 +205,17 @@ const extractPollOptions = (body: Record<string, unknown>) => {
   const collected = new Map<number, string>();
 
   const directOptions = body.pollOptions;
+  const hasDirectArray = Array.isArray(directOptions);
+  const hasDirectValue = typeof directOptions === "string";
 
-  if (Array.isArray(directOptions)) {
+  if (hasDirectArray) {
     directOptions.forEach((item, index) => {
       const sanitized = sanitizeString(item);
       if (sanitized) {
         collected.set(index, sanitized);
       }
     });
-  } else if (typeof directOptions === "string") {
+  } else if (hasDirectValue) {
     try {
       const parsed = JSON.parse(directOptions);
       if (Array.isArray(parsed)) {
@@ -235,6 +237,11 @@ const extractPollOptions = (body: Record<string, unknown>) => {
   Object.entries(body).forEach(([key, value]) => {
     const match = key.match(/^pollOptions(?:\[(\d+)\])?$/);
     if (!match) return;
+
+    if (!match[1] && (hasDirectArray || hasDirectValue)) {
+      // Já tratamos o campo "pollOptions" acima.
+      return;
+    }
 
     const index = match[1] ? Number.parseInt(match[1], 10) : collected.size;
     const sanitized = sanitizeString(value);
