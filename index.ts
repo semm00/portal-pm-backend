@@ -8,6 +8,7 @@ import usersVerificationRouter from "./router/users-verification";
 import googleAuthRouter from "./router/auth/google";
 import profileRouter from "./router/profile";
 import newsRouter from "./router/news";
+import eventsRouter from "./router/events";
 
 const app = express();
 
@@ -35,6 +36,7 @@ app.use("/api/users", usersVerificationRouter);
 app.use("/api/users", googleAuthRouter);
 app.use("/api/profile", profileRouter);
 app.use("/api/news", newsRouter);
+app.use("/api/events", eventsRouter);
 
 const PORT = Number(process.env.PORT ?? 4000);
 

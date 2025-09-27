@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Painel de Eventos - Admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      :root {
+        color-scheme: light;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: #f3f4f6;
+        margin: 0;
+        padding: 16px;
+      }
+
+      .page {
+        max-width: 1100px;
+        margin: 0 auto;
+        background: #fff;
+        border-radius: 16px;
+        padding: 32px 24px;
+        box-shadow: 0 18px 40px -24px rgba(15, 23, 42, 0.4);
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+      }
+
+      h1 {
+        margin: 0;
+        color: #0b3c7d;
+        font-size: clamp(1.6rem, 3vw, 2.4rem);
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 12px;
+        color: #475569;
+        font-size: 0.95rem;
+      }
+
+      .refresh-btn {
+        padding: 8px 16px;
+        border-radius: 9999px;
+        border: none;
+        background: linear-gradient(135deg, #1d4ed8, #0f172a);
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+      }
+
+      .refresh-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 10px 24px -12px rgba(30, 64, 175, 0.7);
+      }
+
+      .status {
+        font-size: 0.92rem;
+        border-radius: 9999px;
+        padding: 6px 14px;
+        background: #e2e8f0;
+        color: #1e293b;
+        min-height: 32px;
+        display: inline-flex;
+        align-items: center;
+      }
+
+      .status.success {
+        background: #dcfce7;
+        color: #166534;
+      }
+
+      .status.error {
+        background: #fee2e2;
+        color: #b91c1c;
+      }
+
+      .grid {
+        display: grid;
+        gap: 24px;
+      }
+
+      @media (min-width: 920px) {
+        .grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      .card {
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        min-height: 320px;
+      }
+
+      .card h2 {
+        margin: 0;
+        color: #0f172a;
+        font-size: 1.25rem;
+      }
+
+      .list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        flex: 1;
+      }
+
+      .empty-state {
+        color: #64748b;
+        font-style: italic;
+        margin: 0;
+      }
+
+      .event-item {
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 14px;
+        display: grid;
+        gap: 10px;
+        background: #f8fafc;
+      }
+
+      .event-item strong {
+        font-size: 1.05rem;
+        color: #0f172a;
+      }
+
+      .event-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 12px;
+        color: #475569;
+        font-size: 0.9rem;
+      }
+
+      .event-description {
+        color: #334155;
+        font-size: 0.95rem;
+        line-height: 1.4;
+        margin: 0;
+      }
+
+      .event-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .btn {
+        border: none;
+        border-radius: 10px;
+        padding: 8px 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.15s ease, transform 0.15s ease;
+      }
+
+      .btn.approve {
+        background: #22c55e;
+        color: white;
+      }
+
+      .btn.approve:hover {
+        background: #16a34a;
+        transform: translateY(-1px);
+      }
+
+      .btn.delete {
+        background: #ef4444;
+        color: white;
+      }
+
+      .btn.delete:hover {
+        background: #dc2626;
+        transform: translateY(-1px);
+      }
+
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        background: #e0f2fe;
+        color: #0369a1;
+        padding: 4px 10px;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+      }
+
+      .timestamp {
+        font-size: 0.8rem;
+        color: #64748b;
+      }
+
+      @media (max-width: 640px) {
+        .page {
+          padding: 24px 16px;
+          border-radius: 12px;
+        }
+
+        .card {
+          padding: 18px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <header>
+        <h1>Painel de Aprovação de Eventos</h1>
+      </header>
+      <section class="actions">
+        <button class="refresh-btn" id="refresh-btn">Atualizar eventos</button>
+        <span class="status" id="status">Carregando eventos...</span>
+      </section>
+      <section class="grid">
+        <article class="card" aria-labelledby="pending-title">
+          <h2 id="pending-title">Eventos pendentes</h2>
+          <div class="list" id="pending-list"></div>
+        </article>
+        <article class="card" aria-labelledby="approved-title">
+          <h2 id="approved-title">Eventos aprovados</h2>
+          <div class="list" id="approved-list"></div>
+        </article>
+      </section>
+    </main>
+    <script>
+      const statusEl = document.getElementById("status");
+      const pendingListEl = document.getElementById("pending-list");
+      const approvedListEl = document.getElementById("approved-list");
+      const refreshBtn = document.getElementById("refresh-btn");
+
+      const formatDateRange = (startISO, endISO) => {
+        const start = new Date(startISO);
+        const end = new Date(endISO);
+
+        if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) {
+          return "Data inválida";
+        }
+
+        const fmt = new Intl.DateTimeFormat("pt-BR", {
+          day: "2-digit",
+          month: "short",
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+
+        if (start.toDateString() === end.toDateString()) {
+          return `${fmt.format(start)} - ${end.toLocaleTimeString("pt-BR", {
+            hour: "2-digit",
+            minute: "2-digit",
+          })}`;
+        }
+
+        return `${fmt.format(start)} até ${fmt.format(end)}`;
+      };
+
+      const setStatus = (message, type = "") => {
+        statusEl.textContent = message;
+        statusEl.className = `status ${type}`.trim();
+      };
+
+      const fetchEvents = async (status) => {
+        const res = await fetch(`/api/events?status=${status}`, {
+          cache: "no-store",
+        });
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}));
+          throw new Error(data.message || `Falha ao carregar ${status}.`);
+        }
+        const data = await res.json();
+        return data.events ?? [];
+      };
+
+      const renderList = (listEl, events, options = {}) => {
+        listEl.innerHTML = "";
+        if (!events.length) {
+          const empty = document.createElement("p");
+          empty.className = "empty-state";
+          empty.textContent =
+            options.emptyMessage ?? "Nenhum evento encontrado.";
+          listEl.appendChild(empty);
+          return;
+        }
+
+        events.forEach((event) => {
+          const item = document.createElement("article");
+          item.className = "event-item";
+          item.innerHTML = `
+						<div>
+							<strong>${event.title}</strong>
+							<div class="event-meta">
+								<span class="chip">${event.category || "Evento"}</span>
+								${event.location ? `<span>📍 ${event.location}</span>` : ""}
+							</div>
+						</div>
+						${
+              event.description
+                ? `<p class="event-description">${event.description}</p>`
+                : ""
+            }
+						<div class="event-meta">
+							<span>🗓️ ${formatDateRange(event.startDate, event.endDate)}</span>
+						</div>
+						<span class="timestamp">Enviado em ${new Intl.DateTimeFormat("pt-BR", {
+              dateStyle: "medium",
+              timeStyle: "short",
+            }).format(new Date(event.createdAt))}</span>
+					`;
+
+          const actions = document.createElement("div");
+          actions.className = "event-actions";
+
+          if (options.showApprove) {
+            const approveBtn = document.createElement("button");
+            approveBtn.className = "btn approve";
+            approveBtn.textContent = "Aprovar";
+            approveBtn.onclick = () => handleApprove(event.id);
+            actions.appendChild(approveBtn);
+          }
+
+          const deleteBtn = document.createElement("button");
+          deleteBtn.className = "btn delete";
+          deleteBtn.textContent = "Excluir";
+          deleteBtn.onclick = () => handleDelete(event.id);
+          actions.appendChild(deleteBtn);
+
+          item.appendChild(actions);
+          listEl.appendChild(item);
+        });
+      };
+
+      const loadEvents = async () => {
+        try {
+          setStatus("Carregando eventos...");
+          const [pending, approved] = await Promise.all([
+            fetchEvents("pending"),
+            fetchEvents("approved"),
+          ]);
+
+          renderList(pendingListEl, pending, {
+            showApprove: true,
+            emptyMessage: "Nenhum evento aguardando aprovação.",
+          });
+          renderList(approvedListEl, approved, {
+            showApprove: false,
+            emptyMessage: "Nenhum evento aprovado até o momento.",
+          });
+          setStatus("Eventos atualizados.", "success");
+        } catch (error) {
+          console.error(error);
+          const message =
+            error instanceof Error
+              ? error.message
+              : "Erro ao carregar eventos.";
+          setStatus(message, "error");
+        }
+      };
+
+      const handleApprove = async (id) => {
+        if (!confirm("Deseja aprovar este evento?")) return;
+        try {
+          setStatus("Aprovando evento...");
+          const res = await fetch(`/api/events/${id}/approve`, {
+            method: "PATCH",
+          });
+          if (!res.ok) {
+            const data = await res.json().catch(() => ({}));
+            throw new Error(data.message || "Falha ao aprovar evento.");
+          }
+          setStatus("Evento aprovado com sucesso!", "success");
+          loadEvents();
+        } catch (error) {
+          console.error(error);
+          const message =
+            error instanceof Error ? error.message : "Erro ao aprovar evento.";
+          setStatus(message, "error");
+        }
+      };
+
+      const handleDelete = async (id) => {
+        if (!confirm("Remover este evento definitivamente?")) return;
+        try {
+          setStatus("Removendo evento...");
+          const res = await fetch(`/api/events/${id}`, {
+            method: "DELETE",
+          });
+          if (!res.ok) {
+            const data = await res.json().catch(() => ({}));
+            throw new Error(data.message || "Falha ao remover evento.");
+          }
+          setStatus("Evento removido.", "success");
+          loadEvents();
+        } catch (error) {
+          console.error(error);
+          const message =
+            error instanceof Error ? error.message : "Erro ao remover evento.";
+          setStatus(message, "error");
+        }
+      };
+
+      refreshBtn.addEventListener("click", loadEvents);
+      loadEvents();
+    </script>
+  </body>
+</html>

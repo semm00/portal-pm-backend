@@ -37,3 +37,21 @@ model News {
   url        String   @db.Text
   createdAt  DateTime @default(now())
 }
+
+enum EventStatus {
+  PENDING
+  APPROVED
+}
+
+model Event {
+  id          String      @id @default(cuid())
+  title       String
+  description String?     @db.Text
+  category    String
+  location    String?
+  startDate   DateTime
+  endDate     DateTime
+  status      EventStatus @default(PENDING)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
