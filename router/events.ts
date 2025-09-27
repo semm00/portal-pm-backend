@@ -1,5 +1,8 @@
 import { Router } from "express";
 import { PrismaClient, EventStatus } from "../generated/prisma";
+import requireAuth, {
+  type AuthenticatedRequest,
+} from "../middlewares/requireAuth";
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -70,8 +73,17 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", requireAuth, async (req, res) => {
   try {
+    const authReq = req as AuthenticatedRequest;
+
+    if (!authReq.authUser) {
+      return res.status(401).json({
+        success: false,
+        message: "Sessão inválida. Faça login novamente.",
+      });
+    }
+
     const title = sanitizeString(req.body?.title);
     const description = sanitizeString(req.body?.description);
     const category = sanitizeString(req.body?.category || "Evento");
@@ -126,12 +138,10 @@ router.post("/", async (req, res) => {
     });
   } catch (error) {
     console.error("Failed to create event", error);
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Erro ao enviar evento para aprovação.",
-      });
+    res.status(500).json({
+      success: false,
+      message: "Erro ao enviar evento para aprovação.",
+    });
   }
 });
 
