@@ -7,6 +7,7 @@ import { PrismaClient, PostStatus } from "../generated/prisma";
 import requireAuth, {
   type AuthenticatedRequest,
 } from "../middlewares/requireAuth";
+import requireAdminSecret from "../middlewares/requireAdminSecret";
 import { createSupabaseAdminClient } from "../services/supabaseClient";
 import { ensureUniqueUsername } from "../lib/userHelpers";
 
@@ -322,6 +323,8 @@ router.post("/", requireAuth, upload.array("media", 6), async (req, res) => {
       });
     }
 
+    const metadata = (authUser.user_metadata ?? {}) as Record<string, unknown>;
+
     const content = sanitizeString(req.body?.content);
     const rawCategory = sanitizeString(req.body?.category || "outro");
     const location = sanitizeString(req.body?.location);
@@ -363,15 +366,15 @@ router.post("/", requireAuth, upload.array("media", 6), async (req, res) => {
 
     const authorName =
       sanitizeString(req.body?.authorName) ||
-      sanitizeString(authUser.user_metadata?.full_name) ||
-      sanitizeString(authUser.user_metadata?.name) ||
+      extractMetadataString(metadata, ["fullName", "full_name", "name"]) ||
       (authorRecord?.fullName ?? null) ||
       authUser.email ||
       "Morador";
 
     const authorAvatarUrl =
       sanitizeString(req.body?.authorAvatarUrl) ||
-      sanitizeString(authUser.user_metadata?.avatar_url);
+      extractMetadataString(metadata, ["avatarUrl", "avatar_url", "picture"]) ||
+      (authorRecord?.avatarUrl ?? null);
 
     const post = await prisma.post.create({
       data: {
@@ -426,7 +429,7 @@ router.post("/", requireAuth, upload.array("media", 6), async (req, res) => {
   }
 });
 
-router.patch("/:id/approve", requireAuth, async (req, res) => {
+router.patch("/:id/approve", requireAdminSecret, async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -466,7 +469,7 @@ router.patch("/:id/approve", requireAuth, async (req, res) => {
   }
 });
 
-router.patch("/:id/reject", requireAuth, async (req, res) => {
+router.patch("/:id/reject", requireAdminSecret, async (req, res) => {
   try {
     const { id } = req.params;
     const reason = sanitizeString(req.body?.reason);
@@ -500,7 +503,7 @@ router.patch("/:id/reject", requireAuth, async (req, res) => {
   }
 });
 
-router.patch("/:id/alert", requireAuth, async (req, res) => {
+router.patch("/:id/alert", requireAdminSecret, async (req, res) => {
   try {
     const { id } = req.params;
     const alertUsers = parseBoolean(req.body?.alertUsers);
@@ -593,6 +596,49 @@ router.post("/:id/share", async (req, res) => {
   }
 });
 
+router.delete("/:id", requireAdminSecret, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const post = await prisma.post.findUnique({
+      where: { id },
+      include: { media: true },
+    });
+
+    if (!post) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Post não encontrado." });
+    }
+
+    if (post.status !== PostStatus.APPROVED) {
+      return res.status(400).json({
+        success: false,
+        message: "Apenas posts aprovados podem ser excluídos.",
+      });
+    }
+
+    const storagePaths = post.media
+      .map((item) => item.storagePath)
+      .filter((value): value is string => Boolean(value));
+
+    if (storagePaths.length) {
+      const storage = supabaseAdmin.storage.from(POSTS_BUCKET);
+      const { error: removeError } = await storage.remove(storagePaths);
+      if (removeError) {
+        console.warn("Falha ao remover mídias antes da exclusão", removeError);
+      }
+    }
+
+    await prisma.post.delete({ where: { id } });
+
+    res.json({ success: true, message: "Post excluído com sucesso." });
+  } catch (error) {
+    console.error("Failed to delete post", error);
+    res.status(500).json({ success: false, message: "Erro ao excluir post." });
+  }
+});
+
 router.post("/:id/report", async (req, res) => {
   try {
     const { id } = req.params;
@@ -622,7 +668,7 @@ router.post("/:id/report", async (req, res) => {
   }
 });
 
-router.get("/reports/all", requireAuth, async (_req, res) => {
+router.get("/reports/all", requireAdminSecret, async (_req, res) => {
   try {
     const reports = await prisma.post.findMany({
       where: {
