@@ -769,7 +769,18 @@ router.post("/:id/poll/vote", async (req, res) => {
 router.delete("/:id", requireAuth, async (req, res) => {
   try {
     const { id } = req.params;
-    const userId = (req as AuthenticatedRequest).authUser!.id;
+    const supabaseUserId = (req as AuthenticatedRequest).authUser!.id;
+
+    const user = await prisma.user.findUnique({
+      where: { supabaseId: supabaseUserId },
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "Usuário não encontrado.",
+      });
+    }
 
     const post = await prisma.post.findUnique({
       where: { id },
@@ -783,7 +794,7 @@ router.delete("/:id", requireAuth, async (req, res) => {
     }
 
     // Verificar se o usuário é o autor ou admin
-    if (post.authorId !== userId) {
+    if (post.authorId !== user.id) {
       return res.status(403).json({
         success: false,
         message: "Você não tem permissão para excluir este post.",
