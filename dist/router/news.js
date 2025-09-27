@@ -47,9 +47,7 @@ router.get("/", async (_req, res) => {
     }
     catch (error) {
         console.error("Failed to list news", error);
-        res
-            .status(500)
-            .json({
+        res.status(500).json({
             success: false,
             message: "Não foi possível carregar as notícias.",
         });
@@ -74,9 +72,7 @@ router.post("/", upload.single("image"), async (req, res) => {
                 .json({ success: false, message: "Imagem obrigatória." });
         }
         if (!file.mimetype.startsWith("image/")) {
-            return res
-                .status(400)
-                .json({
+            return res.status(400).json({
                 success: false,
                 message: "Apenas arquivos de imagem são permitidos.",
             });

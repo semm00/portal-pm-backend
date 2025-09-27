@@ -144,9 +144,66 @@ exports.Prisma.NewsScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.EventScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  description: 'description',
+  category: 'category',
+  location: 'location',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  startTime: 'startTime',
+  endTime: 'endTime',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PostScalarFieldEnum = {
+  id: 'id',
+  authorId: 'authorId',
+  authorName: 'authorName',
+  authorAvatarUrl: 'authorAvatarUrl',
+  content: 'content',
+  category: 'category',
+  location: 'location',
+  eventDate: 'eventDate',
+  pollQuestion: 'pollQuestion',
+  pollOptions: 'pollOptions',
+  alertUsers: 'alertUsers',
+  likes: 'likes',
+  shares: 'shares',
+  status: 'status',
+  rejectedReason: 'rejectedReason',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  approvedAt: 'approvedAt'
+};
+
+exports.Prisma.PostReportScalarFieldEnum = {
+  id: 'id',
+  postId: 'postId',
+  reason: 'reason',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.PostMediaScalarFieldEnum = {
+  id: 'id',
+  postId: 'postId',
+  url: 'url',
+  storagePath: 'storagePath',
+  mimeType: 'mimeType',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
+};
+
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull
 };
 
 exports.Prisma.QueryMode = {
@@ -159,10 +216,29 @@ exports.Prisma.NullsOrder = {
   last: 'last'
 };
 
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
+};
+exports.EventStatus = exports.$Enums.EventStatus = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED'
+};
+
+exports.PostStatus = exports.$Enums.PostStatus = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
+};
 
 exports.Prisma.ModelName = {
   User: 'User',
-  News: 'News'
+  News: 'News',
+  Event: 'Event',
+  Post: 'Post',
+  PostReport: 'PostReport',
+  PostMedia: 'PostMedia'
 };
 
 /**

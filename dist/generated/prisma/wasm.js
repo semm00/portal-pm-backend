@@ -116,9 +116,66 @@ exports.Prisma.NewsScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.EventScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  description: 'description',
+  category: 'category',
+  location: 'location',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  startTime: 'startTime',
+  endTime: 'endTime',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PostScalarFieldEnum = {
+  id: 'id',
+  authorId: 'authorId',
+  authorName: 'authorName',
+  authorAvatarUrl: 'authorAvatarUrl',
+  content: 'content',
+  category: 'category',
+  location: 'location',
+  eventDate: 'eventDate',
+  pollQuestion: 'pollQuestion',
+  pollOptions: 'pollOptions',
+  alertUsers: 'alertUsers',
+  likes: 'likes',
+  shares: 'shares',
+  status: 'status',
+  rejectedReason: 'rejectedReason',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  approvedAt: 'approvedAt'
+};
+
+exports.Prisma.PostReportScalarFieldEnum = {
+  id: 'id',
+  postId: 'postId',
+  reason: 'reason',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.PostMediaScalarFieldEnum = {
+  id: 'id',
+  postId: 'postId',
+  url: 'url',
+  storagePath: 'storagePath',
+  mimeType: 'mimeType',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
+};
+
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull
 };
 
 exports.Prisma.QueryMode = {
@@ -131,10 +188,29 @@ exports.Prisma.NullsOrder = {
   last: 'last'
 };
 
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
+};
+exports.EventStatus = exports.$Enums.EventStatus = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED'
+};
+
+exports.PostStatus = exports.$Enums.PostStatus = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
+};
 
 exports.Prisma.ModelName = {
   User: 'User',
-  News: 'News'
+  News: 'News',
+  Event: 'Event',
+  Post: 'Post',
+  PostReport: 'PostReport',
+  PostMedia: 'PostMedia'
 };
 /**
  * Create the Client
@@ -184,13 +260,13 @@ const config = {
       }
     }
   },
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"../generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel User {\n  id            String   @id @default(cuid())\n  supabaseId    String?  @unique\n  fullName      String\n  username      String   @unique\n  email         String   @unique\n  passwordHash  String?\n  emailVerified Boolean  @default(false)\n  avatarUrl     String?  @db.Text\n  bio           String?  @db.Text\n  city          String?\n  createdAt     DateTime @default(now())\n  updatedAt     DateTime @updatedAt\n}\n\nmodel News {\n  id        String   @id @default(cuid())\n  imageUrl  String   @db.Text\n  title     String\n  source    String\n  url       String   @db.Text\n  createdAt DateTime @default(now())\n}\n",
-  "inlineSchemaHash": "bf3826e8d7e76064350a0c404db1e2a0f80e1a40d9a7fb2eb36afb0cb736b128",
+  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"../generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel User {\n  id            String   @id @default(cuid())\n  supabaseId    String?  @unique\n  fullName      String\n  username      String   @unique\n  email         String   @unique\n  passwordHash  String?\n  emailVerified Boolean  @default(false)\n  avatarUrl     String?  @db.Text\n  bio           String?  @db.Text\n  city          String?\n  createdAt     DateTime @default(now())\n  updatedAt     DateTime @updatedAt\n\n  posts Post[]\n}\n\nmodel News {\n  id        String   @id @default(cuid())\n  imageUrl  String   @db.Text\n  title     String\n  source    String\n  url       String   @db.Text\n  createdAt DateTime @default(now())\n}\n\nenum EventStatus {\n  PENDING\n  APPROVED\n}\n\nenum PostStatus {\n  PENDING\n  APPROVED\n  REJECTED\n}\n\nmodel Event {\n  id          String      @id @default(cuid())\n  title       String\n  description String?     @db.Text\n  category    String\n  location    String?\n  startDate   DateTime\n  endDate     DateTime\n  startTime   String?\n  endTime     String?\n  status      EventStatus @default(PENDING)\n  createdAt   DateTime    @default(now())\n  updatedAt   DateTime    @updatedAt\n}\n\nmodel Post {\n  id              String     @id @default(cuid())\n  authorId        String?\n  authorName      String\n  authorAvatarUrl String?    @db.Text\n  content         String     @db.Text\n  category        String\n  location        String?\n  eventDate       DateTime?\n  pollQuestion    String?\n  pollOptions     Json?\n  alertUsers      Boolean    @default(false)\n  likes           Int        @default(0)\n  shares          Int        @default(0)\n  status          PostStatus @default(PENDING)\n  rejectedReason  String?    @db.Text\n  createdAt       DateTime   @default(now())\n  updatedAt       DateTime   @updatedAt\n  approvedAt      DateTime?\n\n  author  User?        @relation(fields: [authorId], references: [id])\n  media   PostMedia[]\n  reports PostReport[]\n}\n\nmodel PostReport {\n  id        String   @id @default(cuid())\n  postId    String\n  reason    String?  @db.Text\n  createdAt DateTime @default(now())\n\n  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)\n}\n\nmodel PostMedia {\n  id          String   @id @default(cuid())\n  postId      String\n  url         String   @db.Text\n  storagePath String   @db.Text\n  mimeType    String\n  createdAt   DateTime @default(now())\n\n  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)\n}\n",
+  "inlineSchemaHash": "50ea0c369dfbee30fbc72228fbb35a0c308cf56468a472f3ae6f47760de7b51a",
   "copyEngine": true
 }
 config.dirname = '/'
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"supabaseId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"fullName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"username\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"passwordHash\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"emailVerified\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"avatarUrl\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"bio\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"city\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"News\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"imageUrl\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"title\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"source\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"url\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"supabaseId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"fullName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"username\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"passwordHash\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"emailVerified\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"avatarUrl\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"bio\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"city\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"posts\",\"kind\":\"object\",\"type\":\"Post\",\"relationName\":\"PostToUser\"}],\"dbName\":null},\"News\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"imageUrl\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"title\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"source\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"url\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Event\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"title\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"category\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"location\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"startDate\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"endDate\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"startTime\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"endTime\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"EventStatus\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Post\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"authorId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"authorName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"authorAvatarUrl\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"content\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"category\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"location\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"eventDate\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"pollQuestion\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"pollOptions\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"alertUsers\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"likes\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"shares\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"PostStatus\"},{\"name\":\"rejectedReason\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"approvedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"author\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"PostToUser\"},{\"name\":\"media\",\"kind\":\"object\",\"type\":\"PostMedia\",\"relationName\":\"PostToPostMedia\"},{\"name\":\"reports\",\"kind\":\"object\",\"type\":\"PostReport\",\"relationName\":\"PostToPostReport\"}],\"dbName\":null},\"PostReport\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"postId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"reason\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"post\",\"kind\":\"object\",\"type\":\"Post\",\"relationName\":\"PostToPostReport\"}],\"dbName\":null},\"PostMedia\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"postId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"url\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"storagePath\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"mimeType\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"post\",\"kind\":\"object\",\"type\":\"Post\",\"relationName\":\"PostToPostMedia\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
 defineDmmfProperty(exports.Prisma, config.runtimeDataModel)
 config.engineWasm = {
   getRuntime: async () => require('./query_engine_bg.js'),

@@ -23,6 +23,56 @@ export type User = $Result.DefaultSelection<Prisma.$UserPayload>
  * 
  */
 export type News = $Result.DefaultSelection<Prisma.$NewsPayload>
+/**
+ * Model Event
+ * 
+ */
+export type Event = $Result.DefaultSelection<Prisma.$EventPayload>
+/**
+ * Model Post
+ * 
+ */
+export type Post = $Result.DefaultSelection<Prisma.$PostPayload>
+/**
+ * Model PostReport
+ * 
+ */
+export type PostReport = $Result.DefaultSelection<Prisma.$PostReportPayload>
+/**
+ * Model PostMedia
+ * 
+ */
+export type PostMedia = $Result.DefaultSelection<Prisma.$PostMediaPayload>
+
+/**
+ * Enums
+ */
+export namespace $Enums {
+  export const EventStatus: {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED'
+};
+
+export type EventStatus = (typeof EventStatus)[keyof typeof EventStatus]
+
+
+export const PostStatus: {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
+};
+
+export type PostStatus = (typeof PostStatus)[keyof typeof PostStatus]
+
+}
+
+export type EventStatus = $Enums.EventStatus
+
+export const EventStatus: typeof $Enums.EventStatus
+
+export type PostStatus = $Enums.PostStatus
+
+export const PostStatus: typeof $Enums.PostStatus
 
 /**
  * ##  Prisma Client ʲˢ
@@ -161,6 +211,46 @@ export class PrismaClient<
     * ```
     */
   get news(): Prisma.NewsDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.event`: Exposes CRUD operations for the **Event** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Events
+    * const events = await prisma.event.findMany()
+    * ```
+    */
+  get event(): Prisma.EventDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.post`: Exposes CRUD operations for the **Post** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Posts
+    * const posts = await prisma.post.findMany()
+    * ```
+    */
+  get post(): Prisma.PostDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.postReport`: Exposes CRUD operations for the **PostReport** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more PostReports
+    * const postReports = await prisma.postReport.findMany()
+    * ```
+    */
+  get postReport(): Prisma.PostReportDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.postMedia`: Exposes CRUD operations for the **PostMedia** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more PostMedias
+    * const postMedias = await prisma.postMedia.findMany()
+    * ```
+    */
+  get postMedia(): Prisma.PostMediaDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -602,7 +692,11 @@ export namespace Prisma {
 
   export const ModelName: {
     User: 'User',
-    News: 'News'
+    News: 'News',
+    Event: 'Event',
+    Post: 'Post',
+    PostReport: 'PostReport',
+    PostMedia: 'PostMedia'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -621,7 +715,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "news"
+      modelProps: "user" | "news" | "event" | "post" | "postReport" | "postMedia"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -773,6 +867,302 @@ export namespace Prisma {
           }
         }
       }
+      Event: {
+        payload: Prisma.$EventPayload<ExtArgs>
+        fields: Prisma.EventFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.EventFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EventPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.EventFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EventPayload>
+          }
+          findFirst: {
+            args: Prisma.EventFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EventPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.EventFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EventPayload>
+          }
+          findMany: {
+            args: Prisma.EventFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EventPayload>[]
+          }
+          create: {
+            args: Prisma.EventCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EventPayload>
+          }
+          createMany: {
+            args: Prisma.EventCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.EventCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EventPayload>[]
+          }
+          delete: {
+            args: Prisma.EventDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EventPayload>
+          }
+          update: {
+            args: Prisma.EventUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EventPayload>
+          }
+          deleteMany: {
+            args: Prisma.EventDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.EventUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.EventUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EventPayload>[]
+          }
+          upsert: {
+            args: Prisma.EventUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EventPayload>
+          }
+          aggregate: {
+            args: Prisma.EventAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateEvent>
+          }
+          groupBy: {
+            args: Prisma.EventGroupByArgs<ExtArgs>
+            result: $Utils.Optional<EventGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.EventCountArgs<ExtArgs>
+            result: $Utils.Optional<EventCountAggregateOutputType> | number
+          }
+        }
+      }
+      Post: {
+        payload: Prisma.$PostPayload<ExtArgs>
+        fields: Prisma.PostFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PostFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PostFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostPayload>
+          }
+          findFirst: {
+            args: Prisma.PostFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PostFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostPayload>
+          }
+          findMany: {
+            args: Prisma.PostFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostPayload>[]
+          }
+          create: {
+            args: Prisma.PostCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostPayload>
+          }
+          createMany: {
+            args: Prisma.PostCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PostCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostPayload>[]
+          }
+          delete: {
+            args: Prisma.PostDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostPayload>
+          }
+          update: {
+            args: Prisma.PostUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostPayload>
+          }
+          deleteMany: {
+            args: Prisma.PostDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PostUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.PostUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostPayload>[]
+          }
+          upsert: {
+            args: Prisma.PostUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostPayload>
+          }
+          aggregate: {
+            args: Prisma.PostAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePost>
+          }
+          groupBy: {
+            args: Prisma.PostGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PostGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PostCountArgs<ExtArgs>
+            result: $Utils.Optional<PostCountAggregateOutputType> | number
+          }
+        }
+      }
+      PostReport: {
+        payload: Prisma.$PostReportPayload<ExtArgs>
+        fields: Prisma.PostReportFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PostReportFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostReportPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PostReportFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostReportPayload>
+          }
+          findFirst: {
+            args: Prisma.PostReportFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostReportPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PostReportFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostReportPayload>
+          }
+          findMany: {
+            args: Prisma.PostReportFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostReportPayload>[]
+          }
+          create: {
+            args: Prisma.PostReportCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostReportPayload>
+          }
+          createMany: {
+            args: Prisma.PostReportCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PostReportCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostReportPayload>[]
+          }
+          delete: {
+            args: Prisma.PostReportDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostReportPayload>
+          }
+          update: {
+            args: Prisma.PostReportUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostReportPayload>
+          }
+          deleteMany: {
+            args: Prisma.PostReportDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PostReportUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.PostReportUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostReportPayload>[]
+          }
+          upsert: {
+            args: Prisma.PostReportUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostReportPayload>
+          }
+          aggregate: {
+            args: Prisma.PostReportAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePostReport>
+          }
+          groupBy: {
+            args: Prisma.PostReportGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PostReportGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PostReportCountArgs<ExtArgs>
+            result: $Utils.Optional<PostReportCountAggregateOutputType> | number
+          }
+        }
+      }
+      PostMedia: {
+        payload: Prisma.$PostMediaPayload<ExtArgs>
+        fields: Prisma.PostMediaFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PostMediaFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostMediaPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PostMediaFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostMediaPayload>
+          }
+          findFirst: {
+            args: Prisma.PostMediaFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostMediaPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PostMediaFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostMediaPayload>
+          }
+          findMany: {
+            args: Prisma.PostMediaFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostMediaPayload>[]
+          }
+          create: {
+            args: Prisma.PostMediaCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostMediaPayload>
+          }
+          createMany: {
+            args: Prisma.PostMediaCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PostMediaCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostMediaPayload>[]
+          }
+          delete: {
+            args: Prisma.PostMediaDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostMediaPayload>
+          }
+          update: {
+            args: Prisma.PostMediaUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostMediaPayload>
+          }
+          deleteMany: {
+            args: Prisma.PostMediaDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PostMediaUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.PostMediaUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostMediaPayload>[]
+          }
+          upsert: {
+            args: Prisma.PostMediaUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PostMediaPayload>
+          }
+          aggregate: {
+            args: Prisma.PostMediaAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePostMedia>
+          }
+          groupBy: {
+            args: Prisma.PostMediaGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PostMediaGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PostMediaCountArgs<ExtArgs>
+            result: $Utils.Optional<PostMediaCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -871,6 +1261,10 @@ export namespace Prisma {
   export type GlobalOmitConfig = {
     user?: UserOmit
     news?: NewsOmit
+    event?: EventOmit
+    post?: PostOmit
+    postReport?: PostReportOmit
+    postMedia?: PostMediaOmit
   }
 
   /* Types for Logging */
@@ -945,6 +1339,76 @@ export namespace Prisma {
    * Count Types
    */
 
+
+  /**
+   * Count Type UserCountOutputType
+   */
+
+  export type UserCountOutputType = {
+    posts: number
+  }
+
+  export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    posts?: boolean | UserCountOutputTypeCountPostsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserCountOutputType
+     */
+    select?: UserCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountPostsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PostWhereInput
+  }
+
+
+  /**
+   * Count Type PostCountOutputType
+   */
+
+  export type PostCountOutputType = {
+    media: number
+    reports: number
+  }
+
+  export type PostCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    media?: boolean | PostCountOutputTypeCountMediaArgs
+    reports?: boolean | PostCountOutputTypeCountReportsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * PostCountOutputType without action
+   */
+  export type PostCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PostCountOutputType
+     */
+    select?: PostCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * PostCountOutputType without action
+   */
+  export type PostCountOutputTypeCountMediaArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PostMediaWhereInput
+  }
+
+  /**
+   * PostCountOutputType without action
+   */
+  export type PostCountOutputTypeCountReportsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PostReportWhereInput
+  }
 
 
   /**
@@ -1171,6 +1635,8 @@ export namespace Prisma {
     city?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    posts?: boolean | User$postsArgs<ExtArgs>
+    _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -1219,10 +1685,18 @@ export namespace Prisma {
   }
 
   export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "supabaseId" | "fullName" | "username" | "email" | "passwordHash" | "emailVerified" | "avatarUrl" | "bio" | "city" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    posts?: boolean | User$postsArgs<ExtArgs>
+    _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type UserIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
 
   export type $UserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "User"
-    objects: {}
+    objects: {
+      posts: Prisma.$PostPayload<ExtArgs>[]
+    }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       supabaseId: string | null
@@ -1630,6 +2104,7 @@ export namespace Prisma {
    */
   export interface Prisma__UserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    posts<T extends User$postsArgs<ExtArgs> = {}>(args?: Subset<T, User$postsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1688,6 +2163,10 @@ export namespace Prisma {
      */
     omit?: UserOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
      * Filter, which User to fetch.
      */
     where: UserWhereUniqueInput
@@ -1706,6 +2185,10 @@ export namespace Prisma {
      */
     omit?: UserOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
      * Filter, which User to fetch.
      */
     where: UserWhereUniqueInput
@@ -1723,6 +2206,10 @@ export namespace Prisma {
      * Omit specific fields from the User
      */
     omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
     /**
      * Filter, which User to fetch.
      */
@@ -1772,6 +2259,10 @@ export namespace Prisma {
      */
     omit?: UserOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
      * Filter, which User to fetch.
      */
     where?: UserWhereInput
@@ -1820,6 +2311,10 @@ export namespace Prisma {
      */
     omit?: UserOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
      * Filter, which Users to fetch.
      */
     where?: UserWhereInput
@@ -1862,6 +2357,10 @@ export namespace Prisma {
      * Omit specific fields from the User
      */
     omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
     /**
      * The data needed to create a User.
      */
@@ -1910,6 +2409,10 @@ export namespace Prisma {
      * Omit specific fields from the User
      */
     omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
     /**
      * The data needed to update a User.
      */
@@ -1977,6 +2480,10 @@ export namespace Prisma {
      */
     omit?: UserOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
      * The filter to search for the User to update in case it exists.
      */
     where: UserWhereUniqueInput
@@ -2003,6 +2510,10 @@ export namespace Prisma {
      */
     omit?: UserOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
      * Filter which User to delete.
      */
     where: UserWhereUniqueInput
@@ -2023,6 +2534,30 @@ export namespace Prisma {
   }
 
   /**
+   * User.posts
+   */
+  export type User$postsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Post
+     */
+    select?: PostSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Post
+     */
+    omit?: PostOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostInclude<ExtArgs> | null
+    where?: PostWhereInput
+    orderBy?: PostOrderByWithRelationInput | PostOrderByWithRelationInput[]
+    cursor?: PostWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PostScalarFieldEnum | PostScalarFieldEnum[]
+  }
+
+  /**
    * User without action
    */
   export type UserDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2034,6 +2569,10 @@ export namespace Prisma {
      * Omit specific fields from the User
      */
     omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
   }
 
 
@@ -3046,6 +3585,4546 @@ export namespace Prisma {
 
 
   /**
+   * Model Event
+   */
+
+  export type AggregateEvent = {
+    _count: EventCountAggregateOutputType | null
+    _min: EventMinAggregateOutputType | null
+    _max: EventMaxAggregateOutputType | null
+  }
+
+  export type EventMinAggregateOutputType = {
+    id: string | null
+    title: string | null
+    description: string | null
+    category: string | null
+    location: string | null
+    startDate: Date | null
+    endDate: Date | null
+    startTime: string | null
+    endTime: string | null
+    status: $Enums.EventStatus | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type EventMaxAggregateOutputType = {
+    id: string | null
+    title: string | null
+    description: string | null
+    category: string | null
+    location: string | null
+    startDate: Date | null
+    endDate: Date | null
+    startTime: string | null
+    endTime: string | null
+    status: $Enums.EventStatus | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type EventCountAggregateOutputType = {
+    id: number
+    title: number
+    description: number
+    category: number
+    location: number
+    startDate: number
+    endDate: number
+    startTime: number
+    endTime: number
+    status: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type EventMinAggregateInputType = {
+    id?: true
+    title?: true
+    description?: true
+    category?: true
+    location?: true
+    startDate?: true
+    endDate?: true
+    startTime?: true
+    endTime?: true
+    status?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type EventMaxAggregateInputType = {
+    id?: true
+    title?: true
+    description?: true
+    category?: true
+    location?: true
+    startDate?: true
+    endDate?: true
+    startTime?: true
+    endTime?: true
+    status?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type EventCountAggregateInputType = {
+    id?: true
+    title?: true
+    description?: true
+    category?: true
+    location?: true
+    startDate?: true
+    endDate?: true
+    startTime?: true
+    endTime?: true
+    status?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type EventAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Event to aggregate.
+     */
+    where?: EventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Events to fetch.
+     */
+    orderBy?: EventOrderByWithRelationInput | EventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: EventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Events from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Events.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Events
+    **/
+    _count?: true | EventCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: EventMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: EventMaxAggregateInputType
+  }
+
+  export type GetEventAggregateType<T extends EventAggregateArgs> = {
+        [P in keyof T & keyof AggregateEvent]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateEvent[P]>
+      : GetScalarType<T[P], AggregateEvent[P]>
+  }
+
+
+
+
+  export type EventGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EventWhereInput
+    orderBy?: EventOrderByWithAggregationInput | EventOrderByWithAggregationInput[]
+    by: EventScalarFieldEnum[] | EventScalarFieldEnum
+    having?: EventScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: EventCountAggregateInputType | true
+    _min?: EventMinAggregateInputType
+    _max?: EventMaxAggregateInputType
+  }
+
+  export type EventGroupByOutputType = {
+    id: string
+    title: string
+    description: string | null
+    category: string
+    location: string | null
+    startDate: Date
+    endDate: Date
+    startTime: string | null
+    endTime: string | null
+    status: $Enums.EventStatus
+    createdAt: Date
+    updatedAt: Date
+    _count: EventCountAggregateOutputType | null
+    _min: EventMinAggregateOutputType | null
+    _max: EventMaxAggregateOutputType | null
+  }
+
+  type GetEventGroupByPayload<T extends EventGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<EventGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof EventGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], EventGroupByOutputType[P]>
+            : GetScalarType<T[P], EventGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type EventSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    description?: boolean
+    category?: boolean
+    location?: boolean
+    startDate?: boolean
+    endDate?: boolean
+    startTime?: boolean
+    endTime?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["event"]>
+
+  export type EventSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    description?: boolean
+    category?: boolean
+    location?: boolean
+    startDate?: boolean
+    endDate?: boolean
+    startTime?: boolean
+    endTime?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["event"]>
+
+  export type EventSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    description?: boolean
+    category?: boolean
+    location?: boolean
+    startDate?: boolean
+    endDate?: boolean
+    startTime?: boolean
+    endTime?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["event"]>
+
+  export type EventSelectScalar = {
+    id?: boolean
+    title?: boolean
+    description?: boolean
+    category?: boolean
+    location?: boolean
+    startDate?: boolean
+    endDate?: boolean
+    startTime?: boolean
+    endTime?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type EventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "description" | "category" | "location" | "startDate" | "endDate" | "startTime" | "endTime" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["event"]>
+
+  export type $EventPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Event"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      title: string
+      description: string | null
+      category: string
+      location: string | null
+      startDate: Date
+      endDate: Date
+      startTime: string | null
+      endTime: string | null
+      status: $Enums.EventStatus
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["event"]>
+    composites: {}
+  }
+
+  type EventGetPayload<S extends boolean | null | undefined | EventDefaultArgs> = $Result.GetResult<Prisma.$EventPayload, S>
+
+  type EventCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<EventFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: EventCountAggregateInputType | true
+    }
+
+  export interface EventDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Event'], meta: { name: 'Event' } }
+    /**
+     * Find zero or one Event that matches the filter.
+     * @param {EventFindUniqueArgs} args - Arguments to find a Event
+     * @example
+     * // Get one Event
+     * const event = await prisma.event.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends EventFindUniqueArgs>(args: SelectSubset<T, EventFindUniqueArgs<ExtArgs>>): Prisma__EventClient<$Result.GetResult<Prisma.$EventPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Event that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {EventFindUniqueOrThrowArgs} args - Arguments to find a Event
+     * @example
+     * // Get one Event
+     * const event = await prisma.event.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends EventFindUniqueOrThrowArgs>(args: SelectSubset<T, EventFindUniqueOrThrowArgs<ExtArgs>>): Prisma__EventClient<$Result.GetResult<Prisma.$EventPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Event that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EventFindFirstArgs} args - Arguments to find a Event
+     * @example
+     * // Get one Event
+     * const event = await prisma.event.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends EventFindFirstArgs>(args?: SelectSubset<T, EventFindFirstArgs<ExtArgs>>): Prisma__EventClient<$Result.GetResult<Prisma.$EventPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Event that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EventFindFirstOrThrowArgs} args - Arguments to find a Event
+     * @example
+     * // Get one Event
+     * const event = await prisma.event.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends EventFindFirstOrThrowArgs>(args?: SelectSubset<T, EventFindFirstOrThrowArgs<ExtArgs>>): Prisma__EventClient<$Result.GetResult<Prisma.$EventPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Events that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EventFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Events
+     * const events = await prisma.event.findMany()
+     * 
+     * // Get first 10 Events
+     * const events = await prisma.event.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const eventWithIdOnly = await prisma.event.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends EventFindManyArgs>(args?: SelectSubset<T, EventFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Event.
+     * @param {EventCreateArgs} args - Arguments to create a Event.
+     * @example
+     * // Create one Event
+     * const Event = await prisma.event.create({
+     *   data: {
+     *     // ... data to create a Event
+     *   }
+     * })
+     * 
+     */
+    create<T extends EventCreateArgs>(args: SelectSubset<T, EventCreateArgs<ExtArgs>>): Prisma__EventClient<$Result.GetResult<Prisma.$EventPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Events.
+     * @param {EventCreateManyArgs} args - Arguments to create many Events.
+     * @example
+     * // Create many Events
+     * const event = await prisma.event.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends EventCreateManyArgs>(args?: SelectSubset<T, EventCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Events and returns the data saved in the database.
+     * @param {EventCreateManyAndReturnArgs} args - Arguments to create many Events.
+     * @example
+     * // Create many Events
+     * const event = await prisma.event.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Events and only return the `id`
+     * const eventWithIdOnly = await prisma.event.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends EventCreateManyAndReturnArgs>(args?: SelectSubset<T, EventCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EventPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Event.
+     * @param {EventDeleteArgs} args - Arguments to delete one Event.
+     * @example
+     * // Delete one Event
+     * const Event = await prisma.event.delete({
+     *   where: {
+     *     // ... filter to delete one Event
+     *   }
+     * })
+     * 
+     */
+    delete<T extends EventDeleteArgs>(args: SelectSubset<T, EventDeleteArgs<ExtArgs>>): Prisma__EventClient<$Result.GetResult<Prisma.$EventPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Event.
+     * @param {EventUpdateArgs} args - Arguments to update one Event.
+     * @example
+     * // Update one Event
+     * const event = await prisma.event.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends EventUpdateArgs>(args: SelectSubset<T, EventUpdateArgs<ExtArgs>>): Prisma__EventClient<$Result.GetResult<Prisma.$EventPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Events.
+     * @param {EventDeleteManyArgs} args - Arguments to filter Events to delete.
+     * @example
+     * // Delete a few Events
+     * const { count } = await prisma.event.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends EventDeleteManyArgs>(args?: SelectSubset<T, EventDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Events.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EventUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Events
+     * const event = await prisma.event.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends EventUpdateManyArgs>(args: SelectSubset<T, EventUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Events and returns the data updated in the database.
+     * @param {EventUpdateManyAndReturnArgs} args - Arguments to update many Events.
+     * @example
+     * // Update many Events
+     * const event = await prisma.event.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Events and only return the `id`
+     * const eventWithIdOnly = await prisma.event.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends EventUpdateManyAndReturnArgs>(args: SelectSubset<T, EventUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EventPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Event.
+     * @param {EventUpsertArgs} args - Arguments to update or create a Event.
+     * @example
+     * // Update or create a Event
+     * const event = await prisma.event.upsert({
+     *   create: {
+     *     // ... data to create a Event
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Event we want to update
+     *   }
+     * })
+     */
+    upsert<T extends EventUpsertArgs>(args: SelectSubset<T, EventUpsertArgs<ExtArgs>>): Prisma__EventClient<$Result.GetResult<Prisma.$EventPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Events.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EventCountArgs} args - Arguments to filter Events to count.
+     * @example
+     * // Count the number of Events
+     * const count = await prisma.event.count({
+     *   where: {
+     *     // ... the filter for the Events we want to count
+     *   }
+     * })
+    **/
+    count<T extends EventCountArgs>(
+      args?: Subset<T, EventCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], EventCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Event.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EventAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends EventAggregateArgs>(args: Subset<T, EventAggregateArgs>): Prisma.PrismaPromise<GetEventAggregateType<T>>
+
+    /**
+     * Group by Event.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EventGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends EventGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: EventGroupByArgs['orderBy'] }
+        : { orderBy?: EventGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, EventGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetEventGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Event model
+   */
+  readonly fields: EventFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Event.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__EventClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Event model
+   */
+  interface EventFieldRefs {
+    readonly id: FieldRef<"Event", 'String'>
+    readonly title: FieldRef<"Event", 'String'>
+    readonly description: FieldRef<"Event", 'String'>
+    readonly category: FieldRef<"Event", 'String'>
+    readonly location: FieldRef<"Event", 'String'>
+    readonly startDate: FieldRef<"Event", 'DateTime'>
+    readonly endDate: FieldRef<"Event", 'DateTime'>
+    readonly startTime: FieldRef<"Event", 'String'>
+    readonly endTime: FieldRef<"Event", 'String'>
+    readonly status: FieldRef<"Event", 'EventStatus'>
+    readonly createdAt: FieldRef<"Event", 'DateTime'>
+    readonly updatedAt: FieldRef<"Event", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Event findUnique
+   */
+  export type EventFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Event
+     */
+    select?: EventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Event
+     */
+    omit?: EventOmit<ExtArgs> | null
+    /**
+     * Filter, which Event to fetch.
+     */
+    where: EventWhereUniqueInput
+  }
+
+  /**
+   * Event findUniqueOrThrow
+   */
+  export type EventFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Event
+     */
+    select?: EventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Event
+     */
+    omit?: EventOmit<ExtArgs> | null
+    /**
+     * Filter, which Event to fetch.
+     */
+    where: EventWhereUniqueInput
+  }
+
+  /**
+   * Event findFirst
+   */
+  export type EventFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Event
+     */
+    select?: EventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Event
+     */
+    omit?: EventOmit<ExtArgs> | null
+    /**
+     * Filter, which Event to fetch.
+     */
+    where?: EventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Events to fetch.
+     */
+    orderBy?: EventOrderByWithRelationInput | EventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Events.
+     */
+    cursor?: EventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Events from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Events.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Events.
+     */
+    distinct?: EventScalarFieldEnum | EventScalarFieldEnum[]
+  }
+
+  /**
+   * Event findFirstOrThrow
+   */
+  export type EventFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Event
+     */
+    select?: EventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Event
+     */
+    omit?: EventOmit<ExtArgs> | null
+    /**
+     * Filter, which Event to fetch.
+     */
+    where?: EventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Events to fetch.
+     */
+    orderBy?: EventOrderByWithRelationInput | EventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Events.
+     */
+    cursor?: EventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Events from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Events.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Events.
+     */
+    distinct?: EventScalarFieldEnum | EventScalarFieldEnum[]
+  }
+
+  /**
+   * Event findMany
+   */
+  export type EventFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Event
+     */
+    select?: EventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Event
+     */
+    omit?: EventOmit<ExtArgs> | null
+    /**
+     * Filter, which Events to fetch.
+     */
+    where?: EventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Events to fetch.
+     */
+    orderBy?: EventOrderByWithRelationInput | EventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Events.
+     */
+    cursor?: EventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Events from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Events.
+     */
+    skip?: number
+    distinct?: EventScalarFieldEnum | EventScalarFieldEnum[]
+  }
+
+  /**
+   * Event create
+   */
+  export type EventCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Event
+     */
+    select?: EventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Event
+     */
+    omit?: EventOmit<ExtArgs> | null
+    /**
+     * The data needed to create a Event.
+     */
+    data: XOR<EventCreateInput, EventUncheckedCreateInput>
+  }
+
+  /**
+   * Event createMany
+   */
+  export type EventCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Events.
+     */
+    data: EventCreateManyInput | EventCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Event createManyAndReturn
+   */
+  export type EventCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Event
+     */
+    select?: EventSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Event
+     */
+    omit?: EventOmit<ExtArgs> | null
+    /**
+     * The data used to create many Events.
+     */
+    data: EventCreateManyInput | EventCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Event update
+   */
+  export type EventUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Event
+     */
+    select?: EventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Event
+     */
+    omit?: EventOmit<ExtArgs> | null
+    /**
+     * The data needed to update a Event.
+     */
+    data: XOR<EventUpdateInput, EventUncheckedUpdateInput>
+    /**
+     * Choose, which Event to update.
+     */
+    where: EventWhereUniqueInput
+  }
+
+  /**
+   * Event updateMany
+   */
+  export type EventUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Events.
+     */
+    data: XOR<EventUpdateManyMutationInput, EventUncheckedUpdateManyInput>
+    /**
+     * Filter which Events to update
+     */
+    where?: EventWhereInput
+    /**
+     * Limit how many Events to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Event updateManyAndReturn
+   */
+  export type EventUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Event
+     */
+    select?: EventSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Event
+     */
+    omit?: EventOmit<ExtArgs> | null
+    /**
+     * The data used to update Events.
+     */
+    data: XOR<EventUpdateManyMutationInput, EventUncheckedUpdateManyInput>
+    /**
+     * Filter which Events to update
+     */
+    where?: EventWhereInput
+    /**
+     * Limit how many Events to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Event upsert
+   */
+  export type EventUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Event
+     */
+    select?: EventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Event
+     */
+    omit?: EventOmit<ExtArgs> | null
+    /**
+     * The filter to search for the Event to update in case it exists.
+     */
+    where: EventWhereUniqueInput
+    /**
+     * In case the Event found by the `where` argument doesn't exist, create a new Event with this data.
+     */
+    create: XOR<EventCreateInput, EventUncheckedCreateInput>
+    /**
+     * In case the Event was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<EventUpdateInput, EventUncheckedUpdateInput>
+  }
+
+  /**
+   * Event delete
+   */
+  export type EventDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Event
+     */
+    select?: EventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Event
+     */
+    omit?: EventOmit<ExtArgs> | null
+    /**
+     * Filter which Event to delete.
+     */
+    where: EventWhereUniqueInput
+  }
+
+  /**
+   * Event deleteMany
+   */
+  export type EventDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Events to delete
+     */
+    where?: EventWhereInput
+    /**
+     * Limit how many Events to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Event without action
+   */
+  export type EventDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Event
+     */
+    select?: EventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Event
+     */
+    omit?: EventOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Post
+   */
+
+  export type AggregatePost = {
+    _count: PostCountAggregateOutputType | null
+    _avg: PostAvgAggregateOutputType | null
+    _sum: PostSumAggregateOutputType | null
+    _min: PostMinAggregateOutputType | null
+    _max: PostMaxAggregateOutputType | null
+  }
+
+  export type PostAvgAggregateOutputType = {
+    likes: number | null
+    shares: number | null
+  }
+
+  export type PostSumAggregateOutputType = {
+    likes: number | null
+    shares: number | null
+  }
+
+  export type PostMinAggregateOutputType = {
+    id: string | null
+    authorId: string | null
+    authorName: string | null
+    authorAvatarUrl: string | null
+    content: string | null
+    category: string | null
+    location: string | null
+    eventDate: Date | null
+    pollQuestion: string | null
+    alertUsers: boolean | null
+    likes: number | null
+    shares: number | null
+    status: $Enums.PostStatus | null
+    rejectedReason: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    approvedAt: Date | null
+  }
+
+  export type PostMaxAggregateOutputType = {
+    id: string | null
+    authorId: string | null
+    authorName: string | null
+    authorAvatarUrl: string | null
+    content: string | null
+    category: string | null
+    location: string | null
+    eventDate: Date | null
+    pollQuestion: string | null
+    alertUsers: boolean | null
+    likes: number | null
+    shares: number | null
+    status: $Enums.PostStatus | null
+    rejectedReason: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    approvedAt: Date | null
+  }
+
+  export type PostCountAggregateOutputType = {
+    id: number
+    authorId: number
+    authorName: number
+    authorAvatarUrl: number
+    content: number
+    category: number
+    location: number
+    eventDate: number
+    pollQuestion: number
+    pollOptions: number
+    alertUsers: number
+    likes: number
+    shares: number
+    status: number
+    rejectedReason: number
+    createdAt: number
+    updatedAt: number
+    approvedAt: number
+    _all: number
+  }
+
+
+  export type PostAvgAggregateInputType = {
+    likes?: true
+    shares?: true
+  }
+
+  export type PostSumAggregateInputType = {
+    likes?: true
+    shares?: true
+  }
+
+  export type PostMinAggregateInputType = {
+    id?: true
+    authorId?: true
+    authorName?: true
+    authorAvatarUrl?: true
+    content?: true
+    category?: true
+    location?: true
+    eventDate?: true
+    pollQuestion?: true
+    alertUsers?: true
+    likes?: true
+    shares?: true
+    status?: true
+    rejectedReason?: true
+    createdAt?: true
+    updatedAt?: true
+    approvedAt?: true
+  }
+
+  export type PostMaxAggregateInputType = {
+    id?: true
+    authorId?: true
+    authorName?: true
+    authorAvatarUrl?: true
+    content?: true
+    category?: true
+    location?: true
+    eventDate?: true
+    pollQuestion?: true
+    alertUsers?: true
+    likes?: true
+    shares?: true
+    status?: true
+    rejectedReason?: true
+    createdAt?: true
+    updatedAt?: true
+    approvedAt?: true
+  }
+
+  export type PostCountAggregateInputType = {
+    id?: true
+    authorId?: true
+    authorName?: true
+    authorAvatarUrl?: true
+    content?: true
+    category?: true
+    location?: true
+    eventDate?: true
+    pollQuestion?: true
+    pollOptions?: true
+    alertUsers?: true
+    likes?: true
+    shares?: true
+    status?: true
+    rejectedReason?: true
+    createdAt?: true
+    updatedAt?: true
+    approvedAt?: true
+    _all?: true
+  }
+
+  export type PostAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Post to aggregate.
+     */
+    where?: PostWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Posts to fetch.
+     */
+    orderBy?: PostOrderByWithRelationInput | PostOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PostWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Posts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Posts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Posts
+    **/
+    _count?: true | PostCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: PostAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: PostSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PostMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PostMaxAggregateInputType
+  }
+
+  export type GetPostAggregateType<T extends PostAggregateArgs> = {
+        [P in keyof T & keyof AggregatePost]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePost[P]>
+      : GetScalarType<T[P], AggregatePost[P]>
+  }
+
+
+
+
+  export type PostGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PostWhereInput
+    orderBy?: PostOrderByWithAggregationInput | PostOrderByWithAggregationInput[]
+    by: PostScalarFieldEnum[] | PostScalarFieldEnum
+    having?: PostScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PostCountAggregateInputType | true
+    _avg?: PostAvgAggregateInputType
+    _sum?: PostSumAggregateInputType
+    _min?: PostMinAggregateInputType
+    _max?: PostMaxAggregateInputType
+  }
+
+  export type PostGroupByOutputType = {
+    id: string
+    authorId: string | null
+    authorName: string
+    authorAvatarUrl: string | null
+    content: string
+    category: string
+    location: string | null
+    eventDate: Date | null
+    pollQuestion: string | null
+    pollOptions: JsonValue | null
+    alertUsers: boolean
+    likes: number
+    shares: number
+    status: $Enums.PostStatus
+    rejectedReason: string | null
+    createdAt: Date
+    updatedAt: Date
+    approvedAt: Date | null
+    _count: PostCountAggregateOutputType | null
+    _avg: PostAvgAggregateOutputType | null
+    _sum: PostSumAggregateOutputType | null
+    _min: PostMinAggregateOutputType | null
+    _max: PostMaxAggregateOutputType | null
+  }
+
+  type GetPostGroupByPayload<T extends PostGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PostGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PostGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PostGroupByOutputType[P]>
+            : GetScalarType<T[P], PostGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PostSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    authorId?: boolean
+    authorName?: boolean
+    authorAvatarUrl?: boolean
+    content?: boolean
+    category?: boolean
+    location?: boolean
+    eventDate?: boolean
+    pollQuestion?: boolean
+    pollOptions?: boolean
+    alertUsers?: boolean
+    likes?: boolean
+    shares?: boolean
+    status?: boolean
+    rejectedReason?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    approvedAt?: boolean
+    author?: boolean | Post$authorArgs<ExtArgs>
+    media?: boolean | Post$mediaArgs<ExtArgs>
+    reports?: boolean | Post$reportsArgs<ExtArgs>
+    _count?: boolean | PostCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["post"]>
+
+  export type PostSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    authorId?: boolean
+    authorName?: boolean
+    authorAvatarUrl?: boolean
+    content?: boolean
+    category?: boolean
+    location?: boolean
+    eventDate?: boolean
+    pollQuestion?: boolean
+    pollOptions?: boolean
+    alertUsers?: boolean
+    likes?: boolean
+    shares?: boolean
+    status?: boolean
+    rejectedReason?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    approvedAt?: boolean
+    author?: boolean | Post$authorArgs<ExtArgs>
+  }, ExtArgs["result"]["post"]>
+
+  export type PostSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    authorId?: boolean
+    authorName?: boolean
+    authorAvatarUrl?: boolean
+    content?: boolean
+    category?: boolean
+    location?: boolean
+    eventDate?: boolean
+    pollQuestion?: boolean
+    pollOptions?: boolean
+    alertUsers?: boolean
+    likes?: boolean
+    shares?: boolean
+    status?: boolean
+    rejectedReason?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    approvedAt?: boolean
+    author?: boolean | Post$authorArgs<ExtArgs>
+  }, ExtArgs["result"]["post"]>
+
+  export type PostSelectScalar = {
+    id?: boolean
+    authorId?: boolean
+    authorName?: boolean
+    authorAvatarUrl?: boolean
+    content?: boolean
+    category?: boolean
+    location?: boolean
+    eventDate?: boolean
+    pollQuestion?: boolean
+    pollOptions?: boolean
+    alertUsers?: boolean
+    likes?: boolean
+    shares?: boolean
+    status?: boolean
+    rejectedReason?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    approvedAt?: boolean
+  }
+
+  export type PostOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "authorId" | "authorName" | "authorAvatarUrl" | "content" | "category" | "location" | "eventDate" | "pollQuestion" | "pollOptions" | "alertUsers" | "likes" | "shares" | "status" | "rejectedReason" | "createdAt" | "updatedAt" | "approvedAt", ExtArgs["result"]["post"]>
+  export type PostInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    author?: boolean | Post$authorArgs<ExtArgs>
+    media?: boolean | Post$mediaArgs<ExtArgs>
+    reports?: boolean | Post$reportsArgs<ExtArgs>
+    _count?: boolean | PostCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type PostIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    author?: boolean | Post$authorArgs<ExtArgs>
+  }
+  export type PostIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    author?: boolean | Post$authorArgs<ExtArgs>
+  }
+
+  export type $PostPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Post"
+    objects: {
+      author: Prisma.$UserPayload<ExtArgs> | null
+      media: Prisma.$PostMediaPayload<ExtArgs>[]
+      reports: Prisma.$PostReportPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      authorId: string | null
+      authorName: string
+      authorAvatarUrl: string | null
+      content: string
+      category: string
+      location: string | null
+      eventDate: Date | null
+      pollQuestion: string | null
+      pollOptions: Prisma.JsonValue | null
+      alertUsers: boolean
+      likes: number
+      shares: number
+      status: $Enums.PostStatus
+      rejectedReason: string | null
+      createdAt: Date
+      updatedAt: Date
+      approvedAt: Date | null
+    }, ExtArgs["result"]["post"]>
+    composites: {}
+  }
+
+  type PostGetPayload<S extends boolean | null | undefined | PostDefaultArgs> = $Result.GetResult<Prisma.$PostPayload, S>
+
+  type PostCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<PostFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: PostCountAggregateInputType | true
+    }
+
+  export interface PostDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Post'], meta: { name: 'Post' } }
+    /**
+     * Find zero or one Post that matches the filter.
+     * @param {PostFindUniqueArgs} args - Arguments to find a Post
+     * @example
+     * // Get one Post
+     * const post = await prisma.post.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PostFindUniqueArgs>(args: SelectSubset<T, PostFindUniqueArgs<ExtArgs>>): Prisma__PostClient<$Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Post that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {PostFindUniqueOrThrowArgs} args - Arguments to find a Post
+     * @example
+     * // Get one Post
+     * const post = await prisma.post.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PostFindUniqueOrThrowArgs>(args: SelectSubset<T, PostFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PostClient<$Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Post that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PostFindFirstArgs} args - Arguments to find a Post
+     * @example
+     * // Get one Post
+     * const post = await prisma.post.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PostFindFirstArgs>(args?: SelectSubset<T, PostFindFirstArgs<ExtArgs>>): Prisma__PostClient<$Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Post that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PostFindFirstOrThrowArgs} args - Arguments to find a Post
+     * @example
+     * // Get one Post
+     * const post = await prisma.post.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PostFindFirstOrThrowArgs>(args?: SelectSubset<T, PostFindFirstOrThrowArgs<ExtArgs>>): Prisma__PostClient<$Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Posts that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PostFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Posts
+     * const posts = await prisma.post.findMany()
+     * 
+     * // Get first 10 Posts
+     * const posts = await prisma.post.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const postWithIdOnly = await prisma.post.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends PostFindManyArgs>(args?: SelectSubset<T, PostFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Post.
+     * @param {PostCreateArgs} args - Arguments to create a Post.
+     * @example
+     * // Create one Post
+     * const Post = await prisma.post.create({
+     *   data: {
+     *     // ... data to create a Post
+     *   }
+     * })
+     * 
+     */
+    create<T extends PostCreateArgs>(args: SelectSubset<T, PostCreateArgs<ExtArgs>>): Prisma__PostClient<$Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Posts.
+     * @param {PostCreateManyArgs} args - Arguments to create many Posts.
+     * @example
+     * // Create many Posts
+     * const post = await prisma.post.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PostCreateManyArgs>(args?: SelectSubset<T, PostCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Posts and returns the data saved in the database.
+     * @param {PostCreateManyAndReturnArgs} args - Arguments to create many Posts.
+     * @example
+     * // Create many Posts
+     * const post = await prisma.post.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Posts and only return the `id`
+     * const postWithIdOnly = await prisma.post.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PostCreateManyAndReturnArgs>(args?: SelectSubset<T, PostCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Post.
+     * @param {PostDeleteArgs} args - Arguments to delete one Post.
+     * @example
+     * // Delete one Post
+     * const Post = await prisma.post.delete({
+     *   where: {
+     *     // ... filter to delete one Post
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PostDeleteArgs>(args: SelectSubset<T, PostDeleteArgs<ExtArgs>>): Prisma__PostClient<$Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Post.
+     * @param {PostUpdateArgs} args - Arguments to update one Post.
+     * @example
+     * // Update one Post
+     * const post = await prisma.post.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PostUpdateArgs>(args: SelectSubset<T, PostUpdateArgs<ExtArgs>>): Prisma__PostClient<$Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Posts.
+     * @param {PostDeleteManyArgs} args - Arguments to filter Posts to delete.
+     * @example
+     * // Delete a few Posts
+     * const { count } = await prisma.post.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PostDeleteManyArgs>(args?: SelectSubset<T, PostDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Posts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PostUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Posts
+     * const post = await prisma.post.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PostUpdateManyArgs>(args: SelectSubset<T, PostUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Posts and returns the data updated in the database.
+     * @param {PostUpdateManyAndReturnArgs} args - Arguments to update many Posts.
+     * @example
+     * // Update many Posts
+     * const post = await prisma.post.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Posts and only return the `id`
+     * const postWithIdOnly = await prisma.post.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends PostUpdateManyAndReturnArgs>(args: SelectSubset<T, PostUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Post.
+     * @param {PostUpsertArgs} args - Arguments to update or create a Post.
+     * @example
+     * // Update or create a Post
+     * const post = await prisma.post.upsert({
+     *   create: {
+     *     // ... data to create a Post
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Post we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PostUpsertArgs>(args: SelectSubset<T, PostUpsertArgs<ExtArgs>>): Prisma__PostClient<$Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Posts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PostCountArgs} args - Arguments to filter Posts to count.
+     * @example
+     * // Count the number of Posts
+     * const count = await prisma.post.count({
+     *   where: {
+     *     // ... the filter for the Posts we want to count
+     *   }
+     * })
+    **/
+    count<T extends PostCountArgs>(
+      args?: Subset<T, PostCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PostCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Post.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PostAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PostAggregateArgs>(args: Subset<T, PostAggregateArgs>): Prisma.PrismaPromise<GetPostAggregateType<T>>
+
+    /**
+     * Group by Post.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PostGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PostGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PostGroupByArgs['orderBy'] }
+        : { orderBy?: PostGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PostGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPostGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Post model
+   */
+  readonly fields: PostFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Post.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PostClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    author<T extends Post$authorArgs<ExtArgs> = {}>(args?: Subset<T, Post$authorArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    media<T extends Post$mediaArgs<ExtArgs> = {}>(args?: Subset<T, Post$mediaArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PostMediaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    reports<T extends Post$reportsArgs<ExtArgs> = {}>(args?: Subset<T, Post$reportsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PostReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Post model
+   */
+  interface PostFieldRefs {
+    readonly id: FieldRef<"Post", 'String'>
+    readonly authorId: FieldRef<"Post", 'String'>
+    readonly authorName: FieldRef<"Post", 'String'>
+    readonly authorAvatarUrl: FieldRef<"Post", 'String'>
+    readonly content: FieldRef<"Post", 'String'>
+    readonly category: FieldRef<"Post", 'String'>
+    readonly location: FieldRef<"Post", 'String'>
+    readonly eventDate: FieldRef<"Post", 'DateTime'>
+    readonly pollQuestion: FieldRef<"Post", 'String'>
+    readonly pollOptions: FieldRef<"Post", 'Json'>
+    readonly alertUsers: FieldRef<"Post", 'Boolean'>
+    readonly likes: FieldRef<"Post", 'Int'>
+    readonly shares: FieldRef<"Post", 'Int'>
+    readonly status: FieldRef<"Post", 'PostStatus'>
+    readonly rejectedReason: FieldRef<"Post", 'String'>
+    readonly createdAt: FieldRef<"Post", 'DateTime'>
+    readonly updatedAt: FieldRef<"Post", 'DateTime'>
+    readonly approvedAt: FieldRef<"Post", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Post findUnique
+   */
+  export type PostFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Post
+     */
+    select?: PostSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Post
+     */
+    omit?: PostOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostInclude<ExtArgs> | null
+    /**
+     * Filter, which Post to fetch.
+     */
+    where: PostWhereUniqueInput
+  }
+
+  /**
+   * Post findUniqueOrThrow
+   */
+  export type PostFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Post
+     */
+    select?: PostSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Post
+     */
+    omit?: PostOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostInclude<ExtArgs> | null
+    /**
+     * Filter, which Post to fetch.
+     */
+    where: PostWhereUniqueInput
+  }
+
+  /**
+   * Post findFirst
+   */
+  export type PostFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Post
+     */
+    select?: PostSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Post
+     */
+    omit?: PostOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostInclude<ExtArgs> | null
+    /**
+     * Filter, which Post to fetch.
+     */
+    where?: PostWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Posts to fetch.
+     */
+    orderBy?: PostOrderByWithRelationInput | PostOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Posts.
+     */
+    cursor?: PostWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Posts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Posts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Posts.
+     */
+    distinct?: PostScalarFieldEnum | PostScalarFieldEnum[]
+  }
+
+  /**
+   * Post findFirstOrThrow
+   */
+  export type PostFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Post
+     */
+    select?: PostSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Post
+     */
+    omit?: PostOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostInclude<ExtArgs> | null
+    /**
+     * Filter, which Post to fetch.
+     */
+    where?: PostWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Posts to fetch.
+     */
+    orderBy?: PostOrderByWithRelationInput | PostOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Posts.
+     */
+    cursor?: PostWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Posts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Posts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Posts.
+     */
+    distinct?: PostScalarFieldEnum | PostScalarFieldEnum[]
+  }
+
+  /**
+   * Post findMany
+   */
+  export type PostFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Post
+     */
+    select?: PostSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Post
+     */
+    omit?: PostOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostInclude<ExtArgs> | null
+    /**
+     * Filter, which Posts to fetch.
+     */
+    where?: PostWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Posts to fetch.
+     */
+    orderBy?: PostOrderByWithRelationInput | PostOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Posts.
+     */
+    cursor?: PostWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Posts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Posts.
+     */
+    skip?: number
+    distinct?: PostScalarFieldEnum | PostScalarFieldEnum[]
+  }
+
+  /**
+   * Post create
+   */
+  export type PostCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Post
+     */
+    select?: PostSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Post
+     */
+    omit?: PostOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Post.
+     */
+    data: XOR<PostCreateInput, PostUncheckedCreateInput>
+  }
+
+  /**
+   * Post createMany
+   */
+  export type PostCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Posts.
+     */
+    data: PostCreateManyInput | PostCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Post createManyAndReturn
+   */
+  export type PostCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Post
+     */
+    select?: PostSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Post
+     */
+    omit?: PostOmit<ExtArgs> | null
+    /**
+     * The data used to create many Posts.
+     */
+    data: PostCreateManyInput | PostCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Post update
+   */
+  export type PostUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Post
+     */
+    select?: PostSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Post
+     */
+    omit?: PostOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Post.
+     */
+    data: XOR<PostUpdateInput, PostUncheckedUpdateInput>
+    /**
+     * Choose, which Post to update.
+     */
+    where: PostWhereUniqueInput
+  }
+
+  /**
+   * Post updateMany
+   */
+  export type PostUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Posts.
+     */
+    data: XOR<PostUpdateManyMutationInput, PostUncheckedUpdateManyInput>
+    /**
+     * Filter which Posts to update
+     */
+    where?: PostWhereInput
+    /**
+     * Limit how many Posts to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Post updateManyAndReturn
+   */
+  export type PostUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Post
+     */
+    select?: PostSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Post
+     */
+    omit?: PostOmit<ExtArgs> | null
+    /**
+     * The data used to update Posts.
+     */
+    data: XOR<PostUpdateManyMutationInput, PostUncheckedUpdateManyInput>
+    /**
+     * Filter which Posts to update
+     */
+    where?: PostWhereInput
+    /**
+     * Limit how many Posts to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Post upsert
+   */
+  export type PostUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Post
+     */
+    select?: PostSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Post
+     */
+    omit?: PostOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Post to update in case it exists.
+     */
+    where: PostWhereUniqueInput
+    /**
+     * In case the Post found by the `where` argument doesn't exist, create a new Post with this data.
+     */
+    create: XOR<PostCreateInput, PostUncheckedCreateInput>
+    /**
+     * In case the Post was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PostUpdateInput, PostUncheckedUpdateInput>
+  }
+
+  /**
+   * Post delete
+   */
+  export type PostDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Post
+     */
+    select?: PostSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Post
+     */
+    omit?: PostOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostInclude<ExtArgs> | null
+    /**
+     * Filter which Post to delete.
+     */
+    where: PostWhereUniqueInput
+  }
+
+  /**
+   * Post deleteMany
+   */
+  export type PostDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Posts to delete
+     */
+    where?: PostWhereInput
+    /**
+     * Limit how many Posts to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Post.author
+   */
+  export type Post$authorArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * Post.media
+   */
+  export type Post$mediaArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PostMedia
+     */
+    select?: PostMediaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PostMedia
+     */
+    omit?: PostMediaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostMediaInclude<ExtArgs> | null
+    where?: PostMediaWhereInput
+    orderBy?: PostMediaOrderByWithRelationInput | PostMediaOrderByWithRelationInput[]
+    cursor?: PostMediaWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PostMediaScalarFieldEnum | PostMediaScalarFieldEnum[]
+  }
+
+  /**
+   * Post.reports
+   */
+  export type Post$reportsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PostReport
+     */
+    select?: PostReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PostReport
+     */
+    omit?: PostReportOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostReportInclude<ExtArgs> | null
+    where?: PostReportWhereInput
+    orderBy?: PostReportOrderByWithRelationInput | PostReportOrderByWithRelationInput[]
+    cursor?: PostReportWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PostReportScalarFieldEnum | PostReportScalarFieldEnum[]
+  }
+
+  /**
+   * Post without action
+   */
+  export type PostDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Post
+     */
+    select?: PostSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Post
+     */
+    omit?: PostOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model PostReport
+   */
+
+  export type AggregatePostReport = {
+    _count: PostReportCountAggregateOutputType | null
+    _min: PostReportMinAggregateOutputType | null
+    _max: PostReportMaxAggregateOutputType | null
+  }
+
+  export type PostReportMinAggregateOutputType = {
+    id: string | null
+    postId: string | null
+    reason: string | null
+    createdAt: Date | null
+  }
+
+  export type PostReportMaxAggregateOutputType = {
+    id: string | null
+    postId: string | null
+    reason: string | null
+    createdAt: Date | null
+  }
+
+  export type PostReportCountAggregateOutputType = {
+    id: number
+    postId: number
+    reason: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type PostReportMinAggregateInputType = {
+    id?: true
+    postId?: true
+    reason?: true
+    createdAt?: true
+  }
+
+  export type PostReportMaxAggregateInputType = {
+    id?: true
+    postId?: true
+    reason?: true
+    createdAt?: true
+  }
+
+  export type PostReportCountAggregateInputType = {
+    id?: true
+    postId?: true
+    reason?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type PostReportAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PostReport to aggregate.
+     */
+    where?: PostReportWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PostReports to fetch.
+     */
+    orderBy?: PostReportOrderByWithRelationInput | PostReportOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PostReportWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PostReports from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PostReports.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned PostReports
+    **/
+    _count?: true | PostReportCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PostReportMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PostReportMaxAggregateInputType
+  }
+
+  export type GetPostReportAggregateType<T extends PostReportAggregateArgs> = {
+        [P in keyof T & keyof AggregatePostReport]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePostReport[P]>
+      : GetScalarType<T[P], AggregatePostReport[P]>
+  }
+
+
+
+
+  export type PostReportGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PostReportWhereInput
+    orderBy?: PostReportOrderByWithAggregationInput | PostReportOrderByWithAggregationInput[]
+    by: PostReportScalarFieldEnum[] | PostReportScalarFieldEnum
+    having?: PostReportScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PostReportCountAggregateInputType | true
+    _min?: PostReportMinAggregateInputType
+    _max?: PostReportMaxAggregateInputType
+  }
+
+  export type PostReportGroupByOutputType = {
+    id: string
+    postId: string
+    reason: string | null
+    createdAt: Date
+    _count: PostReportCountAggregateOutputType | null
+    _min: PostReportMinAggregateOutputType | null
+    _max: PostReportMaxAggregateOutputType | null
+  }
+
+  type GetPostReportGroupByPayload<T extends PostReportGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PostReportGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PostReportGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PostReportGroupByOutputType[P]>
+            : GetScalarType<T[P], PostReportGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PostReportSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    postId?: boolean
+    reason?: boolean
+    createdAt?: boolean
+    post?: boolean | PostDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["postReport"]>
+
+  export type PostReportSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    postId?: boolean
+    reason?: boolean
+    createdAt?: boolean
+    post?: boolean | PostDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["postReport"]>
+
+  export type PostReportSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    postId?: boolean
+    reason?: boolean
+    createdAt?: boolean
+    post?: boolean | PostDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["postReport"]>
+
+  export type PostReportSelectScalar = {
+    id?: boolean
+    postId?: boolean
+    reason?: boolean
+    createdAt?: boolean
+  }
+
+  export type PostReportOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "postId" | "reason" | "createdAt", ExtArgs["result"]["postReport"]>
+  export type PostReportInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    post?: boolean | PostDefaultArgs<ExtArgs>
+  }
+  export type PostReportIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    post?: boolean | PostDefaultArgs<ExtArgs>
+  }
+  export type PostReportIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    post?: boolean | PostDefaultArgs<ExtArgs>
+  }
+
+  export type $PostReportPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "PostReport"
+    objects: {
+      post: Prisma.$PostPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      postId: string
+      reason: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["postReport"]>
+    composites: {}
+  }
+
+  type PostReportGetPayload<S extends boolean | null | undefined | PostReportDefaultArgs> = $Result.GetResult<Prisma.$PostReportPayload, S>
+
+  type PostReportCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<PostReportFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: PostReportCountAggregateInputType | true
+    }
+
+  export interface PostReportDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['PostReport'], meta: { name: 'PostReport' } }
+    /**
+     * Find zero or one PostReport that matches the filter.
+     * @param {PostReportFindUniqueArgs} args - Arguments to find a PostReport
+     * @example
+     * // Get one PostReport
+     * const postReport = await prisma.postReport.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PostReportFindUniqueArgs>(args: SelectSubset<T, PostReportFindUniqueArgs<ExtArgs>>): Prisma__PostReportClient<$Result.GetResult<Prisma.$PostReportPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one PostReport that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {PostReportFindUniqueOrThrowArgs} args - Arguments to find a PostReport
+     * @example
+     * // Get one PostReport
+     * const postReport = await prisma.postReport.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PostReportFindUniqueOrThrowArgs>(args: SelectSubset<T, PostReportFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PostReportClient<$Result.GetResult<Prisma.$PostReportPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PostReport that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PostReportFindFirstArgs} args - Arguments to find a PostReport
+     * @example
+     * // Get one PostReport
+     * const postReport = await prisma.postReport.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PostReportFindFirstArgs>(args?: SelectSubset<T, PostReportFindFirstArgs<ExtArgs>>): Prisma__PostReportClient<$Result.GetResult<Prisma.$PostReportPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PostReport that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PostReportFindFirstOrThrowArgs} args - Arguments to find a PostReport
+     * @example
+     * // Get one PostReport
+     * const postReport = await prisma.postReport.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PostReportFindFirstOrThrowArgs>(args?: SelectSubset<T, PostReportFindFirstOrThrowArgs<ExtArgs>>): Prisma__PostReportClient<$Result.GetResult<Prisma.$PostReportPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more PostReports that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PostReportFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all PostReports
+     * const postReports = await prisma.postReport.findMany()
+     * 
+     * // Get first 10 PostReports
+     * const postReports = await prisma.postReport.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const postReportWithIdOnly = await prisma.postReport.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends PostReportFindManyArgs>(args?: SelectSubset<T, PostReportFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PostReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a PostReport.
+     * @param {PostReportCreateArgs} args - Arguments to create a PostReport.
+     * @example
+     * // Create one PostReport
+     * const PostReport = await prisma.postReport.create({
+     *   data: {
+     *     // ... data to create a PostReport
+     *   }
+     * })
+     * 
+     */
+    create<T extends PostReportCreateArgs>(args: SelectSubset<T, PostReportCreateArgs<ExtArgs>>): Prisma__PostReportClient<$Result.GetResult<Prisma.$PostReportPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many PostReports.
+     * @param {PostReportCreateManyArgs} args - Arguments to create many PostReports.
+     * @example
+     * // Create many PostReports
+     * const postReport = await prisma.postReport.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PostReportCreateManyArgs>(args?: SelectSubset<T, PostReportCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many PostReports and returns the data saved in the database.
+     * @param {PostReportCreateManyAndReturnArgs} args - Arguments to create many PostReports.
+     * @example
+     * // Create many PostReports
+     * const postReport = await prisma.postReport.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many PostReports and only return the `id`
+     * const postReportWithIdOnly = await prisma.postReport.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PostReportCreateManyAndReturnArgs>(args?: SelectSubset<T, PostReportCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PostReportPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a PostReport.
+     * @param {PostReportDeleteArgs} args - Arguments to delete one PostReport.
+     * @example
+     * // Delete one PostReport
+     * const PostReport = await prisma.postReport.delete({
+     *   where: {
+     *     // ... filter to delete one PostReport
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PostReportDeleteArgs>(args: SelectSubset<T, PostReportDeleteArgs<ExtArgs>>): Prisma__PostReportClient<$Result.GetResult<Prisma.$PostReportPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one PostReport.
+     * @param {PostReportUpdateArgs} args - Arguments to update one PostReport.
+     * @example
+     * // Update one PostReport
+     * const postReport = await prisma.postReport.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PostReportUpdateArgs>(args: SelectSubset<T, PostReportUpdateArgs<ExtArgs>>): Prisma__PostReportClient<$Result.GetResult<Prisma.$PostReportPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more PostReports.
+     * @param {PostReportDeleteManyArgs} args - Arguments to filter PostReports to delete.
+     * @example
+     * // Delete a few PostReports
+     * const { count } = await prisma.postReport.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PostReportDeleteManyArgs>(args?: SelectSubset<T, PostReportDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PostReports.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PostReportUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many PostReports
+     * const postReport = await prisma.postReport.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PostReportUpdateManyArgs>(args: SelectSubset<T, PostReportUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PostReports and returns the data updated in the database.
+     * @param {PostReportUpdateManyAndReturnArgs} args - Arguments to update many PostReports.
+     * @example
+     * // Update many PostReports
+     * const postReport = await prisma.postReport.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more PostReports and only return the `id`
+     * const postReportWithIdOnly = await prisma.postReport.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends PostReportUpdateManyAndReturnArgs>(args: SelectSubset<T, PostReportUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PostReportPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one PostReport.
+     * @param {PostReportUpsertArgs} args - Arguments to update or create a PostReport.
+     * @example
+     * // Update or create a PostReport
+     * const postReport = await prisma.postReport.upsert({
+     *   create: {
+     *     // ... data to create a PostReport
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the PostReport we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PostReportUpsertArgs>(args: SelectSubset<T, PostReportUpsertArgs<ExtArgs>>): Prisma__PostReportClient<$Result.GetResult<Prisma.$PostReportPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of PostReports.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PostReportCountArgs} args - Arguments to filter PostReports to count.
+     * @example
+     * // Count the number of PostReports
+     * const count = await prisma.postReport.count({
+     *   where: {
+     *     // ... the filter for the PostReports we want to count
+     *   }
+     * })
+    **/
+    count<T extends PostReportCountArgs>(
+      args?: Subset<T, PostReportCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PostReportCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a PostReport.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PostReportAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PostReportAggregateArgs>(args: Subset<T, PostReportAggregateArgs>): Prisma.PrismaPromise<GetPostReportAggregateType<T>>
+
+    /**
+     * Group by PostReport.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PostReportGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PostReportGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PostReportGroupByArgs['orderBy'] }
+        : { orderBy?: PostReportGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PostReportGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPostReportGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the PostReport model
+   */
+  readonly fields: PostReportFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for PostReport.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PostReportClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    post<T extends PostDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PostDefaultArgs<ExtArgs>>): Prisma__PostClient<$Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the PostReport model
+   */
+  interface PostReportFieldRefs {
+    readonly id: FieldRef<"PostReport", 'String'>
+    readonly postId: FieldRef<"PostReport", 'String'>
+    readonly reason: FieldRef<"PostReport", 'String'>
+    readonly createdAt: FieldRef<"PostReport", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * PostReport findUnique
+   */
+  export type PostReportFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PostReport
+     */
+    select?: PostReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PostReport
+     */
+    omit?: PostReportOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostReportInclude<ExtArgs> | null
+    /**
+     * Filter, which PostReport to fetch.
+     */
+    where: PostReportWhereUniqueInput
+  }
+
+  /**
+   * PostReport findUniqueOrThrow
+   */
+  export type PostReportFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PostReport
+     */
+    select?: PostReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PostReport
+     */
+    omit?: PostReportOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostReportInclude<ExtArgs> | null
+    /**
+     * Filter, which PostReport to fetch.
+     */
+    where: PostReportWhereUniqueInput
+  }
+
+  /**
+   * PostReport findFirst
+   */
+  export type PostReportFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PostReport
+     */
+    select?: PostReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PostReport
+     */
+    omit?: PostReportOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostReportInclude<ExtArgs> | null
+    /**
+     * Filter, which PostReport to fetch.
+     */
+    where?: PostReportWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PostReports to fetch.
+     */
+    orderBy?: PostReportOrderByWithRelationInput | PostReportOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PostReports.
+     */
+    cursor?: PostReportWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PostReports from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PostReports.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PostReports.
+     */
+    distinct?: PostReportScalarFieldEnum | PostReportScalarFieldEnum[]
+  }
+
+  /**
+   * PostReport findFirstOrThrow
+   */
+  export type PostReportFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PostReport
+     */
+    select?: PostReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PostReport
+     */
+    omit?: PostReportOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostReportInclude<ExtArgs> | null
+    /**
+     * Filter, which PostReport to fetch.
+     */
+    where?: PostReportWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PostReports to fetch.
+     */
+    orderBy?: PostReportOrderByWithRelationInput | PostReportOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PostReports.
+     */
+    cursor?: PostReportWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PostReports from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PostReports.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PostReports.
+     */
+    distinct?: PostReportScalarFieldEnum | PostReportScalarFieldEnum[]
+  }
+
+  /**
+   * PostReport findMany
+   */
+  export type PostReportFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PostReport
+     */
+    select?: PostReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PostReport
+     */
+    omit?: PostReportOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostReportInclude<ExtArgs> | null
+    /**
+     * Filter, which PostReports to fetch.
+     */
+    where?: PostReportWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PostReports to fetch.
+     */
+    orderBy?: PostReportOrderByWithRelationInput | PostReportOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing PostReports.
+     */
+    cursor?: PostReportWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PostReports from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PostReports.
+     */
+    skip?: number
+    distinct?: PostReportScalarFieldEnum | PostReportScalarFieldEnum[]
+  }
+
+  /**
+   * PostReport create
+   */
+  export type PostReportCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PostReport
+     */
+    select?: PostReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PostReport
+     */
+    omit?: PostReportOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostReportInclude<ExtArgs> | null
+    /**
+     * The data needed to create a PostReport.
+     */
+    data: XOR<PostReportCreateInput, PostReportUncheckedCreateInput>
+  }
+
+  /**
+   * PostReport createMany
+   */
+  export type PostReportCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many PostReports.
+     */
+    data: PostReportCreateManyInput | PostReportCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PostReport createManyAndReturn
+   */
+  export type PostReportCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PostReport
+     */
+    select?: PostReportSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PostReport
+     */
+    omit?: PostReportOmit<ExtArgs> | null
+    /**
+     * The data used to create many PostReports.
+     */
+    data: PostReportCreateManyInput | PostReportCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostReportIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PostReport update
+   */
+  export type PostReportUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PostReport
+     */
+    select?: PostReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PostReport
+     */
+    omit?: PostReportOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostReportInclude<ExtArgs> | null
+    /**
+     * The data needed to update a PostReport.
+     */
+    data: XOR<PostReportUpdateInput, PostReportUncheckedUpdateInput>
+    /**
+     * Choose, which PostReport to update.
+     */
+    where: PostReportWhereUniqueInput
+  }
+
+  /**
+   * PostReport updateMany
+   */
+  export type PostReportUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update PostReports.
+     */
+    data: XOR<PostReportUpdateManyMutationInput, PostReportUncheckedUpdateManyInput>
+    /**
+     * Filter which PostReports to update
+     */
+    where?: PostReportWhereInput
+    /**
+     * Limit how many PostReports to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PostReport updateManyAndReturn
+   */
+  export type PostReportUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PostReport
+     */
+    select?: PostReportSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PostReport
+     */
+    omit?: PostReportOmit<ExtArgs> | null
+    /**
+     * The data used to update PostReports.
+     */
+    data: XOR<PostReportUpdateManyMutationInput, PostReportUncheckedUpdateManyInput>
+    /**
+     * Filter which PostReports to update
+     */
+    where?: PostReportWhereInput
+    /**
+     * Limit how many PostReports to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostReportIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PostReport upsert
+   */
+  export type PostReportUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PostReport
+     */
+    select?: PostReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PostReport
+     */
+    omit?: PostReportOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostReportInclude<ExtArgs> | null
+    /**
+     * The filter to search for the PostReport to update in case it exists.
+     */
+    where: PostReportWhereUniqueInput
+    /**
+     * In case the PostReport found by the `where` argument doesn't exist, create a new PostReport with this data.
+     */
+    create: XOR<PostReportCreateInput, PostReportUncheckedCreateInput>
+    /**
+     * In case the PostReport was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PostReportUpdateInput, PostReportUncheckedUpdateInput>
+  }
+
+  /**
+   * PostReport delete
+   */
+  export type PostReportDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PostReport
+     */
+    select?: PostReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PostReport
+     */
+    omit?: PostReportOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostReportInclude<ExtArgs> | null
+    /**
+     * Filter which PostReport to delete.
+     */
+    where: PostReportWhereUniqueInput
+  }
+
+  /**
+   * PostReport deleteMany
+   */
+  export type PostReportDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PostReports to delete
+     */
+    where?: PostReportWhereInput
+    /**
+     * Limit how many PostReports to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * PostReport without action
+   */
+  export type PostReportDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PostReport
+     */
+    select?: PostReportSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PostReport
+     */
+    omit?: PostReportOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostReportInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model PostMedia
+   */
+
+  export type AggregatePostMedia = {
+    _count: PostMediaCountAggregateOutputType | null
+    _min: PostMediaMinAggregateOutputType | null
+    _max: PostMediaMaxAggregateOutputType | null
+  }
+
+  export type PostMediaMinAggregateOutputType = {
+    id: string | null
+    postId: string | null
+    url: string | null
+    storagePath: string | null
+    mimeType: string | null
+    createdAt: Date | null
+  }
+
+  export type PostMediaMaxAggregateOutputType = {
+    id: string | null
+    postId: string | null
+    url: string | null
+    storagePath: string | null
+    mimeType: string | null
+    createdAt: Date | null
+  }
+
+  export type PostMediaCountAggregateOutputType = {
+    id: number
+    postId: number
+    url: number
+    storagePath: number
+    mimeType: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type PostMediaMinAggregateInputType = {
+    id?: true
+    postId?: true
+    url?: true
+    storagePath?: true
+    mimeType?: true
+    createdAt?: true
+  }
+
+  export type PostMediaMaxAggregateInputType = {
+    id?: true
+    postId?: true
+    url?: true
+    storagePath?: true
+    mimeType?: true
+    createdAt?: true
+  }
+
+  export type PostMediaCountAggregateInputType = {
+    id?: true
+    postId?: true
+    url?: true
+    storagePath?: true
+    mimeType?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type PostMediaAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PostMedia to aggregate.
+     */
+    where?: PostMediaWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PostMedias to fetch.
+     */
+    orderBy?: PostMediaOrderByWithRelationInput | PostMediaOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PostMediaWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PostMedias from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PostMedias.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned PostMedias
+    **/
+    _count?: true | PostMediaCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PostMediaMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PostMediaMaxAggregateInputType
+  }
+
+  export type GetPostMediaAggregateType<T extends PostMediaAggregateArgs> = {
+        [P in keyof T & keyof AggregatePostMedia]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePostMedia[P]>
+      : GetScalarType<T[P], AggregatePostMedia[P]>
+  }
+
+
+
+
+  export type PostMediaGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PostMediaWhereInput
+    orderBy?: PostMediaOrderByWithAggregationInput | PostMediaOrderByWithAggregationInput[]
+    by: PostMediaScalarFieldEnum[] | PostMediaScalarFieldEnum
+    having?: PostMediaScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PostMediaCountAggregateInputType | true
+    _min?: PostMediaMinAggregateInputType
+    _max?: PostMediaMaxAggregateInputType
+  }
+
+  export type PostMediaGroupByOutputType = {
+    id: string
+    postId: string
+    url: string
+    storagePath: string
+    mimeType: string
+    createdAt: Date
+    _count: PostMediaCountAggregateOutputType | null
+    _min: PostMediaMinAggregateOutputType | null
+    _max: PostMediaMaxAggregateOutputType | null
+  }
+
+  type GetPostMediaGroupByPayload<T extends PostMediaGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PostMediaGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PostMediaGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PostMediaGroupByOutputType[P]>
+            : GetScalarType<T[P], PostMediaGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PostMediaSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    postId?: boolean
+    url?: boolean
+    storagePath?: boolean
+    mimeType?: boolean
+    createdAt?: boolean
+    post?: boolean | PostDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["postMedia"]>
+
+  export type PostMediaSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    postId?: boolean
+    url?: boolean
+    storagePath?: boolean
+    mimeType?: boolean
+    createdAt?: boolean
+    post?: boolean | PostDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["postMedia"]>
+
+  export type PostMediaSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    postId?: boolean
+    url?: boolean
+    storagePath?: boolean
+    mimeType?: boolean
+    createdAt?: boolean
+    post?: boolean | PostDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["postMedia"]>
+
+  export type PostMediaSelectScalar = {
+    id?: boolean
+    postId?: boolean
+    url?: boolean
+    storagePath?: boolean
+    mimeType?: boolean
+    createdAt?: boolean
+  }
+
+  export type PostMediaOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "postId" | "url" | "storagePath" | "mimeType" | "createdAt", ExtArgs["result"]["postMedia"]>
+  export type PostMediaInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    post?: boolean | PostDefaultArgs<ExtArgs>
+  }
+  export type PostMediaIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    post?: boolean | PostDefaultArgs<ExtArgs>
+  }
+  export type PostMediaIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    post?: boolean | PostDefaultArgs<ExtArgs>
+  }
+
+  export type $PostMediaPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "PostMedia"
+    objects: {
+      post: Prisma.$PostPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      postId: string
+      url: string
+      storagePath: string
+      mimeType: string
+      createdAt: Date
+    }, ExtArgs["result"]["postMedia"]>
+    composites: {}
+  }
+
+  type PostMediaGetPayload<S extends boolean | null | undefined | PostMediaDefaultArgs> = $Result.GetResult<Prisma.$PostMediaPayload, S>
+
+  type PostMediaCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<PostMediaFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: PostMediaCountAggregateInputType | true
+    }
+
+  export interface PostMediaDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['PostMedia'], meta: { name: 'PostMedia' } }
+    /**
+     * Find zero or one PostMedia that matches the filter.
+     * @param {PostMediaFindUniqueArgs} args - Arguments to find a PostMedia
+     * @example
+     * // Get one PostMedia
+     * const postMedia = await prisma.postMedia.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PostMediaFindUniqueArgs>(args: SelectSubset<T, PostMediaFindUniqueArgs<ExtArgs>>): Prisma__PostMediaClient<$Result.GetResult<Prisma.$PostMediaPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one PostMedia that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {PostMediaFindUniqueOrThrowArgs} args - Arguments to find a PostMedia
+     * @example
+     * // Get one PostMedia
+     * const postMedia = await prisma.postMedia.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PostMediaFindUniqueOrThrowArgs>(args: SelectSubset<T, PostMediaFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PostMediaClient<$Result.GetResult<Prisma.$PostMediaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PostMedia that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PostMediaFindFirstArgs} args - Arguments to find a PostMedia
+     * @example
+     * // Get one PostMedia
+     * const postMedia = await prisma.postMedia.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PostMediaFindFirstArgs>(args?: SelectSubset<T, PostMediaFindFirstArgs<ExtArgs>>): Prisma__PostMediaClient<$Result.GetResult<Prisma.$PostMediaPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PostMedia that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PostMediaFindFirstOrThrowArgs} args - Arguments to find a PostMedia
+     * @example
+     * // Get one PostMedia
+     * const postMedia = await prisma.postMedia.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PostMediaFindFirstOrThrowArgs>(args?: SelectSubset<T, PostMediaFindFirstOrThrowArgs<ExtArgs>>): Prisma__PostMediaClient<$Result.GetResult<Prisma.$PostMediaPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more PostMedias that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PostMediaFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all PostMedias
+     * const postMedias = await prisma.postMedia.findMany()
+     * 
+     * // Get first 10 PostMedias
+     * const postMedias = await prisma.postMedia.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const postMediaWithIdOnly = await prisma.postMedia.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends PostMediaFindManyArgs>(args?: SelectSubset<T, PostMediaFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PostMediaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a PostMedia.
+     * @param {PostMediaCreateArgs} args - Arguments to create a PostMedia.
+     * @example
+     * // Create one PostMedia
+     * const PostMedia = await prisma.postMedia.create({
+     *   data: {
+     *     // ... data to create a PostMedia
+     *   }
+     * })
+     * 
+     */
+    create<T extends PostMediaCreateArgs>(args: SelectSubset<T, PostMediaCreateArgs<ExtArgs>>): Prisma__PostMediaClient<$Result.GetResult<Prisma.$PostMediaPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many PostMedias.
+     * @param {PostMediaCreateManyArgs} args - Arguments to create many PostMedias.
+     * @example
+     * // Create many PostMedias
+     * const postMedia = await prisma.postMedia.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PostMediaCreateManyArgs>(args?: SelectSubset<T, PostMediaCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many PostMedias and returns the data saved in the database.
+     * @param {PostMediaCreateManyAndReturnArgs} args - Arguments to create many PostMedias.
+     * @example
+     * // Create many PostMedias
+     * const postMedia = await prisma.postMedia.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many PostMedias and only return the `id`
+     * const postMediaWithIdOnly = await prisma.postMedia.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PostMediaCreateManyAndReturnArgs>(args?: SelectSubset<T, PostMediaCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PostMediaPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a PostMedia.
+     * @param {PostMediaDeleteArgs} args - Arguments to delete one PostMedia.
+     * @example
+     * // Delete one PostMedia
+     * const PostMedia = await prisma.postMedia.delete({
+     *   where: {
+     *     // ... filter to delete one PostMedia
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PostMediaDeleteArgs>(args: SelectSubset<T, PostMediaDeleteArgs<ExtArgs>>): Prisma__PostMediaClient<$Result.GetResult<Prisma.$PostMediaPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one PostMedia.
+     * @param {PostMediaUpdateArgs} args - Arguments to update one PostMedia.
+     * @example
+     * // Update one PostMedia
+     * const postMedia = await prisma.postMedia.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PostMediaUpdateArgs>(args: SelectSubset<T, PostMediaUpdateArgs<ExtArgs>>): Prisma__PostMediaClient<$Result.GetResult<Prisma.$PostMediaPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more PostMedias.
+     * @param {PostMediaDeleteManyArgs} args - Arguments to filter PostMedias to delete.
+     * @example
+     * // Delete a few PostMedias
+     * const { count } = await prisma.postMedia.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PostMediaDeleteManyArgs>(args?: SelectSubset<T, PostMediaDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PostMedias.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PostMediaUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many PostMedias
+     * const postMedia = await prisma.postMedia.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PostMediaUpdateManyArgs>(args: SelectSubset<T, PostMediaUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PostMedias and returns the data updated in the database.
+     * @param {PostMediaUpdateManyAndReturnArgs} args - Arguments to update many PostMedias.
+     * @example
+     * // Update many PostMedias
+     * const postMedia = await prisma.postMedia.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more PostMedias and only return the `id`
+     * const postMediaWithIdOnly = await prisma.postMedia.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends PostMediaUpdateManyAndReturnArgs>(args: SelectSubset<T, PostMediaUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PostMediaPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one PostMedia.
+     * @param {PostMediaUpsertArgs} args - Arguments to update or create a PostMedia.
+     * @example
+     * // Update or create a PostMedia
+     * const postMedia = await prisma.postMedia.upsert({
+     *   create: {
+     *     // ... data to create a PostMedia
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the PostMedia we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PostMediaUpsertArgs>(args: SelectSubset<T, PostMediaUpsertArgs<ExtArgs>>): Prisma__PostMediaClient<$Result.GetResult<Prisma.$PostMediaPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of PostMedias.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PostMediaCountArgs} args - Arguments to filter PostMedias to count.
+     * @example
+     * // Count the number of PostMedias
+     * const count = await prisma.postMedia.count({
+     *   where: {
+     *     // ... the filter for the PostMedias we want to count
+     *   }
+     * })
+    **/
+    count<T extends PostMediaCountArgs>(
+      args?: Subset<T, PostMediaCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PostMediaCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a PostMedia.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PostMediaAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PostMediaAggregateArgs>(args: Subset<T, PostMediaAggregateArgs>): Prisma.PrismaPromise<GetPostMediaAggregateType<T>>
+
+    /**
+     * Group by PostMedia.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PostMediaGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PostMediaGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PostMediaGroupByArgs['orderBy'] }
+        : { orderBy?: PostMediaGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PostMediaGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPostMediaGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the PostMedia model
+   */
+  readonly fields: PostMediaFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for PostMedia.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PostMediaClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    post<T extends PostDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PostDefaultArgs<ExtArgs>>): Prisma__PostClient<$Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the PostMedia model
+   */
+  interface PostMediaFieldRefs {
+    readonly id: FieldRef<"PostMedia", 'String'>
+    readonly postId: FieldRef<"PostMedia", 'String'>
+    readonly url: FieldRef<"PostMedia", 'String'>
+    readonly storagePath: FieldRef<"PostMedia", 'String'>
+    readonly mimeType: FieldRef<"PostMedia", 'String'>
+    readonly createdAt: FieldRef<"PostMedia", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * PostMedia findUnique
+   */
+  export type PostMediaFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PostMedia
+     */
+    select?: PostMediaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PostMedia
+     */
+    omit?: PostMediaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostMediaInclude<ExtArgs> | null
+    /**
+     * Filter, which PostMedia to fetch.
+     */
+    where: PostMediaWhereUniqueInput
+  }
+
+  /**
+   * PostMedia findUniqueOrThrow
+   */
+  export type PostMediaFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PostMedia
+     */
+    select?: PostMediaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PostMedia
+     */
+    omit?: PostMediaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostMediaInclude<ExtArgs> | null
+    /**
+     * Filter, which PostMedia to fetch.
+     */
+    where: PostMediaWhereUniqueInput
+  }
+
+  /**
+   * PostMedia findFirst
+   */
+  export type PostMediaFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PostMedia
+     */
+    select?: PostMediaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PostMedia
+     */
+    omit?: PostMediaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostMediaInclude<ExtArgs> | null
+    /**
+     * Filter, which PostMedia to fetch.
+     */
+    where?: PostMediaWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PostMedias to fetch.
+     */
+    orderBy?: PostMediaOrderByWithRelationInput | PostMediaOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PostMedias.
+     */
+    cursor?: PostMediaWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PostMedias from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PostMedias.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PostMedias.
+     */
+    distinct?: PostMediaScalarFieldEnum | PostMediaScalarFieldEnum[]
+  }
+
+  /**
+   * PostMedia findFirstOrThrow
+   */
+  export type PostMediaFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PostMedia
+     */
+    select?: PostMediaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PostMedia
+     */
+    omit?: PostMediaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostMediaInclude<ExtArgs> | null
+    /**
+     * Filter, which PostMedia to fetch.
+     */
+    where?: PostMediaWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PostMedias to fetch.
+     */
+    orderBy?: PostMediaOrderByWithRelationInput | PostMediaOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PostMedias.
+     */
+    cursor?: PostMediaWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PostMedias from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PostMedias.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PostMedias.
+     */
+    distinct?: PostMediaScalarFieldEnum | PostMediaScalarFieldEnum[]
+  }
+
+  /**
+   * PostMedia findMany
+   */
+  export type PostMediaFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PostMedia
+     */
+    select?: PostMediaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PostMedia
+     */
+    omit?: PostMediaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostMediaInclude<ExtArgs> | null
+    /**
+     * Filter, which PostMedias to fetch.
+     */
+    where?: PostMediaWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PostMedias to fetch.
+     */
+    orderBy?: PostMediaOrderByWithRelationInput | PostMediaOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing PostMedias.
+     */
+    cursor?: PostMediaWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PostMedias from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PostMedias.
+     */
+    skip?: number
+    distinct?: PostMediaScalarFieldEnum | PostMediaScalarFieldEnum[]
+  }
+
+  /**
+   * PostMedia create
+   */
+  export type PostMediaCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PostMedia
+     */
+    select?: PostMediaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PostMedia
+     */
+    omit?: PostMediaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostMediaInclude<ExtArgs> | null
+    /**
+     * The data needed to create a PostMedia.
+     */
+    data: XOR<PostMediaCreateInput, PostMediaUncheckedCreateInput>
+  }
+
+  /**
+   * PostMedia createMany
+   */
+  export type PostMediaCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many PostMedias.
+     */
+    data: PostMediaCreateManyInput | PostMediaCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PostMedia createManyAndReturn
+   */
+  export type PostMediaCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PostMedia
+     */
+    select?: PostMediaSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PostMedia
+     */
+    omit?: PostMediaOmit<ExtArgs> | null
+    /**
+     * The data used to create many PostMedias.
+     */
+    data: PostMediaCreateManyInput | PostMediaCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostMediaIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PostMedia update
+   */
+  export type PostMediaUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PostMedia
+     */
+    select?: PostMediaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PostMedia
+     */
+    omit?: PostMediaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostMediaInclude<ExtArgs> | null
+    /**
+     * The data needed to update a PostMedia.
+     */
+    data: XOR<PostMediaUpdateInput, PostMediaUncheckedUpdateInput>
+    /**
+     * Choose, which PostMedia to update.
+     */
+    where: PostMediaWhereUniqueInput
+  }
+
+  /**
+   * PostMedia updateMany
+   */
+  export type PostMediaUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update PostMedias.
+     */
+    data: XOR<PostMediaUpdateManyMutationInput, PostMediaUncheckedUpdateManyInput>
+    /**
+     * Filter which PostMedias to update
+     */
+    where?: PostMediaWhereInput
+    /**
+     * Limit how many PostMedias to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PostMedia updateManyAndReturn
+   */
+  export type PostMediaUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PostMedia
+     */
+    select?: PostMediaSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PostMedia
+     */
+    omit?: PostMediaOmit<ExtArgs> | null
+    /**
+     * The data used to update PostMedias.
+     */
+    data: XOR<PostMediaUpdateManyMutationInput, PostMediaUncheckedUpdateManyInput>
+    /**
+     * Filter which PostMedias to update
+     */
+    where?: PostMediaWhereInput
+    /**
+     * Limit how many PostMedias to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostMediaIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PostMedia upsert
+   */
+  export type PostMediaUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PostMedia
+     */
+    select?: PostMediaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PostMedia
+     */
+    omit?: PostMediaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostMediaInclude<ExtArgs> | null
+    /**
+     * The filter to search for the PostMedia to update in case it exists.
+     */
+    where: PostMediaWhereUniqueInput
+    /**
+     * In case the PostMedia found by the `where` argument doesn't exist, create a new PostMedia with this data.
+     */
+    create: XOR<PostMediaCreateInput, PostMediaUncheckedCreateInput>
+    /**
+     * In case the PostMedia was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PostMediaUpdateInput, PostMediaUncheckedUpdateInput>
+  }
+
+  /**
+   * PostMedia delete
+   */
+  export type PostMediaDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PostMedia
+     */
+    select?: PostMediaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PostMedia
+     */
+    omit?: PostMediaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostMediaInclude<ExtArgs> | null
+    /**
+     * Filter which PostMedia to delete.
+     */
+    where: PostMediaWhereUniqueInput
+  }
+
+  /**
+   * PostMedia deleteMany
+   */
+  export type PostMediaDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PostMedias to delete
+     */
+    where?: PostMediaWhereInput
+    /**
+     * Limit how many PostMedias to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * PostMedia without action
+   */
+  export type PostMediaDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PostMedia
+     */
+    select?: PostMediaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PostMedia
+     */
+    omit?: PostMediaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PostMediaInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -3089,12 +8168,84 @@ export namespace Prisma {
   export type NewsScalarFieldEnum = (typeof NewsScalarFieldEnum)[keyof typeof NewsScalarFieldEnum]
 
 
+  export const EventScalarFieldEnum: {
+    id: 'id',
+    title: 'title',
+    description: 'description',
+    category: 'category',
+    location: 'location',
+    startDate: 'startDate',
+    endDate: 'endDate',
+    startTime: 'startTime',
+    endTime: 'endTime',
+    status: 'status',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type EventScalarFieldEnum = (typeof EventScalarFieldEnum)[keyof typeof EventScalarFieldEnum]
+
+
+  export const PostScalarFieldEnum: {
+    id: 'id',
+    authorId: 'authorId',
+    authorName: 'authorName',
+    authorAvatarUrl: 'authorAvatarUrl',
+    content: 'content',
+    category: 'category',
+    location: 'location',
+    eventDate: 'eventDate',
+    pollQuestion: 'pollQuestion',
+    pollOptions: 'pollOptions',
+    alertUsers: 'alertUsers',
+    likes: 'likes',
+    shares: 'shares',
+    status: 'status',
+    rejectedReason: 'rejectedReason',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    approvedAt: 'approvedAt'
+  };
+
+  export type PostScalarFieldEnum = (typeof PostScalarFieldEnum)[keyof typeof PostScalarFieldEnum]
+
+
+  export const PostReportScalarFieldEnum: {
+    id: 'id',
+    postId: 'postId',
+    reason: 'reason',
+    createdAt: 'createdAt'
+  };
+
+  export type PostReportScalarFieldEnum = (typeof PostReportScalarFieldEnum)[keyof typeof PostReportScalarFieldEnum]
+
+
+  export const PostMediaScalarFieldEnum: {
+    id: 'id',
+    postId: 'postId',
+    url: 'url',
+    storagePath: 'storagePath',
+    mimeType: 'mimeType',
+    createdAt: 'createdAt'
+  };
+
+  export type PostMediaScalarFieldEnum = (typeof PostMediaScalarFieldEnum)[keyof typeof PostMediaScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
   };
 
   export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+  export const NullableJsonNullValueInput: {
+    DbNull: typeof DbNull,
+    JsonNull: typeof JsonNull
+  };
+
+  export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
   export const QueryMode: {
@@ -3111,6 +8262,15 @@ export namespace Prisma {
   };
 
   export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+  export const JsonNullValueFilter: {
+    DbNull: typeof DbNull,
+    JsonNull: typeof JsonNull,
+    AnyNull: typeof AnyNull
+  };
+
+  export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
   /**
@@ -3154,6 +8314,34 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'EventStatus'
+   */
+  export type EnumEventStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EventStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'EventStatus[]'
+   */
+  export type ListEnumEventStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EventStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Json'
+   */
+  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+  /**
+   * Reference to a field of type 'QueryMode'
+   */
+  export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+  /**
    * Reference to a field of type 'Int'
    */
   export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
@@ -3164,6 +8352,34 @@ export namespace Prisma {
    * Reference to a field of type 'Int[]'
    */
   export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'PostStatus'
+   */
+  export type EnumPostStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PostStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'PostStatus[]'
+   */
+  export type ListEnumPostStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PostStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float'
+   */
+  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float[]'
+   */
+  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
   /**
    * Deep Input Types
@@ -3186,6 +8402,7 @@ export namespace Prisma {
     city?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
+    posts?: PostListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -3201,6 +8418,7 @@ export namespace Prisma {
     city?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    posts?: PostOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -3219,6 +8437,7 @@ export namespace Prisma {
     city?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
+    posts?: PostListRelationFilter
   }, "id" | "supabaseId" | "username" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -3314,6 +8533,331 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"News"> | Date | string
   }
 
+  export type EventWhereInput = {
+    AND?: EventWhereInput | EventWhereInput[]
+    OR?: EventWhereInput[]
+    NOT?: EventWhereInput | EventWhereInput[]
+    id?: StringFilter<"Event"> | string
+    title?: StringFilter<"Event"> | string
+    description?: StringNullableFilter<"Event"> | string | null
+    category?: StringFilter<"Event"> | string
+    location?: StringNullableFilter<"Event"> | string | null
+    startDate?: DateTimeFilter<"Event"> | Date | string
+    endDate?: DateTimeFilter<"Event"> | Date | string
+    startTime?: StringNullableFilter<"Event"> | string | null
+    endTime?: StringNullableFilter<"Event"> | string | null
+    status?: EnumEventStatusFilter<"Event"> | $Enums.EventStatus
+    createdAt?: DateTimeFilter<"Event"> | Date | string
+    updatedAt?: DateTimeFilter<"Event"> | Date | string
+  }
+
+  export type EventOrderByWithRelationInput = {
+    id?: SortOrder
+    title?: SortOrder
+    description?: SortOrderInput | SortOrder
+    category?: SortOrder
+    location?: SortOrderInput | SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    startTime?: SortOrderInput | SortOrder
+    endTime?: SortOrderInput | SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EventWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: EventWhereInput | EventWhereInput[]
+    OR?: EventWhereInput[]
+    NOT?: EventWhereInput | EventWhereInput[]
+    title?: StringFilter<"Event"> | string
+    description?: StringNullableFilter<"Event"> | string | null
+    category?: StringFilter<"Event"> | string
+    location?: StringNullableFilter<"Event"> | string | null
+    startDate?: DateTimeFilter<"Event"> | Date | string
+    endDate?: DateTimeFilter<"Event"> | Date | string
+    startTime?: StringNullableFilter<"Event"> | string | null
+    endTime?: StringNullableFilter<"Event"> | string | null
+    status?: EnumEventStatusFilter<"Event"> | $Enums.EventStatus
+    createdAt?: DateTimeFilter<"Event"> | Date | string
+    updatedAt?: DateTimeFilter<"Event"> | Date | string
+  }, "id">
+
+  export type EventOrderByWithAggregationInput = {
+    id?: SortOrder
+    title?: SortOrder
+    description?: SortOrderInput | SortOrder
+    category?: SortOrder
+    location?: SortOrderInput | SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    startTime?: SortOrderInput | SortOrder
+    endTime?: SortOrderInput | SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: EventCountOrderByAggregateInput
+    _max?: EventMaxOrderByAggregateInput
+    _min?: EventMinOrderByAggregateInput
+  }
+
+  export type EventScalarWhereWithAggregatesInput = {
+    AND?: EventScalarWhereWithAggregatesInput | EventScalarWhereWithAggregatesInput[]
+    OR?: EventScalarWhereWithAggregatesInput[]
+    NOT?: EventScalarWhereWithAggregatesInput | EventScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Event"> | string
+    title?: StringWithAggregatesFilter<"Event"> | string
+    description?: StringNullableWithAggregatesFilter<"Event"> | string | null
+    category?: StringWithAggregatesFilter<"Event"> | string
+    location?: StringNullableWithAggregatesFilter<"Event"> | string | null
+    startDate?: DateTimeWithAggregatesFilter<"Event"> | Date | string
+    endDate?: DateTimeWithAggregatesFilter<"Event"> | Date | string
+    startTime?: StringNullableWithAggregatesFilter<"Event"> | string | null
+    endTime?: StringNullableWithAggregatesFilter<"Event"> | string | null
+    status?: EnumEventStatusWithAggregatesFilter<"Event"> | $Enums.EventStatus
+    createdAt?: DateTimeWithAggregatesFilter<"Event"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Event"> | Date | string
+  }
+
+  export type PostWhereInput = {
+    AND?: PostWhereInput | PostWhereInput[]
+    OR?: PostWhereInput[]
+    NOT?: PostWhereInput | PostWhereInput[]
+    id?: StringFilter<"Post"> | string
+    authorId?: StringNullableFilter<"Post"> | string | null
+    authorName?: StringFilter<"Post"> | string
+    authorAvatarUrl?: StringNullableFilter<"Post"> | string | null
+    content?: StringFilter<"Post"> | string
+    category?: StringFilter<"Post"> | string
+    location?: StringNullableFilter<"Post"> | string | null
+    eventDate?: DateTimeNullableFilter<"Post"> | Date | string | null
+    pollQuestion?: StringNullableFilter<"Post"> | string | null
+    pollOptions?: JsonNullableFilter<"Post">
+    alertUsers?: BoolFilter<"Post"> | boolean
+    likes?: IntFilter<"Post"> | number
+    shares?: IntFilter<"Post"> | number
+    status?: EnumPostStatusFilter<"Post"> | $Enums.PostStatus
+    rejectedReason?: StringNullableFilter<"Post"> | string | null
+    createdAt?: DateTimeFilter<"Post"> | Date | string
+    updatedAt?: DateTimeFilter<"Post"> | Date | string
+    approvedAt?: DateTimeNullableFilter<"Post"> | Date | string | null
+    author?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    media?: PostMediaListRelationFilter
+    reports?: PostReportListRelationFilter
+  }
+
+  export type PostOrderByWithRelationInput = {
+    id?: SortOrder
+    authorId?: SortOrderInput | SortOrder
+    authorName?: SortOrder
+    authorAvatarUrl?: SortOrderInput | SortOrder
+    content?: SortOrder
+    category?: SortOrder
+    location?: SortOrderInput | SortOrder
+    eventDate?: SortOrderInput | SortOrder
+    pollQuestion?: SortOrderInput | SortOrder
+    pollOptions?: SortOrderInput | SortOrder
+    alertUsers?: SortOrder
+    likes?: SortOrder
+    shares?: SortOrder
+    status?: SortOrder
+    rejectedReason?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    approvedAt?: SortOrderInput | SortOrder
+    author?: UserOrderByWithRelationInput
+    media?: PostMediaOrderByRelationAggregateInput
+    reports?: PostReportOrderByRelationAggregateInput
+  }
+
+  export type PostWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: PostWhereInput | PostWhereInput[]
+    OR?: PostWhereInput[]
+    NOT?: PostWhereInput | PostWhereInput[]
+    authorId?: StringNullableFilter<"Post"> | string | null
+    authorName?: StringFilter<"Post"> | string
+    authorAvatarUrl?: StringNullableFilter<"Post"> | string | null
+    content?: StringFilter<"Post"> | string
+    category?: StringFilter<"Post"> | string
+    location?: StringNullableFilter<"Post"> | string | null
+    eventDate?: DateTimeNullableFilter<"Post"> | Date | string | null
+    pollQuestion?: StringNullableFilter<"Post"> | string | null
+    pollOptions?: JsonNullableFilter<"Post">
+    alertUsers?: BoolFilter<"Post"> | boolean
+    likes?: IntFilter<"Post"> | number
+    shares?: IntFilter<"Post"> | number
+    status?: EnumPostStatusFilter<"Post"> | $Enums.PostStatus
+    rejectedReason?: StringNullableFilter<"Post"> | string | null
+    createdAt?: DateTimeFilter<"Post"> | Date | string
+    updatedAt?: DateTimeFilter<"Post"> | Date | string
+    approvedAt?: DateTimeNullableFilter<"Post"> | Date | string | null
+    author?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    media?: PostMediaListRelationFilter
+    reports?: PostReportListRelationFilter
+  }, "id">
+
+  export type PostOrderByWithAggregationInput = {
+    id?: SortOrder
+    authorId?: SortOrderInput | SortOrder
+    authorName?: SortOrder
+    authorAvatarUrl?: SortOrderInput | SortOrder
+    content?: SortOrder
+    category?: SortOrder
+    location?: SortOrderInput | SortOrder
+    eventDate?: SortOrderInput | SortOrder
+    pollQuestion?: SortOrderInput | SortOrder
+    pollOptions?: SortOrderInput | SortOrder
+    alertUsers?: SortOrder
+    likes?: SortOrder
+    shares?: SortOrder
+    status?: SortOrder
+    rejectedReason?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    approvedAt?: SortOrderInput | SortOrder
+    _count?: PostCountOrderByAggregateInput
+    _avg?: PostAvgOrderByAggregateInput
+    _max?: PostMaxOrderByAggregateInput
+    _min?: PostMinOrderByAggregateInput
+    _sum?: PostSumOrderByAggregateInput
+  }
+
+  export type PostScalarWhereWithAggregatesInput = {
+    AND?: PostScalarWhereWithAggregatesInput | PostScalarWhereWithAggregatesInput[]
+    OR?: PostScalarWhereWithAggregatesInput[]
+    NOT?: PostScalarWhereWithAggregatesInput | PostScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Post"> | string
+    authorId?: StringNullableWithAggregatesFilter<"Post"> | string | null
+    authorName?: StringWithAggregatesFilter<"Post"> | string
+    authorAvatarUrl?: StringNullableWithAggregatesFilter<"Post"> | string | null
+    content?: StringWithAggregatesFilter<"Post"> | string
+    category?: StringWithAggregatesFilter<"Post"> | string
+    location?: StringNullableWithAggregatesFilter<"Post"> | string | null
+    eventDate?: DateTimeNullableWithAggregatesFilter<"Post"> | Date | string | null
+    pollQuestion?: StringNullableWithAggregatesFilter<"Post"> | string | null
+    pollOptions?: JsonNullableWithAggregatesFilter<"Post">
+    alertUsers?: BoolWithAggregatesFilter<"Post"> | boolean
+    likes?: IntWithAggregatesFilter<"Post"> | number
+    shares?: IntWithAggregatesFilter<"Post"> | number
+    status?: EnumPostStatusWithAggregatesFilter<"Post"> | $Enums.PostStatus
+    rejectedReason?: StringNullableWithAggregatesFilter<"Post"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"Post"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Post"> | Date | string
+    approvedAt?: DateTimeNullableWithAggregatesFilter<"Post"> | Date | string | null
+  }
+
+  export type PostReportWhereInput = {
+    AND?: PostReportWhereInput | PostReportWhereInput[]
+    OR?: PostReportWhereInput[]
+    NOT?: PostReportWhereInput | PostReportWhereInput[]
+    id?: StringFilter<"PostReport"> | string
+    postId?: StringFilter<"PostReport"> | string
+    reason?: StringNullableFilter<"PostReport"> | string | null
+    createdAt?: DateTimeFilter<"PostReport"> | Date | string
+    post?: XOR<PostScalarRelationFilter, PostWhereInput>
+  }
+
+  export type PostReportOrderByWithRelationInput = {
+    id?: SortOrder
+    postId?: SortOrder
+    reason?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    post?: PostOrderByWithRelationInput
+  }
+
+  export type PostReportWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: PostReportWhereInput | PostReportWhereInput[]
+    OR?: PostReportWhereInput[]
+    NOT?: PostReportWhereInput | PostReportWhereInput[]
+    postId?: StringFilter<"PostReport"> | string
+    reason?: StringNullableFilter<"PostReport"> | string | null
+    createdAt?: DateTimeFilter<"PostReport"> | Date | string
+    post?: XOR<PostScalarRelationFilter, PostWhereInput>
+  }, "id">
+
+  export type PostReportOrderByWithAggregationInput = {
+    id?: SortOrder
+    postId?: SortOrder
+    reason?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: PostReportCountOrderByAggregateInput
+    _max?: PostReportMaxOrderByAggregateInput
+    _min?: PostReportMinOrderByAggregateInput
+  }
+
+  export type PostReportScalarWhereWithAggregatesInput = {
+    AND?: PostReportScalarWhereWithAggregatesInput | PostReportScalarWhereWithAggregatesInput[]
+    OR?: PostReportScalarWhereWithAggregatesInput[]
+    NOT?: PostReportScalarWhereWithAggregatesInput | PostReportScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"PostReport"> | string
+    postId?: StringWithAggregatesFilter<"PostReport"> | string
+    reason?: StringNullableWithAggregatesFilter<"PostReport"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"PostReport"> | Date | string
+  }
+
+  export type PostMediaWhereInput = {
+    AND?: PostMediaWhereInput | PostMediaWhereInput[]
+    OR?: PostMediaWhereInput[]
+    NOT?: PostMediaWhereInput | PostMediaWhereInput[]
+    id?: StringFilter<"PostMedia"> | string
+    postId?: StringFilter<"PostMedia"> | string
+    url?: StringFilter<"PostMedia"> | string
+    storagePath?: StringFilter<"PostMedia"> | string
+    mimeType?: StringFilter<"PostMedia"> | string
+    createdAt?: DateTimeFilter<"PostMedia"> | Date | string
+    post?: XOR<PostScalarRelationFilter, PostWhereInput>
+  }
+
+  export type PostMediaOrderByWithRelationInput = {
+    id?: SortOrder
+    postId?: SortOrder
+    url?: SortOrder
+    storagePath?: SortOrder
+    mimeType?: SortOrder
+    createdAt?: SortOrder
+    post?: PostOrderByWithRelationInput
+  }
+
+  export type PostMediaWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: PostMediaWhereInput | PostMediaWhereInput[]
+    OR?: PostMediaWhereInput[]
+    NOT?: PostMediaWhereInput | PostMediaWhereInput[]
+    postId?: StringFilter<"PostMedia"> | string
+    url?: StringFilter<"PostMedia"> | string
+    storagePath?: StringFilter<"PostMedia"> | string
+    mimeType?: StringFilter<"PostMedia"> | string
+    createdAt?: DateTimeFilter<"PostMedia"> | Date | string
+    post?: XOR<PostScalarRelationFilter, PostWhereInput>
+  }, "id">
+
+  export type PostMediaOrderByWithAggregationInput = {
+    id?: SortOrder
+    postId?: SortOrder
+    url?: SortOrder
+    storagePath?: SortOrder
+    mimeType?: SortOrder
+    createdAt?: SortOrder
+    _count?: PostMediaCountOrderByAggregateInput
+    _max?: PostMediaMaxOrderByAggregateInput
+    _min?: PostMediaMinOrderByAggregateInput
+  }
+
+  export type PostMediaScalarWhereWithAggregatesInput = {
+    AND?: PostMediaScalarWhereWithAggregatesInput | PostMediaScalarWhereWithAggregatesInput[]
+    OR?: PostMediaScalarWhereWithAggregatesInput[]
+    NOT?: PostMediaScalarWhereWithAggregatesInput | PostMediaScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"PostMedia"> | string
+    postId?: StringWithAggregatesFilter<"PostMedia"> | string
+    url?: StringWithAggregatesFilter<"PostMedia"> | string
+    storagePath?: StringWithAggregatesFilter<"PostMedia"> | string
+    mimeType?: StringWithAggregatesFilter<"PostMedia"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"PostMedia"> | Date | string
+  }
+
   export type UserCreateInput = {
     id?: string
     supabaseId?: string | null
@@ -3327,6 +8871,7 @@ export namespace Prisma {
     city?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    posts?: PostCreateNestedManyWithoutAuthorInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -3342,6 +8887,7 @@ export namespace Prisma {
     city?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
   }
 
   export type UserUpdateInput = {
@@ -3357,6 +8903,7 @@ export namespace Prisma {
     city?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    posts?: PostUpdateManyWithoutAuthorNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -3372,6 +8919,7 @@ export namespace Prisma {
     city?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -3482,6 +9030,375 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type EventCreateInput = {
+    id?: string
+    title: string
+    description?: string | null
+    category: string
+    location?: string | null
+    startDate: Date | string
+    endDate: Date | string
+    startTime?: string | null
+    endTime?: string | null
+    status?: $Enums.EventStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EventUncheckedCreateInput = {
+    id?: string
+    title: string
+    description?: string | null
+    category: string
+    location?: string | null
+    startDate: Date | string
+    endDate: Date | string
+    startTime?: string | null
+    endTime?: string | null
+    status?: $Enums.EventStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EventUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    startTime?: NullableStringFieldUpdateOperationsInput | string | null
+    endTime?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EventUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    startTime?: NullableStringFieldUpdateOperationsInput | string | null
+    endTime?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EventCreateManyInput = {
+    id?: string
+    title: string
+    description?: string | null
+    category: string
+    location?: string | null
+    startDate: Date | string
+    endDate: Date | string
+    startTime?: string | null
+    endTime?: string | null
+    status?: $Enums.EventStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EventUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    startTime?: NullableStringFieldUpdateOperationsInput | string | null
+    endTime?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EventUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    startTime?: NullableStringFieldUpdateOperationsInput | string | null
+    endTime?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PostCreateInput = {
+    id?: string
+    authorName: string
+    authorAvatarUrl?: string | null
+    content: string
+    category: string
+    location?: string | null
+    eventDate?: Date | string | null
+    pollQuestion?: string | null
+    pollOptions?: NullableJsonNullValueInput | InputJsonValue
+    alertUsers?: boolean
+    likes?: number
+    shares?: number
+    status?: $Enums.PostStatus
+    rejectedReason?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    approvedAt?: Date | string | null
+    author?: UserCreateNestedOneWithoutPostsInput
+    media?: PostMediaCreateNestedManyWithoutPostInput
+    reports?: PostReportCreateNestedManyWithoutPostInput
+  }
+
+  export type PostUncheckedCreateInput = {
+    id?: string
+    authorId?: string | null
+    authorName: string
+    authorAvatarUrl?: string | null
+    content: string
+    category: string
+    location?: string | null
+    eventDate?: Date | string | null
+    pollQuestion?: string | null
+    pollOptions?: NullableJsonNullValueInput | InputJsonValue
+    alertUsers?: boolean
+    likes?: number
+    shares?: number
+    status?: $Enums.PostStatus
+    rejectedReason?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    approvedAt?: Date | string | null
+    media?: PostMediaUncheckedCreateNestedManyWithoutPostInput
+    reports?: PostReportUncheckedCreateNestedManyWithoutPostInput
+  }
+
+  export type PostUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    authorName?: StringFieldUpdateOperationsInput | string
+    authorAvatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    eventDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pollQuestion?: NullableStringFieldUpdateOperationsInput | string | null
+    pollOptions?: NullableJsonNullValueInput | InputJsonValue
+    alertUsers?: BoolFieldUpdateOperationsInput | boolean
+    likes?: IntFieldUpdateOperationsInput | number
+    shares?: IntFieldUpdateOperationsInput | number
+    status?: EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
+    rejectedReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    author?: UserUpdateOneWithoutPostsNestedInput
+    media?: PostMediaUpdateManyWithoutPostNestedInput
+    reports?: PostReportUpdateManyWithoutPostNestedInput
+  }
+
+  export type PostUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    authorId?: NullableStringFieldUpdateOperationsInput | string | null
+    authorName?: StringFieldUpdateOperationsInput | string
+    authorAvatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    eventDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pollQuestion?: NullableStringFieldUpdateOperationsInput | string | null
+    pollOptions?: NullableJsonNullValueInput | InputJsonValue
+    alertUsers?: BoolFieldUpdateOperationsInput | boolean
+    likes?: IntFieldUpdateOperationsInput | number
+    shares?: IntFieldUpdateOperationsInput | number
+    status?: EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
+    rejectedReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    media?: PostMediaUncheckedUpdateManyWithoutPostNestedInput
+    reports?: PostReportUncheckedUpdateManyWithoutPostNestedInput
+  }
+
+  export type PostCreateManyInput = {
+    id?: string
+    authorId?: string | null
+    authorName: string
+    authorAvatarUrl?: string | null
+    content: string
+    category: string
+    location?: string | null
+    eventDate?: Date | string | null
+    pollQuestion?: string | null
+    pollOptions?: NullableJsonNullValueInput | InputJsonValue
+    alertUsers?: boolean
+    likes?: number
+    shares?: number
+    status?: $Enums.PostStatus
+    rejectedReason?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    approvedAt?: Date | string | null
+  }
+
+  export type PostUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    authorName?: StringFieldUpdateOperationsInput | string
+    authorAvatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    eventDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pollQuestion?: NullableStringFieldUpdateOperationsInput | string | null
+    pollOptions?: NullableJsonNullValueInput | InputJsonValue
+    alertUsers?: BoolFieldUpdateOperationsInput | boolean
+    likes?: IntFieldUpdateOperationsInput | number
+    shares?: IntFieldUpdateOperationsInput | number
+    status?: EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
+    rejectedReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type PostUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    authorId?: NullableStringFieldUpdateOperationsInput | string | null
+    authorName?: StringFieldUpdateOperationsInput | string
+    authorAvatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    eventDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pollQuestion?: NullableStringFieldUpdateOperationsInput | string | null
+    pollOptions?: NullableJsonNullValueInput | InputJsonValue
+    alertUsers?: BoolFieldUpdateOperationsInput | boolean
+    likes?: IntFieldUpdateOperationsInput | number
+    shares?: IntFieldUpdateOperationsInput | number
+    status?: EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
+    rejectedReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type PostReportCreateInput = {
+    id?: string
+    reason?: string | null
+    createdAt?: Date | string
+    post: PostCreateNestedOneWithoutReportsInput
+  }
+
+  export type PostReportUncheckedCreateInput = {
+    id?: string
+    postId: string
+    reason?: string | null
+    createdAt?: Date | string
+  }
+
+  export type PostReportUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    post?: PostUpdateOneRequiredWithoutReportsNestedInput
+  }
+
+  export type PostReportUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    postId?: StringFieldUpdateOperationsInput | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PostReportCreateManyInput = {
+    id?: string
+    postId: string
+    reason?: string | null
+    createdAt?: Date | string
+  }
+
+  export type PostReportUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PostReportUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    postId?: StringFieldUpdateOperationsInput | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PostMediaCreateInput = {
+    id?: string
+    url: string
+    storagePath: string
+    mimeType: string
+    createdAt?: Date | string
+    post: PostCreateNestedOneWithoutMediaInput
+  }
+
+  export type PostMediaUncheckedCreateInput = {
+    id?: string
+    postId: string
+    url: string
+    storagePath: string
+    mimeType: string
+    createdAt?: Date | string
+  }
+
+  export type PostMediaUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    storagePath?: StringFieldUpdateOperationsInput | string
+    mimeType?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    post?: PostUpdateOneRequiredWithoutMediaNestedInput
+  }
+
+  export type PostMediaUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    postId?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    storagePath?: StringFieldUpdateOperationsInput | string
+    mimeType?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PostMediaCreateManyInput = {
+    id?: string
+    postId: string
+    url: string
+    storagePath: string
+    mimeType: string
+    createdAt?: Date | string
+  }
+
+  export type PostMediaUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    storagePath?: StringFieldUpdateOperationsInput | string
+    mimeType?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PostMediaUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    postId?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    storagePath?: StringFieldUpdateOperationsInput | string
+    mimeType?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -3528,9 +9445,19 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
+  export type PostListRelationFilter = {
+    every?: PostWhereInput
+    some?: PostWhereInput
+    none?: PostWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
+  }
+
+  export type PostOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type UserCountOrderByAggregateInput = {
@@ -3663,6 +9590,349 @@ export namespace Prisma {
     createdAt?: SortOrder
   }
 
+  export type EnumEventStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.EventStatus | EnumEventStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.EventStatus[] | ListEnumEventStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EventStatus[] | ListEnumEventStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumEventStatusFilter<$PrismaModel> | $Enums.EventStatus
+  }
+
+  export type EventCountOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    category?: SortOrder
+    location?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    startTime?: SortOrder
+    endTime?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EventMaxOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    category?: SortOrder
+    location?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    startTime?: SortOrder
+    endTime?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EventMinOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    category?: SortOrder
+    location?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    startTime?: SortOrder
+    endTime?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnumEventStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.EventStatus | EnumEventStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.EventStatus[] | ListEnumEventStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EventStatus[] | ListEnumEventStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumEventStatusWithAggregatesFilter<$PrismaModel> | $Enums.EventStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumEventStatusFilter<$PrismaModel>
+    _max?: NestedEnumEventStatusFilter<$PrismaModel>
+  }
+
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+  export type JsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
+  export type EnumPostStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.PostStatus | EnumPostStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.PostStatus[] | ListEnumPostStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PostStatus[] | ListEnumPostStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumPostStatusFilter<$PrismaModel> | $Enums.PostStatus
+  }
+
+  export type UserNullableScalarRelationFilter = {
+    is?: UserWhereInput | null
+    isNot?: UserWhereInput | null
+  }
+
+  export type PostMediaListRelationFilter = {
+    every?: PostMediaWhereInput
+    some?: PostMediaWhereInput
+    none?: PostMediaWhereInput
+  }
+
+  export type PostReportListRelationFilter = {
+    every?: PostReportWhereInput
+    some?: PostReportWhereInput
+    none?: PostReportWhereInput
+  }
+
+  export type PostMediaOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type PostReportOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type PostCountOrderByAggregateInput = {
+    id?: SortOrder
+    authorId?: SortOrder
+    authorName?: SortOrder
+    authorAvatarUrl?: SortOrder
+    content?: SortOrder
+    category?: SortOrder
+    location?: SortOrder
+    eventDate?: SortOrder
+    pollQuestion?: SortOrder
+    pollOptions?: SortOrder
+    alertUsers?: SortOrder
+    likes?: SortOrder
+    shares?: SortOrder
+    status?: SortOrder
+    rejectedReason?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    approvedAt?: SortOrder
+  }
+
+  export type PostAvgOrderByAggregateInput = {
+    likes?: SortOrder
+    shares?: SortOrder
+  }
+
+  export type PostMaxOrderByAggregateInput = {
+    id?: SortOrder
+    authorId?: SortOrder
+    authorName?: SortOrder
+    authorAvatarUrl?: SortOrder
+    content?: SortOrder
+    category?: SortOrder
+    location?: SortOrder
+    eventDate?: SortOrder
+    pollQuestion?: SortOrder
+    alertUsers?: SortOrder
+    likes?: SortOrder
+    shares?: SortOrder
+    status?: SortOrder
+    rejectedReason?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    approvedAt?: SortOrder
+  }
+
+  export type PostMinOrderByAggregateInput = {
+    id?: SortOrder
+    authorId?: SortOrder
+    authorName?: SortOrder
+    authorAvatarUrl?: SortOrder
+    content?: SortOrder
+    category?: SortOrder
+    location?: SortOrder
+    eventDate?: SortOrder
+    pollQuestion?: SortOrder
+    alertUsers?: SortOrder
+    likes?: SortOrder
+    shares?: SortOrder
+    status?: SortOrder
+    rejectedReason?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    approvedAt?: SortOrder
+  }
+
+  export type PostSumOrderByAggregateInput = {
+    likes?: SortOrder
+    shares?: SortOrder
+  }
+
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedJsonNullableFilter<$PrismaModel>
+    _max?: NestedJsonNullableFilter<$PrismaModel>
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type EnumPostStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PostStatus | EnumPostStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.PostStatus[] | ListEnumPostStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PostStatus[] | ListEnumPostStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumPostStatusWithAggregatesFilter<$PrismaModel> | $Enums.PostStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPostStatusFilter<$PrismaModel>
+    _max?: NestedEnumPostStatusFilter<$PrismaModel>
+  }
+
+  export type PostScalarRelationFilter = {
+    is?: PostWhereInput
+    isNot?: PostWhereInput
+  }
+
+  export type PostReportCountOrderByAggregateInput = {
+    id?: SortOrder
+    postId?: SortOrder
+    reason?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type PostReportMaxOrderByAggregateInput = {
+    id?: SortOrder
+    postId?: SortOrder
+    reason?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type PostReportMinOrderByAggregateInput = {
+    id?: SortOrder
+    postId?: SortOrder
+    reason?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type PostMediaCountOrderByAggregateInput = {
+    id?: SortOrder
+    postId?: SortOrder
+    url?: SortOrder
+    storagePath?: SortOrder
+    mimeType?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type PostMediaMaxOrderByAggregateInput = {
+    id?: SortOrder
+    postId?: SortOrder
+    url?: SortOrder
+    storagePath?: SortOrder
+    mimeType?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type PostMediaMinOrderByAggregateInput = {
+    id?: SortOrder
+    postId?: SortOrder
+    url?: SortOrder
+    storagePath?: SortOrder
+    mimeType?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type PostCreateNestedManyWithoutAuthorInput = {
+    create?: XOR<PostCreateWithoutAuthorInput, PostUncheckedCreateWithoutAuthorInput> | PostCreateWithoutAuthorInput[] | PostUncheckedCreateWithoutAuthorInput[]
+    connectOrCreate?: PostCreateOrConnectWithoutAuthorInput | PostCreateOrConnectWithoutAuthorInput[]
+    createMany?: PostCreateManyAuthorInputEnvelope
+    connect?: PostWhereUniqueInput | PostWhereUniqueInput[]
+  }
+
+  export type PostUncheckedCreateNestedManyWithoutAuthorInput = {
+    create?: XOR<PostCreateWithoutAuthorInput, PostUncheckedCreateWithoutAuthorInput> | PostCreateWithoutAuthorInput[] | PostUncheckedCreateWithoutAuthorInput[]
+    connectOrCreate?: PostCreateOrConnectWithoutAuthorInput | PostCreateOrConnectWithoutAuthorInput[]
+    createMany?: PostCreateManyAuthorInputEnvelope
+    connect?: PostWhereUniqueInput | PostWhereUniqueInput[]
+  }
+
   export type StringFieldUpdateOperationsInput = {
     set?: string
   }
@@ -3677,6 +9947,182 @@ export namespace Prisma {
 
   export type DateTimeFieldUpdateOperationsInput = {
     set?: Date | string
+  }
+
+  export type PostUpdateManyWithoutAuthorNestedInput = {
+    create?: XOR<PostCreateWithoutAuthorInput, PostUncheckedCreateWithoutAuthorInput> | PostCreateWithoutAuthorInput[] | PostUncheckedCreateWithoutAuthorInput[]
+    connectOrCreate?: PostCreateOrConnectWithoutAuthorInput | PostCreateOrConnectWithoutAuthorInput[]
+    upsert?: PostUpsertWithWhereUniqueWithoutAuthorInput | PostUpsertWithWhereUniqueWithoutAuthorInput[]
+    createMany?: PostCreateManyAuthorInputEnvelope
+    set?: PostWhereUniqueInput | PostWhereUniqueInput[]
+    disconnect?: PostWhereUniqueInput | PostWhereUniqueInput[]
+    delete?: PostWhereUniqueInput | PostWhereUniqueInput[]
+    connect?: PostWhereUniqueInput | PostWhereUniqueInput[]
+    update?: PostUpdateWithWhereUniqueWithoutAuthorInput | PostUpdateWithWhereUniqueWithoutAuthorInput[]
+    updateMany?: PostUpdateManyWithWhereWithoutAuthorInput | PostUpdateManyWithWhereWithoutAuthorInput[]
+    deleteMany?: PostScalarWhereInput | PostScalarWhereInput[]
+  }
+
+  export type PostUncheckedUpdateManyWithoutAuthorNestedInput = {
+    create?: XOR<PostCreateWithoutAuthorInput, PostUncheckedCreateWithoutAuthorInput> | PostCreateWithoutAuthorInput[] | PostUncheckedCreateWithoutAuthorInput[]
+    connectOrCreate?: PostCreateOrConnectWithoutAuthorInput | PostCreateOrConnectWithoutAuthorInput[]
+    upsert?: PostUpsertWithWhereUniqueWithoutAuthorInput | PostUpsertWithWhereUniqueWithoutAuthorInput[]
+    createMany?: PostCreateManyAuthorInputEnvelope
+    set?: PostWhereUniqueInput | PostWhereUniqueInput[]
+    disconnect?: PostWhereUniqueInput | PostWhereUniqueInput[]
+    delete?: PostWhereUniqueInput | PostWhereUniqueInput[]
+    connect?: PostWhereUniqueInput | PostWhereUniqueInput[]
+    update?: PostUpdateWithWhereUniqueWithoutAuthorInput | PostUpdateWithWhereUniqueWithoutAuthorInput[]
+    updateMany?: PostUpdateManyWithWhereWithoutAuthorInput | PostUpdateManyWithWhereWithoutAuthorInput[]
+    deleteMany?: PostScalarWhereInput | PostScalarWhereInput[]
+  }
+
+  export type EnumEventStatusFieldUpdateOperationsInput = {
+    set?: $Enums.EventStatus
+  }
+
+  export type UserCreateNestedOneWithoutPostsInput = {
+    create?: XOR<UserCreateWithoutPostsInput, UserUncheckedCreateWithoutPostsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutPostsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type PostMediaCreateNestedManyWithoutPostInput = {
+    create?: XOR<PostMediaCreateWithoutPostInput, PostMediaUncheckedCreateWithoutPostInput> | PostMediaCreateWithoutPostInput[] | PostMediaUncheckedCreateWithoutPostInput[]
+    connectOrCreate?: PostMediaCreateOrConnectWithoutPostInput | PostMediaCreateOrConnectWithoutPostInput[]
+    createMany?: PostMediaCreateManyPostInputEnvelope
+    connect?: PostMediaWhereUniqueInput | PostMediaWhereUniqueInput[]
+  }
+
+  export type PostReportCreateNestedManyWithoutPostInput = {
+    create?: XOR<PostReportCreateWithoutPostInput, PostReportUncheckedCreateWithoutPostInput> | PostReportCreateWithoutPostInput[] | PostReportUncheckedCreateWithoutPostInput[]
+    connectOrCreate?: PostReportCreateOrConnectWithoutPostInput | PostReportCreateOrConnectWithoutPostInput[]
+    createMany?: PostReportCreateManyPostInputEnvelope
+    connect?: PostReportWhereUniqueInput | PostReportWhereUniqueInput[]
+  }
+
+  export type PostMediaUncheckedCreateNestedManyWithoutPostInput = {
+    create?: XOR<PostMediaCreateWithoutPostInput, PostMediaUncheckedCreateWithoutPostInput> | PostMediaCreateWithoutPostInput[] | PostMediaUncheckedCreateWithoutPostInput[]
+    connectOrCreate?: PostMediaCreateOrConnectWithoutPostInput | PostMediaCreateOrConnectWithoutPostInput[]
+    createMany?: PostMediaCreateManyPostInputEnvelope
+    connect?: PostMediaWhereUniqueInput | PostMediaWhereUniqueInput[]
+  }
+
+  export type PostReportUncheckedCreateNestedManyWithoutPostInput = {
+    create?: XOR<PostReportCreateWithoutPostInput, PostReportUncheckedCreateWithoutPostInput> | PostReportCreateWithoutPostInput[] | PostReportUncheckedCreateWithoutPostInput[]
+    connectOrCreate?: PostReportCreateOrConnectWithoutPostInput | PostReportCreateOrConnectWithoutPostInput[]
+    createMany?: PostReportCreateManyPostInputEnvelope
+    connect?: PostReportWhereUniqueInput | PostReportWhereUniqueInput[]
+  }
+
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
+  }
+
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type EnumPostStatusFieldUpdateOperationsInput = {
+    set?: $Enums.PostStatus
+  }
+
+  export type UserUpdateOneWithoutPostsNestedInput = {
+    create?: XOR<UserCreateWithoutPostsInput, UserUncheckedCreateWithoutPostsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutPostsInput
+    upsert?: UserUpsertWithoutPostsInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutPostsInput, UserUpdateWithoutPostsInput>, UserUncheckedUpdateWithoutPostsInput>
+  }
+
+  export type PostMediaUpdateManyWithoutPostNestedInput = {
+    create?: XOR<PostMediaCreateWithoutPostInput, PostMediaUncheckedCreateWithoutPostInput> | PostMediaCreateWithoutPostInput[] | PostMediaUncheckedCreateWithoutPostInput[]
+    connectOrCreate?: PostMediaCreateOrConnectWithoutPostInput | PostMediaCreateOrConnectWithoutPostInput[]
+    upsert?: PostMediaUpsertWithWhereUniqueWithoutPostInput | PostMediaUpsertWithWhereUniqueWithoutPostInput[]
+    createMany?: PostMediaCreateManyPostInputEnvelope
+    set?: PostMediaWhereUniqueInput | PostMediaWhereUniqueInput[]
+    disconnect?: PostMediaWhereUniqueInput | PostMediaWhereUniqueInput[]
+    delete?: PostMediaWhereUniqueInput | PostMediaWhereUniqueInput[]
+    connect?: PostMediaWhereUniqueInput | PostMediaWhereUniqueInput[]
+    update?: PostMediaUpdateWithWhereUniqueWithoutPostInput | PostMediaUpdateWithWhereUniqueWithoutPostInput[]
+    updateMany?: PostMediaUpdateManyWithWhereWithoutPostInput | PostMediaUpdateManyWithWhereWithoutPostInput[]
+    deleteMany?: PostMediaScalarWhereInput | PostMediaScalarWhereInput[]
+  }
+
+  export type PostReportUpdateManyWithoutPostNestedInput = {
+    create?: XOR<PostReportCreateWithoutPostInput, PostReportUncheckedCreateWithoutPostInput> | PostReportCreateWithoutPostInput[] | PostReportUncheckedCreateWithoutPostInput[]
+    connectOrCreate?: PostReportCreateOrConnectWithoutPostInput | PostReportCreateOrConnectWithoutPostInput[]
+    upsert?: PostReportUpsertWithWhereUniqueWithoutPostInput | PostReportUpsertWithWhereUniqueWithoutPostInput[]
+    createMany?: PostReportCreateManyPostInputEnvelope
+    set?: PostReportWhereUniqueInput | PostReportWhereUniqueInput[]
+    disconnect?: PostReportWhereUniqueInput | PostReportWhereUniqueInput[]
+    delete?: PostReportWhereUniqueInput | PostReportWhereUniqueInput[]
+    connect?: PostReportWhereUniqueInput | PostReportWhereUniqueInput[]
+    update?: PostReportUpdateWithWhereUniqueWithoutPostInput | PostReportUpdateWithWhereUniqueWithoutPostInput[]
+    updateMany?: PostReportUpdateManyWithWhereWithoutPostInput | PostReportUpdateManyWithWhereWithoutPostInput[]
+    deleteMany?: PostReportScalarWhereInput | PostReportScalarWhereInput[]
+  }
+
+  export type PostMediaUncheckedUpdateManyWithoutPostNestedInput = {
+    create?: XOR<PostMediaCreateWithoutPostInput, PostMediaUncheckedCreateWithoutPostInput> | PostMediaCreateWithoutPostInput[] | PostMediaUncheckedCreateWithoutPostInput[]
+    connectOrCreate?: PostMediaCreateOrConnectWithoutPostInput | PostMediaCreateOrConnectWithoutPostInput[]
+    upsert?: PostMediaUpsertWithWhereUniqueWithoutPostInput | PostMediaUpsertWithWhereUniqueWithoutPostInput[]
+    createMany?: PostMediaCreateManyPostInputEnvelope
+    set?: PostMediaWhereUniqueInput | PostMediaWhereUniqueInput[]
+    disconnect?: PostMediaWhereUniqueInput | PostMediaWhereUniqueInput[]
+    delete?: PostMediaWhereUniqueInput | PostMediaWhereUniqueInput[]
+    connect?: PostMediaWhereUniqueInput | PostMediaWhereUniqueInput[]
+    update?: PostMediaUpdateWithWhereUniqueWithoutPostInput | PostMediaUpdateWithWhereUniqueWithoutPostInput[]
+    updateMany?: PostMediaUpdateManyWithWhereWithoutPostInput | PostMediaUpdateManyWithWhereWithoutPostInput[]
+    deleteMany?: PostMediaScalarWhereInput | PostMediaScalarWhereInput[]
+  }
+
+  export type PostReportUncheckedUpdateManyWithoutPostNestedInput = {
+    create?: XOR<PostReportCreateWithoutPostInput, PostReportUncheckedCreateWithoutPostInput> | PostReportCreateWithoutPostInput[] | PostReportUncheckedCreateWithoutPostInput[]
+    connectOrCreate?: PostReportCreateOrConnectWithoutPostInput | PostReportCreateOrConnectWithoutPostInput[]
+    upsert?: PostReportUpsertWithWhereUniqueWithoutPostInput | PostReportUpsertWithWhereUniqueWithoutPostInput[]
+    createMany?: PostReportCreateManyPostInputEnvelope
+    set?: PostReportWhereUniqueInput | PostReportWhereUniqueInput[]
+    disconnect?: PostReportWhereUniqueInput | PostReportWhereUniqueInput[]
+    delete?: PostReportWhereUniqueInput | PostReportWhereUniqueInput[]
+    connect?: PostReportWhereUniqueInput | PostReportWhereUniqueInput[]
+    update?: PostReportUpdateWithWhereUniqueWithoutPostInput | PostReportUpdateWithWhereUniqueWithoutPostInput[]
+    updateMany?: PostReportUpdateManyWithWhereWithoutPostInput | PostReportUpdateManyWithWhereWithoutPostInput[]
+    deleteMany?: PostReportScalarWhereInput | PostReportScalarWhereInput[]
+  }
+
+  export type PostCreateNestedOneWithoutReportsInput = {
+    create?: XOR<PostCreateWithoutReportsInput, PostUncheckedCreateWithoutReportsInput>
+    connectOrCreate?: PostCreateOrConnectWithoutReportsInput
+    connect?: PostWhereUniqueInput
+  }
+
+  export type PostUpdateOneRequiredWithoutReportsNestedInput = {
+    create?: XOR<PostCreateWithoutReportsInput, PostUncheckedCreateWithoutReportsInput>
+    connectOrCreate?: PostCreateOrConnectWithoutReportsInput
+    upsert?: PostUpsertWithoutReportsInput
+    connect?: PostWhereUniqueInput
+    update?: XOR<XOR<PostUpdateToOneWithWhereWithoutReportsInput, PostUpdateWithoutReportsInput>, PostUncheckedUpdateWithoutReportsInput>
+  }
+
+  export type PostCreateNestedOneWithoutMediaInput = {
+    create?: XOR<PostCreateWithoutMediaInput, PostUncheckedCreateWithoutMediaInput>
+    connectOrCreate?: PostCreateOrConnectWithoutMediaInput
+    connect?: PostWhereUniqueInput
+  }
+
+  export type PostUpdateOneRequiredWithoutMediaNestedInput = {
+    create?: XOR<PostCreateWithoutMediaInput, PostUncheckedCreateWithoutMediaInput>
+    connectOrCreate?: PostCreateOrConnectWithoutMediaInput
+    upsert?: PostUpsertWithoutMediaInput
+    connect?: PostWhereUniqueInput
+    update?: XOR<XOR<PostUpdateToOneWithWhereWithoutMediaInput, PostUpdateWithoutMediaInput>, PostUncheckedUpdateWithoutMediaInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -3799,6 +10245,735 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type NestedEnumEventStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.EventStatus | EnumEventStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.EventStatus[] | ListEnumEventStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EventStatus[] | ListEnumEventStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumEventStatusFilter<$PrismaModel> | $Enums.EventStatus
+  }
+
+  export type NestedEnumEventStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.EventStatus | EnumEventStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.EventStatus[] | ListEnumEventStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EventStatus[] | ListEnumEventStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumEventStatusWithAggregatesFilter<$PrismaModel> | $Enums.EventStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumEventStatusFilter<$PrismaModel>
+    _max?: NestedEnumEventStatusFilter<$PrismaModel>
+  }
+
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type NestedEnumPostStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.PostStatus | EnumPostStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.PostStatus[] | ListEnumPostStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PostStatus[] | ListEnumPostStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumPostStatusFilter<$PrismaModel> | $Enums.PostStatus
+  }
+
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+  export type NestedJsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
+  export type NestedEnumPostStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PostStatus | EnumPostStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.PostStatus[] | ListEnumPostStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PostStatus[] | ListEnumPostStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumPostStatusWithAggregatesFilter<$PrismaModel> | $Enums.PostStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPostStatusFilter<$PrismaModel>
+    _max?: NestedEnumPostStatusFilter<$PrismaModel>
+  }
+
+  export type PostCreateWithoutAuthorInput = {
+    id?: string
+    authorName: string
+    authorAvatarUrl?: string | null
+    content: string
+    category: string
+    location?: string | null
+    eventDate?: Date | string | null
+    pollQuestion?: string | null
+    pollOptions?: NullableJsonNullValueInput | InputJsonValue
+    alertUsers?: boolean
+    likes?: number
+    shares?: number
+    status?: $Enums.PostStatus
+    rejectedReason?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    approvedAt?: Date | string | null
+    media?: PostMediaCreateNestedManyWithoutPostInput
+    reports?: PostReportCreateNestedManyWithoutPostInput
+  }
+
+  export type PostUncheckedCreateWithoutAuthorInput = {
+    id?: string
+    authorName: string
+    authorAvatarUrl?: string | null
+    content: string
+    category: string
+    location?: string | null
+    eventDate?: Date | string | null
+    pollQuestion?: string | null
+    pollOptions?: NullableJsonNullValueInput | InputJsonValue
+    alertUsers?: boolean
+    likes?: number
+    shares?: number
+    status?: $Enums.PostStatus
+    rejectedReason?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    approvedAt?: Date | string | null
+    media?: PostMediaUncheckedCreateNestedManyWithoutPostInput
+    reports?: PostReportUncheckedCreateNestedManyWithoutPostInput
+  }
+
+  export type PostCreateOrConnectWithoutAuthorInput = {
+    where: PostWhereUniqueInput
+    create: XOR<PostCreateWithoutAuthorInput, PostUncheckedCreateWithoutAuthorInput>
+  }
+
+  export type PostCreateManyAuthorInputEnvelope = {
+    data: PostCreateManyAuthorInput | PostCreateManyAuthorInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type PostUpsertWithWhereUniqueWithoutAuthorInput = {
+    where: PostWhereUniqueInput
+    update: XOR<PostUpdateWithoutAuthorInput, PostUncheckedUpdateWithoutAuthorInput>
+    create: XOR<PostCreateWithoutAuthorInput, PostUncheckedCreateWithoutAuthorInput>
+  }
+
+  export type PostUpdateWithWhereUniqueWithoutAuthorInput = {
+    where: PostWhereUniqueInput
+    data: XOR<PostUpdateWithoutAuthorInput, PostUncheckedUpdateWithoutAuthorInput>
+  }
+
+  export type PostUpdateManyWithWhereWithoutAuthorInput = {
+    where: PostScalarWhereInput
+    data: XOR<PostUpdateManyMutationInput, PostUncheckedUpdateManyWithoutAuthorInput>
+  }
+
+  export type PostScalarWhereInput = {
+    AND?: PostScalarWhereInput | PostScalarWhereInput[]
+    OR?: PostScalarWhereInput[]
+    NOT?: PostScalarWhereInput | PostScalarWhereInput[]
+    id?: StringFilter<"Post"> | string
+    authorId?: StringNullableFilter<"Post"> | string | null
+    authorName?: StringFilter<"Post"> | string
+    authorAvatarUrl?: StringNullableFilter<"Post"> | string | null
+    content?: StringFilter<"Post"> | string
+    category?: StringFilter<"Post"> | string
+    location?: StringNullableFilter<"Post"> | string | null
+    eventDate?: DateTimeNullableFilter<"Post"> | Date | string | null
+    pollQuestion?: StringNullableFilter<"Post"> | string | null
+    pollOptions?: JsonNullableFilter<"Post">
+    alertUsers?: BoolFilter<"Post"> | boolean
+    likes?: IntFilter<"Post"> | number
+    shares?: IntFilter<"Post"> | number
+    status?: EnumPostStatusFilter<"Post"> | $Enums.PostStatus
+    rejectedReason?: StringNullableFilter<"Post"> | string | null
+    createdAt?: DateTimeFilter<"Post"> | Date | string
+    updatedAt?: DateTimeFilter<"Post"> | Date | string
+    approvedAt?: DateTimeNullableFilter<"Post"> | Date | string | null
+  }
+
+  export type UserCreateWithoutPostsInput = {
+    id?: string
+    supabaseId?: string | null
+    fullName: string
+    username: string
+    email: string
+    passwordHash?: string | null
+    emailVerified?: boolean
+    avatarUrl?: string | null
+    bio?: string | null
+    city?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UserUncheckedCreateWithoutPostsInput = {
+    id?: string
+    supabaseId?: string | null
+    fullName: string
+    username: string
+    email: string
+    passwordHash?: string | null
+    emailVerified?: boolean
+    avatarUrl?: string | null
+    bio?: string | null
+    city?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UserCreateOrConnectWithoutPostsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutPostsInput, UserUncheckedCreateWithoutPostsInput>
+  }
+
+  export type PostMediaCreateWithoutPostInput = {
+    id?: string
+    url: string
+    storagePath: string
+    mimeType: string
+    createdAt?: Date | string
+  }
+
+  export type PostMediaUncheckedCreateWithoutPostInput = {
+    id?: string
+    url: string
+    storagePath: string
+    mimeType: string
+    createdAt?: Date | string
+  }
+
+  export type PostMediaCreateOrConnectWithoutPostInput = {
+    where: PostMediaWhereUniqueInput
+    create: XOR<PostMediaCreateWithoutPostInput, PostMediaUncheckedCreateWithoutPostInput>
+  }
+
+  export type PostMediaCreateManyPostInputEnvelope = {
+    data: PostMediaCreateManyPostInput | PostMediaCreateManyPostInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type PostReportCreateWithoutPostInput = {
+    id?: string
+    reason?: string | null
+    createdAt?: Date | string
+  }
+
+  export type PostReportUncheckedCreateWithoutPostInput = {
+    id?: string
+    reason?: string | null
+    createdAt?: Date | string
+  }
+
+  export type PostReportCreateOrConnectWithoutPostInput = {
+    where: PostReportWhereUniqueInput
+    create: XOR<PostReportCreateWithoutPostInput, PostReportUncheckedCreateWithoutPostInput>
+  }
+
+  export type PostReportCreateManyPostInputEnvelope = {
+    data: PostReportCreateManyPostInput | PostReportCreateManyPostInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type UserUpsertWithoutPostsInput = {
+    update: XOR<UserUpdateWithoutPostsInput, UserUncheckedUpdateWithoutPostsInput>
+    create: XOR<UserCreateWithoutPostsInput, UserUncheckedCreateWithoutPostsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutPostsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutPostsInput, UserUncheckedUpdateWithoutPostsInput>
+  }
+
+  export type UserUpdateWithoutPostsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    supabaseId?: NullableStringFieldUpdateOperationsInput | string | null
+    fullName?: StringFieldUpdateOperationsInput | string
+    username?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserUncheckedUpdateWithoutPostsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    supabaseId?: NullableStringFieldUpdateOperationsInput | string | null
+    fullName?: StringFieldUpdateOperationsInput | string
+    username?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PostMediaUpsertWithWhereUniqueWithoutPostInput = {
+    where: PostMediaWhereUniqueInput
+    update: XOR<PostMediaUpdateWithoutPostInput, PostMediaUncheckedUpdateWithoutPostInput>
+    create: XOR<PostMediaCreateWithoutPostInput, PostMediaUncheckedCreateWithoutPostInput>
+  }
+
+  export type PostMediaUpdateWithWhereUniqueWithoutPostInput = {
+    where: PostMediaWhereUniqueInput
+    data: XOR<PostMediaUpdateWithoutPostInput, PostMediaUncheckedUpdateWithoutPostInput>
+  }
+
+  export type PostMediaUpdateManyWithWhereWithoutPostInput = {
+    where: PostMediaScalarWhereInput
+    data: XOR<PostMediaUpdateManyMutationInput, PostMediaUncheckedUpdateManyWithoutPostInput>
+  }
+
+  export type PostMediaScalarWhereInput = {
+    AND?: PostMediaScalarWhereInput | PostMediaScalarWhereInput[]
+    OR?: PostMediaScalarWhereInput[]
+    NOT?: PostMediaScalarWhereInput | PostMediaScalarWhereInput[]
+    id?: StringFilter<"PostMedia"> | string
+    postId?: StringFilter<"PostMedia"> | string
+    url?: StringFilter<"PostMedia"> | string
+    storagePath?: StringFilter<"PostMedia"> | string
+    mimeType?: StringFilter<"PostMedia"> | string
+    createdAt?: DateTimeFilter<"PostMedia"> | Date | string
+  }
+
+  export type PostReportUpsertWithWhereUniqueWithoutPostInput = {
+    where: PostReportWhereUniqueInput
+    update: XOR<PostReportUpdateWithoutPostInput, PostReportUncheckedUpdateWithoutPostInput>
+    create: XOR<PostReportCreateWithoutPostInput, PostReportUncheckedCreateWithoutPostInput>
+  }
+
+  export type PostReportUpdateWithWhereUniqueWithoutPostInput = {
+    where: PostReportWhereUniqueInput
+    data: XOR<PostReportUpdateWithoutPostInput, PostReportUncheckedUpdateWithoutPostInput>
+  }
+
+  export type PostReportUpdateManyWithWhereWithoutPostInput = {
+    where: PostReportScalarWhereInput
+    data: XOR<PostReportUpdateManyMutationInput, PostReportUncheckedUpdateManyWithoutPostInput>
+  }
+
+  export type PostReportScalarWhereInput = {
+    AND?: PostReportScalarWhereInput | PostReportScalarWhereInput[]
+    OR?: PostReportScalarWhereInput[]
+    NOT?: PostReportScalarWhereInput | PostReportScalarWhereInput[]
+    id?: StringFilter<"PostReport"> | string
+    postId?: StringFilter<"PostReport"> | string
+    reason?: StringNullableFilter<"PostReport"> | string | null
+    createdAt?: DateTimeFilter<"PostReport"> | Date | string
+  }
+
+  export type PostCreateWithoutReportsInput = {
+    id?: string
+    authorName: string
+    authorAvatarUrl?: string | null
+    content: string
+    category: string
+    location?: string | null
+    eventDate?: Date | string | null
+    pollQuestion?: string | null
+    pollOptions?: NullableJsonNullValueInput | InputJsonValue
+    alertUsers?: boolean
+    likes?: number
+    shares?: number
+    status?: $Enums.PostStatus
+    rejectedReason?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    approvedAt?: Date | string | null
+    author?: UserCreateNestedOneWithoutPostsInput
+    media?: PostMediaCreateNestedManyWithoutPostInput
+  }
+
+  export type PostUncheckedCreateWithoutReportsInput = {
+    id?: string
+    authorId?: string | null
+    authorName: string
+    authorAvatarUrl?: string | null
+    content: string
+    category: string
+    location?: string | null
+    eventDate?: Date | string | null
+    pollQuestion?: string | null
+    pollOptions?: NullableJsonNullValueInput | InputJsonValue
+    alertUsers?: boolean
+    likes?: number
+    shares?: number
+    status?: $Enums.PostStatus
+    rejectedReason?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    approvedAt?: Date | string | null
+    media?: PostMediaUncheckedCreateNestedManyWithoutPostInput
+  }
+
+  export type PostCreateOrConnectWithoutReportsInput = {
+    where: PostWhereUniqueInput
+    create: XOR<PostCreateWithoutReportsInput, PostUncheckedCreateWithoutReportsInput>
+  }
+
+  export type PostUpsertWithoutReportsInput = {
+    update: XOR<PostUpdateWithoutReportsInput, PostUncheckedUpdateWithoutReportsInput>
+    create: XOR<PostCreateWithoutReportsInput, PostUncheckedCreateWithoutReportsInput>
+    where?: PostWhereInput
+  }
+
+  export type PostUpdateToOneWithWhereWithoutReportsInput = {
+    where?: PostWhereInput
+    data: XOR<PostUpdateWithoutReportsInput, PostUncheckedUpdateWithoutReportsInput>
+  }
+
+  export type PostUpdateWithoutReportsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    authorName?: StringFieldUpdateOperationsInput | string
+    authorAvatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    eventDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pollQuestion?: NullableStringFieldUpdateOperationsInput | string | null
+    pollOptions?: NullableJsonNullValueInput | InputJsonValue
+    alertUsers?: BoolFieldUpdateOperationsInput | boolean
+    likes?: IntFieldUpdateOperationsInput | number
+    shares?: IntFieldUpdateOperationsInput | number
+    status?: EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
+    rejectedReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    author?: UserUpdateOneWithoutPostsNestedInput
+    media?: PostMediaUpdateManyWithoutPostNestedInput
+  }
+
+  export type PostUncheckedUpdateWithoutReportsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    authorId?: NullableStringFieldUpdateOperationsInput | string | null
+    authorName?: StringFieldUpdateOperationsInput | string
+    authorAvatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    eventDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pollQuestion?: NullableStringFieldUpdateOperationsInput | string | null
+    pollOptions?: NullableJsonNullValueInput | InputJsonValue
+    alertUsers?: BoolFieldUpdateOperationsInput | boolean
+    likes?: IntFieldUpdateOperationsInput | number
+    shares?: IntFieldUpdateOperationsInput | number
+    status?: EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
+    rejectedReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    media?: PostMediaUncheckedUpdateManyWithoutPostNestedInput
+  }
+
+  export type PostCreateWithoutMediaInput = {
+    id?: string
+    authorName: string
+    authorAvatarUrl?: string | null
+    content: string
+    category: string
+    location?: string | null
+    eventDate?: Date | string | null
+    pollQuestion?: string | null
+    pollOptions?: NullableJsonNullValueInput | InputJsonValue
+    alertUsers?: boolean
+    likes?: number
+    shares?: number
+    status?: $Enums.PostStatus
+    rejectedReason?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    approvedAt?: Date | string | null
+    author?: UserCreateNestedOneWithoutPostsInput
+    reports?: PostReportCreateNestedManyWithoutPostInput
+  }
+
+  export type PostUncheckedCreateWithoutMediaInput = {
+    id?: string
+    authorId?: string | null
+    authorName: string
+    authorAvatarUrl?: string | null
+    content: string
+    category: string
+    location?: string | null
+    eventDate?: Date | string | null
+    pollQuestion?: string | null
+    pollOptions?: NullableJsonNullValueInput | InputJsonValue
+    alertUsers?: boolean
+    likes?: number
+    shares?: number
+    status?: $Enums.PostStatus
+    rejectedReason?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    approvedAt?: Date | string | null
+    reports?: PostReportUncheckedCreateNestedManyWithoutPostInput
+  }
+
+  export type PostCreateOrConnectWithoutMediaInput = {
+    where: PostWhereUniqueInput
+    create: XOR<PostCreateWithoutMediaInput, PostUncheckedCreateWithoutMediaInput>
+  }
+
+  export type PostUpsertWithoutMediaInput = {
+    update: XOR<PostUpdateWithoutMediaInput, PostUncheckedUpdateWithoutMediaInput>
+    create: XOR<PostCreateWithoutMediaInput, PostUncheckedCreateWithoutMediaInput>
+    where?: PostWhereInput
+  }
+
+  export type PostUpdateToOneWithWhereWithoutMediaInput = {
+    where?: PostWhereInput
+    data: XOR<PostUpdateWithoutMediaInput, PostUncheckedUpdateWithoutMediaInput>
+  }
+
+  export type PostUpdateWithoutMediaInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    authorName?: StringFieldUpdateOperationsInput | string
+    authorAvatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    eventDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pollQuestion?: NullableStringFieldUpdateOperationsInput | string | null
+    pollOptions?: NullableJsonNullValueInput | InputJsonValue
+    alertUsers?: BoolFieldUpdateOperationsInput | boolean
+    likes?: IntFieldUpdateOperationsInput | number
+    shares?: IntFieldUpdateOperationsInput | number
+    status?: EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
+    rejectedReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    author?: UserUpdateOneWithoutPostsNestedInput
+    reports?: PostReportUpdateManyWithoutPostNestedInput
+  }
+
+  export type PostUncheckedUpdateWithoutMediaInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    authorId?: NullableStringFieldUpdateOperationsInput | string | null
+    authorName?: StringFieldUpdateOperationsInput | string
+    authorAvatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    eventDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pollQuestion?: NullableStringFieldUpdateOperationsInput | string | null
+    pollOptions?: NullableJsonNullValueInput | InputJsonValue
+    alertUsers?: BoolFieldUpdateOperationsInput | boolean
+    likes?: IntFieldUpdateOperationsInput | number
+    shares?: IntFieldUpdateOperationsInput | number
+    status?: EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
+    rejectedReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reports?: PostReportUncheckedUpdateManyWithoutPostNestedInput
+  }
+
+  export type PostCreateManyAuthorInput = {
+    id?: string
+    authorName: string
+    authorAvatarUrl?: string | null
+    content: string
+    category: string
+    location?: string | null
+    eventDate?: Date | string | null
+    pollQuestion?: string | null
+    pollOptions?: NullableJsonNullValueInput | InputJsonValue
+    alertUsers?: boolean
+    likes?: number
+    shares?: number
+    status?: $Enums.PostStatus
+    rejectedReason?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    approvedAt?: Date | string | null
+  }
+
+  export type PostUpdateWithoutAuthorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    authorName?: StringFieldUpdateOperationsInput | string
+    authorAvatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    eventDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pollQuestion?: NullableStringFieldUpdateOperationsInput | string | null
+    pollOptions?: NullableJsonNullValueInput | InputJsonValue
+    alertUsers?: BoolFieldUpdateOperationsInput | boolean
+    likes?: IntFieldUpdateOperationsInput | number
+    shares?: IntFieldUpdateOperationsInput | number
+    status?: EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
+    rejectedReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    media?: PostMediaUpdateManyWithoutPostNestedInput
+    reports?: PostReportUpdateManyWithoutPostNestedInput
+  }
+
+  export type PostUncheckedUpdateWithoutAuthorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    authorName?: StringFieldUpdateOperationsInput | string
+    authorAvatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    eventDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pollQuestion?: NullableStringFieldUpdateOperationsInput | string | null
+    pollOptions?: NullableJsonNullValueInput | InputJsonValue
+    alertUsers?: BoolFieldUpdateOperationsInput | boolean
+    likes?: IntFieldUpdateOperationsInput | number
+    shares?: IntFieldUpdateOperationsInput | number
+    status?: EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
+    rejectedReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    media?: PostMediaUncheckedUpdateManyWithoutPostNestedInput
+    reports?: PostReportUncheckedUpdateManyWithoutPostNestedInput
+  }
+
+  export type PostUncheckedUpdateManyWithoutAuthorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    authorName?: StringFieldUpdateOperationsInput | string
+    authorAvatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    content?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    eventDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pollQuestion?: NullableStringFieldUpdateOperationsInput | string | null
+    pollOptions?: NullableJsonNullValueInput | InputJsonValue
+    alertUsers?: BoolFieldUpdateOperationsInput | boolean
+    likes?: IntFieldUpdateOperationsInput | number
+    shares?: IntFieldUpdateOperationsInput | number
+    status?: EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
+    rejectedReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type PostMediaCreateManyPostInput = {
+    id?: string
+    url: string
+    storagePath: string
+    mimeType: string
+    createdAt?: Date | string
+  }
+
+  export type PostReportCreateManyPostInput = {
+    id?: string
+    reason?: string | null
+    createdAt?: Date | string
+  }
+
+  export type PostMediaUpdateWithoutPostInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    storagePath?: StringFieldUpdateOperationsInput | string
+    mimeType?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PostMediaUncheckedUpdateWithoutPostInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    storagePath?: StringFieldUpdateOperationsInput | string
+    mimeType?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PostMediaUncheckedUpdateManyWithoutPostInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    storagePath?: StringFieldUpdateOperationsInput | string
+    mimeType?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PostReportUpdateWithoutPostInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PostReportUncheckedUpdateWithoutPostInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PostReportUncheckedUpdateManyWithoutPostInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

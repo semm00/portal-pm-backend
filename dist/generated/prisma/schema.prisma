@@ -27,6 +27,8 @@ model User {
   city          String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+
+  posts Post[]
 }
 
 model News {
@@ -36,4 +38,75 @@ model News {
   source    String
   url       String   @db.Text
   createdAt DateTime @default(now())
+}
+
+enum EventStatus {
+  PENDING
+  APPROVED
+}
+
+enum PostStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model Event {
+  id          String      @id @default(cuid())
+  title       String
+  description String?     @db.Text
+  category    String
+  location    String?
+  startDate   DateTime
+  endDate     DateTime
+  startTime   String?
+  endTime     String?
+  status      EventStatus @default(PENDING)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model Post {
+  id              String     @id @default(cuid())
+  authorId        String?
+  authorName      String
+  authorAvatarUrl String?    @db.Text
+  content         String     @db.Text
+  category        String
+  location        String?
+  eventDate       DateTime?
+  pollQuestion    String?
+  pollOptions     Json?
+  alertUsers      Boolean    @default(false)
+  likes           Int        @default(0)
+  shares          Int        @default(0)
+  status          PostStatus @default(PENDING)
+  rejectedReason  String?    @db.Text
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+  approvedAt      DateTime?
+
+  author  User?        @relation(fields: [authorId], references: [id])
+  media   PostMedia[]
+  reports PostReport[]
+}
+
+model PostReport {
+  id        String   @id @default(cuid())
+  postId    String
+  reason    String?  @db.Text
+  createdAt DateTime @default(now())
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+}
+
+model PostMedia {
+  id          String   @id @default(cuid())
+  postId      String
+  url         String   @db.Text
+  storagePath String   @db.Text
+  mimeType    String
+  createdAt   DateTime @default(now())
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
 }

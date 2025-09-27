@@ -8,6 +8,7 @@ import requireAuth, {
   type AuthenticatedRequest,
 } from "../middlewares/requireAuth";
 import { createSupabaseAdminClient } from "../services/supabaseClient";
+import { ensureUniqueUsername } from "../lib/userHelpers";
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -97,6 +98,93 @@ const mapPostResponse = (post: any) => ({
     createdAt: report.createdAt,
   })),
 });
+
+const extractMetadataString = (
+  metadata: Record<string, unknown>,
+  keys: string[]
+) => {
+  for (const key of keys) {
+    const value = metadata[key];
+    if (typeof value === "string" && value.trim()) {
+      return value.trim();
+    }
+  }
+  return null;
+};
+
+const ensureAuthorUser = async (authUser: AuthenticatedRequest["authUser"]) => {
+  if (!authUser) return null;
+
+  const metadata = (authUser.user_metadata ?? {}) as Record<string, unknown>;
+  const email = authUser.email?.toLowerCase?.() ?? null;
+
+  const existing = await prisma.user.findFirst({
+    where: {
+      OR: [{ supabaseId: authUser.id }, ...(email ? [{ email }] : [])],
+    },
+  });
+
+  const fullName =
+    extractMetadataString(metadata, [
+      "fullName",
+      "name",
+      "full_name",
+      "given_name",
+    ]) ||
+    (email ? email.split("@")[0] : null) ||
+    "Morador";
+
+  const avatarUrl =
+    extractMetadataString(metadata, ["avatarUrl", "avatar_url", "picture"]) ||
+    null;
+
+  if (existing) {
+    const needsUpdate =
+      existing.supabaseId !== authUser.id ||
+      (avatarUrl && existing.avatarUrl !== avatarUrl) ||
+      (fullName && existing.fullName !== fullName) ||
+      (email && existing.email !== email);
+
+    if (needsUpdate) {
+      return prisma.user.update({
+        where: { id: existing.id },
+        data: {
+          fullName,
+          avatarUrl: avatarUrl ?? undefined,
+          email: email ?? existing.email,
+          emailVerified: Boolean(authUser.email_confirmed_at),
+          supabaseId: authUser.id,
+        },
+      });
+    }
+
+    if (!existing.supabaseId) {
+      return prisma.user.update({
+        where: { id: existing.id },
+        data: { supabaseId: authUser.id },
+      });
+    }
+
+    return existing;
+  }
+
+  const desiredUsername =
+    extractMetadataString(metadata, ["username", "preferred_username"]) ||
+    (email ? email.split("@")[0] : `usuario-${authUser.id.slice(0, 8)}`);
+
+  const username = await ensureUniqueUsername(prisma, desiredUsername);
+
+  return prisma.user.create({
+    data: {
+      fullName,
+      username,
+      email: email ?? `${authUser.id}@portal.pm`,
+      avatarUrl: avatarUrl ?? undefined,
+      emailVerified: Boolean(authUser.email_confirmed_at),
+      supabaseId: authUser.id,
+    },
+  });
+};
 
 const uploadMediaFiles = async (
   files: Express.Multer.File[],
@@ -271,10 +359,13 @@ router.post("/", requireAuth, upload.array("media", 6), async (req, res) => {
     const files = (req.files as Express.Multer.File[]) ?? [];
     const mediaPayload = await uploadMediaFiles(files, authUser.id);
 
+    const authorRecord = await ensureAuthorUser(authUser);
+
     const authorName =
       sanitizeString(req.body?.authorName) ||
       sanitizeString(authUser.user_metadata?.full_name) ||
       sanitizeString(authUser.user_metadata?.name) ||
+      (authorRecord?.fullName ?? null) ||
       authUser.email ||
       "Morador";
 
@@ -284,7 +375,7 @@ router.post("/", requireAuth, upload.array("media", 6), async (req, res) => {
 
     const post = await prisma.post.create({
       data: {
-        authorId: authUser.id,
+        authorId: authorRecord?.id ?? null,
         authorName,
         authorAvatarUrl: authorAvatarUrl || null,
         content,
