@@ -11,9 +11,17 @@ const sanitizeString = (value: unknown) =>
   typeof value === "string" ? value.trim() : "";
 
 const parseDate = (value: unknown) => {
-  if (typeof value === "string" || value instanceof Date) {
-    const date = new Date(value);
+  // Trata a string de data como UTC para evitar problemas de fuso horário.
+  // "2025-09-27" se torna "2025-09-27T00:00:00.000Z"
+  if (typeof value === "string") {
+    const date = new Date(`${value}Z`);
+    if (!Number.isNaN(date.getTime())) {
+      return date;
+    }
+  }
 
+  if (value instanceof Date) {
+    const date = new Date(value);
     if (!Number.isNaN(date.getTime())) {
       return date;
     }
