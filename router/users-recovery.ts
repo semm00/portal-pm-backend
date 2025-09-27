@@ -1,25 +1,20 @@
 import { Router } from "express";
 import { PrismaClient } from "../generated/prisma";
-import nodemailer from "nodemailer";
-import bcrypt from "bcryptjs";
-import jwt, { SignOptions, Secret } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
+import {
+  createSupabaseAdminClient,
+  createSupabaseServerClient,
+} from "../services/supabaseClient";
 
 const router = Router();
 const prisma = new PrismaClient();
 
-const rawJwtSecret = process.env.JWT_SECRET;
-if (!rawJwtSecret) throw new Error("JWT_SECRET não definido no arquivo .env");
-const JWT_SECRET: Secret = rawJwtSecret;
-const JWT_EXPIRES_IN: SignOptions["expiresIn"] =
-  (process.env.JWT_EXPIRES_IN as SignOptions["expiresIn"]) ?? "1h";
+const FRONTEND_URL = process.env.FRONTEND_URL ?? "http://localhost:3000";
+const SUPABASE_JWT_SECRET = process.env.SUPABASE_JWT_SECRET;
 
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.GMAIL_USER,
-    pass: process.env.GMAIL_PASS,
-  },
-});
+if (!SUPABASE_JWT_SECRET) {
+  throw new Error("SUPABASE_JWT_SECRET não definido no arquivo .env");
+}
 
 // Solicitar recuperação de senha
 router.post("/forgot-password", async (req, res) => {
@@ -30,49 +25,79 @@ router.post("/forgot-password", async (req, res) => {
       .json({ success: false, message: "E-mail obrigatório." });
 
   const user = await prisma.user.findUnique({ where: { email } });
-  if (!user)
+  if (!user) {
     return res
-      .status(404)
-      .json({ success: false, message: "Usuário não encontrado." });
+      .status(200)
+      .json({
+        success: true,
+        message: "Se o e-mail existir, enviaremos instruções.",
+      });
+  }
 
-  const token = jwt.sign({ sub: user.id, email: user.email }, JWT_SECRET, {
-    expiresIn: JWT_EXPIRES_IN,
+  const supabase = createSupabaseServerClient();
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${FRONTEND_URL}/profile/reset-password`,
   });
-  const resetUrl = `${process.env.FRONTEND_URL}/profile/reset-password?token=${token}`;
 
-  await transporter.sendMail({
-    from: process.env.GMAIL_USER,
-    to: email,
-    subject: "Recuperação de senha - Portal PM",
-    html: `<p>Olá,</p><p>Para redefinir sua senha, clique <a href="${resetUrl}">aqui</a>.</p><p>Se não foi você, ignore este e-mail.</p>`,
-  });
+  if (error) {
+    console.error("Supabase resetPasswordForEmail error:", error);
+    return res
+      .status(500)
+      .json({
+        success: false,
+        message: "Não foi possível enviar as instruções.",
+      });
+  }
 
   return res.json({ success: true, message: "E-mail de recuperação enviado." });
 });
 
 // Redefinir senha
 router.post("/reset-password", async (req, res) => {
-  const { token, password } = req.body;
-  if (!token || !password)
-    return res
-      .status(400)
-      .json({ success: false, message: "Token e nova senha obrigatórios." });
+  const { accessToken, password } = req.body as {
+    accessToken?: string;
+    password?: string;
+  };
+
+  if (!accessToken || !password) {
+    return res.status(400).json({
+      success: false,
+      message: "Token e nova senha obrigatórios.",
+    });
+  }
 
   try {
-    const payload = jwt.verify(token, JWT_SECRET) as {
+    const payload = jwt.verify(accessToken, SUPABASE_JWT_SECRET) as {
       sub: string;
-      email: string;
+      email?: string;
     };
-    const passwordHash = await bcrypt.hash(password, 10);
-    await prisma.user.update({
-      where: { id: payload.sub },
-      data: { passwordHash },
-    });
+
+    const supabaseAdmin = createSupabaseAdminClient();
+    const { error } = await supabaseAdmin.auth.admin.updateUserById(
+      payload.sub,
+      {
+        password,
+      }
+    );
+
+    if (error) {
+      console.error("Supabase updateUserById error:", error);
+      return res.status(400).json({ success: false, message: error.message });
+    }
+
+    if (payload.email) {
+      await prisma.user.updateMany({
+        where: { email: payload.email },
+        data: { emailVerified: true },
+      });
+    }
+
     return res.json({
       success: true,
       message: "Senha redefinida com sucesso.",
     });
   } catch (err) {
+    console.error("Erro ao redefinir senha:", err);
     return res
       .status(400)
       .json({ success: false, message: "Token inválido ou expirado." });

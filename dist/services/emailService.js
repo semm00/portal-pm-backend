@@ -50,11 +50,20 @@ const sendVerificationEmail = async (user) => {
       </p>
     </div>
   `;
-    await transporter.sendMail({
+    const mailOptions = {
         from: `"Portal PM" <${process.env.GMAIL_USER}>`,
         to: user.email,
         subject: "Verifique seu e-mail - Portal PM",
         html: emailHtml,
-    });
+    };
+    try {
+        console.log(`[LOG] Preparando para enviar e-mail para: ${user.email}`);
+        const info = await transporter.sendMail(mailOptions);
+        console.log(`[LOG] E-mail enviado. Resposta do servidor: ${info.response}`);
+    }
+    catch (error) {
+        console.error("[ERRO] Falha ao enviar e-mail via emailService:", error);
+        throw error; // Re-lança o erro para ser tratado pelo chamador
+    }
 };
 exports.sendVerificationEmail = sendVerificationEmail;

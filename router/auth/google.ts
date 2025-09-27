@@ -1,19 +1,37 @@
 import { Router } from "express";
-import { OAuth2Client } from "google-auth-library";
-import { PrismaClient, User } from "../../generated/prisma";
-import jwt, { SignOptions, Secret } from "jsonwebtoken";
+import { PrismaClient } from "../../generated/prisma";
+import {
+  createSupabaseServerClient,
+  createSupabaseAdminClient,
+} from "../../services/supabaseClient";
 
 const router = Router();
 const prisma = new PrismaClient();
 
-const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
-const rawJwtSecret = process.env.JWT_SECRET;
-if (!rawJwtSecret) throw new Error("JWT_SECRET não definido no arquivo .env");
-const JWT_SECRET: Secret = rawJwtSecret;
-const JWT_EXPIRES_IN: SignOptions["expiresIn"] =
-  (process.env.JWT_EXPIRES_IN as SignOptions["expiresIn"]) ?? "7d";
+const ensureUniqueUsername = async (desired: string): Promise<string> => {
+  const base =
+    desired
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .replace(/-{2,}/g, "-") || `google-user-${Date.now()}`;
 
-const sanitizeUser = ({ passwordHash: _ignored, ...user }: User) => user;
+  let candidate = base;
+  let counter = 1;
+
+  while (true) {
+    const existing = await prisma.user.findFirst({
+      where: { username: candidate },
+    });
+
+    if (!existing) {
+      return candidate;
+    }
+
+    candidate = `${base}-${counter}`;
+    counter += 1;
+  }
+};
 
 router.post("/login/google", async (req, res) => {
   const { idToken } = req.body;
@@ -24,45 +42,77 @@ router.post("/login/google", async (req, res) => {
   }
 
   try {
-    const ticket = await client.verifyIdToken({
-      idToken,
-      audience: process.env.GOOGLE_CLIENT_ID,
+    const supabase = createSupabaseServerClient();
+    const { data, error } = await supabase.auth.signInWithIdToken({
+      provider: "google",
+      token: idToken,
     });
-    const payload = ticket.getPayload();
-    if (!payload?.email) {
+
+    if (error || !data.user || !data.session || !data.user.email) {
+      console.error("Supabase Google login error:", error);
       return res
-        .status(400)
-        .json({ success: false, message: "E-mail Google não encontrado." });
+        .status(401)
+        .json({ success: false, message: "Falha na autenticação Google." });
     }
 
-    let user = await prisma.user.findUnique({
-      where: { email: payload.email },
+    const supabaseUser = data.user;
+    const email = supabaseUser.email as string;
+    const metadata = (supabaseUser.user_metadata ?? {}) as Record<
+      string,
+      unknown
+    >;
+
+    const fullName =
+      (metadata.fullName as string) ??
+      (metadata.name as string) ??
+      email.split("@")[0];
+    const avatarUrl =
+      (metadata.avatarUrl as string | undefined) ??
+      (metadata.avatar_url as string | undefined) ??
+      (metadata.picture as string | undefined) ??
+      undefined;
+
+    const existingUser = await prisma.user.findUnique({
+      where: { email },
     });
-    if (!user) {
-      user = await prisma.user.create({
-        data: {
-          fullName: payload.name ?? "Google User",
-          username: payload.email.split("@")[0],
-          email: payload.email,
-          avatarUrl: payload.picture,
-          passwordHash: "google-oauth",
-          emailVerified: true,
-        },
-      });
-    } else if (!user.emailVerified) {
-      user = await prisma.user.update({
-        where: { id: user.id },
-        data: { emailVerified: true },
-      });
-    }
 
-    const token = jwt.sign(
-      { sub: user.id, email: user.email, username: user.username },
-      JWT_SECRET,
-      { expiresIn: JWT_EXPIRES_IN }
-    );
-    return res.json({ success: true, user: sanitizeUser(user), token });
+    const username = existingUser
+      ? existingUser.username
+      : await ensureUniqueUsername(email.split("@")[0]);
+
+    const userRecord = await prisma.user.upsert({
+      where: { email },
+      update: {
+        fullName,
+        username,
+        avatarUrl,
+        emailVerified: Boolean(supabaseUser.email_confirmed_at),
+        supabaseId: supabaseUser.id,
+      },
+      create: {
+        fullName,
+        username,
+        email,
+        avatarUrl,
+        emailVerified: Boolean(supabaseUser.email_confirmed_at),
+        supabaseId: supabaseUser.id,
+      },
+    });
+
+    return res.json({
+      success: true,
+      user: {
+        name: userRecord.fullName,
+        email: userRecord.email,
+        username: userRecord.username,
+        avatarUrl: userRecord.avatarUrl ?? undefined,
+        token: data.session.access_token,
+      },
+      token: data.session.access_token,
+      refreshToken: data.session.refresh_token,
+    });
   } catch (err) {
+    console.error("Erro inesperado ao autenticar com Google:", err);
     return res
       .status(401)
       .json({ success: false, message: "Falha na autenticação Google." });

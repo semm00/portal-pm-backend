@@ -1,51 +1,69 @@
 import { Router } from "express";
-import bcrypt from "bcryptjs";
-import jwt, { SignOptions, Secret } from "jsonwebtoken";
-
-import { PrismaClient, User } from "../generated/prisma";
+import { PrismaClient } from "../generated/prisma";
+import {
+  createSupabaseAdminClient,
+  createSupabaseServerClient,
+} from "../services/supabaseClient";
 
 const prisma = new PrismaClient();
 const router = Router();
 
-const rawJwtSecret = process.env.JWT_SECRET;
+const FRONTEND_URL = process.env.FRONTEND_URL ?? "http://localhost:3000";
 
-if (!rawJwtSecret) {
-  throw new Error("JWT_SECRET não definido no arquivo .env");
-}
-
-const JWT_SECRET: Secret = rawJwtSecret;
-
-const JWT_EXPIRES_IN: SignOptions["expiresIn"] =
-  (process.env.JWT_EXPIRES_IN as SignOptions["expiresIn"]) ?? "7d";
-
-type SanitizedUser = Pick<
-  User,
-  | "id"
-  | "fullName"
-  | "username"
-  | "email"
-  | "avatarUrl"
-  | "createdAt"
-  | "updatedAt"
->;
-
-const toSanitizedUser = (user: User): SanitizedUser => {
-  const { passwordHash: _passwordHash, ...rest } = user;
-  return rest;
+const normalizeSupabaseError = (message: string) => {
+  if (!message) return "Falha ao processar a solicitação.";
+  const normalized = message.toLowerCase();
+  if (normalized.includes("email")) {
+    if (normalized.includes("already registered")) {
+      return "E-mail já cadastrado.";
+    }
+    if (normalized.includes("not confirmed")) {
+      return "Seu e-mail ainda não foi verificado.";
+    }
+  }
+  if (normalized.includes("invalid login credentials")) {
+    return "Credenciais inválidas.";
+  }
+  return message;
 };
 
-const buildToken = (user: User) =>
-  jwt.sign(
-    {
-      sub: user.id,
-      email: user.email,
-      username: user.username,
-    },
-    JWT_SECRET,
-    { expiresIn: JWT_EXPIRES_IN }
-  );
+const sanitizeUsername = (value: string) =>
+  value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .replace(/-{2,}/g, "-");
 
-import { sendVerificationEmail } from "../services/emailService";
+const ensureUniqueUsername = async (
+  desired: string,
+  excludeUserId?: string
+): Promise<string> => {
+  const base = sanitizeUsername(desired) || `usuario-${Date.now()}`;
+  let candidate = base;
+  let counter = 1;
+
+  while (true) {
+    const existing = await prisma.user.findFirst({
+      where: {
+        username: candidate,
+        ...(excludeUserId
+          ? {
+              NOT: {
+                id: excludeUserId,
+              },
+            }
+          : {}),
+      },
+    });
+
+    if (!existing) {
+      return candidate;
+    }
+
+    candidate = `${base}-${counter}`;
+    counter += 1;
+  }
+};
 
 router.post("/register", async (req, res) => {
   const { fullName, username, email, password } = req.body as {
@@ -75,34 +93,64 @@ router.post("/register", async (req, res) => {
     });
   }
 
-  const passwordHash = await bcrypt.hash(password, 10);
+  const supabase = createSupabaseServerClient();
 
-  const user = await prisma.user.create({
-    data: {
-      fullName,
-      username,
-      email,
-      passwordHash,
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      data: {
+        fullName,
+        username,
+      },
+      emailRedirectTo: `${FRONTEND_URL}/profile/verification`,
     },
   });
 
-  let emailSent = false;
-  try {
-    await sendVerificationEmail(user);
-    emailSent = true;
-  } catch (error) {
-    console.error("Falha ao enviar e-mail de verificação:", error);
+  if (error) {
+    console.error("Supabase signUp error:", error);
+    return res.status(400).json({
+      success: false,
+      message: normalizeSupabaseError(error.message),
+    });
   }
+
+  const supabaseUser = data.user;
+
+  if (!supabaseUser || !supabaseUser.email) {
+    return res.status(500).json({
+      success: false,
+      message: "Não foi possível concluir o cadastro. Tente novamente.",
+    });
+  }
+
+  await prisma.user.upsert({
+    where: { email: supabaseUser.email },
+    update: {
+      fullName,
+      username,
+      emailVerified: Boolean(supabaseUser.email_confirmed_at),
+      avatarUrl: (supabaseUser.user_metadata as Record<string, unknown>)
+        ?.avatarUrl as string | undefined,
+      supabaseId: supabaseUser.id,
+    },
+    create: {
+      fullName,
+      username,
+      email: supabaseUser.email,
+      emailVerified: Boolean(supabaseUser.email_confirmed_at),
+      avatarUrl: (supabaseUser.user_metadata as Record<string, unknown>)
+        ?.avatarUrl as string | undefined,
+      supabaseId: supabaseUser.id,
+    },
+  });
 
   return res.status(201).json({
     success: true,
-    message:
-      "Cadastro realizado! Não conseguimos enviar o e-mail automaticamente. Clique em 'Reenviar e-mail' na tela de login para tentar novamente.",
-    emailSent,
+    message: "Cadastro realizado! Verifique seu e-mail para ativar a conta.",
+    emailSent: !supabaseUser.email_confirmed_at,
   });
 });
-
-// ... (imports e código anterior)
 
 router.post("/login", async (req, res) => {
   const { email, password } = req.body as {
@@ -117,39 +165,97 @@ router.post("/login", async (req, res) => {
     });
   }
 
-  const user = await prisma.user.findUnique({ where: { email } });
+  const supabase = createSupabaseServerClient();
 
-  if (!user) {
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
+
+  if (error) {
+    const message = normalizeSupabaseError(error.message);
+    const isEmailNotVerified = error.message
+      .toLowerCase()
+      .includes("email not confirmed");
+
+    return res.status(isEmailNotVerified ? 403 : 401).json({
+      success: false,
+      message,
+      ...(isEmailNotVerified ? { code: "EMAIL_NOT_VERIFIED" } : {}),
+    });
+  }
+
+  const session = data.session;
+  const supabaseUser = data.user;
+
+  if (!session || !supabaseUser || !supabaseUser.email) {
     return res.status(401).json({
       success: false,
       message: "Credenciais inválidas.",
     });
   }
 
-  const passwordMatches = await bcrypt.compare(password, user.passwordHash);
+  const metadata = (supabaseUser.user_metadata ?? {}) as Record<
+    string,
+    unknown
+  >;
+  const fullName =
+    (metadata.fullName as string) ??
+    (metadata.name as string) ??
+    supabaseUser.email.split("@")[0];
 
-  if (!passwordMatches) {
-    return res.status(401).json({
-      success: false,
-      message: "Credenciais inválidas.",
-    });
-  }
+  const existingUser = await prisma.user.findUnique({
+    where: { email: supabaseUser.email },
+  });
 
-  if (!user.emailVerified) {
-    return res.status(403).json({
-      success: false,
-      message: "Seu e-mail ainda não foi verificado.",
-      code: "EMAIL_NOT_VERIFIED",
-    });
-  }
+  const desiredUsername = (metadata.username as string) ?? supabaseUser.email;
+  const username = existingUser
+    ? existingUser.username
+    : await ensureUniqueUsername(desiredUsername);
 
-  const token = buildToken(user);
+  const avatarUrl =
+    (metadata.avatarUrl as string | undefined) ??
+    (metadata.avatar_url as string | undefined) ??
+    (metadata.picture as string | undefined) ??
+    undefined;
+
+  const userRecord = await prisma.user.upsert({
+    where: { email: supabaseUser.email },
+    update: {
+      fullName,
+      username,
+      avatarUrl,
+      emailVerified: Boolean(supabaseUser.email_confirmed_at),
+      supabaseId: supabaseUser.id,
+    },
+    create: {
+      fullName,
+      username,
+      email: supabaseUser.email,
+      avatarUrl,
+      emailVerified: Boolean(supabaseUser.email_confirmed_at),
+      supabaseId: supabaseUser.id,
+    },
+  });
 
   return res.json({
     success: true,
-    user: toSanitizedUser(user),
-    token,
+    user: {
+      name: userRecord.fullName,
+      email: userRecord.email,
+      username: userRecord.username,
+      avatarUrl: userRecord.avatarUrl ?? undefined,
+      token: session.access_token,
+    },
+    token: session.access_token,
+    refreshToken: session.refresh_token,
   });
+});
+
+router.post("/logout", async (_req, res) => {
+  const supabase = createSupabaseServerClient();
+  await supabase.auth.signOut();
+  return res.json({ success: true });
 });
 
 export default router;

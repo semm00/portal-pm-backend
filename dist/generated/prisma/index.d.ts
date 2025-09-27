@@ -872,6 +872,7 @@ export namespace Prisma {
 
   export type UserMinAggregateOutputType = {
     id: string | null
+    supabaseId: string | null
     fullName: string | null
     username: string | null
     email: string | null
@@ -884,6 +885,7 @@ export namespace Prisma {
 
   export type UserMaxAggregateOutputType = {
     id: string | null
+    supabaseId: string | null
     fullName: string | null
     username: string | null
     email: string | null
@@ -896,6 +898,7 @@ export namespace Prisma {
 
   export type UserCountAggregateOutputType = {
     id: number
+    supabaseId: number
     fullName: number
     username: number
     email: number
@@ -910,6 +913,7 @@ export namespace Prisma {
 
   export type UserMinAggregateInputType = {
     id?: true
+    supabaseId?: true
     fullName?: true
     username?: true
     email?: true
@@ -922,6 +926,7 @@ export namespace Prisma {
 
   export type UserMaxAggregateInputType = {
     id?: true
+    supabaseId?: true
     fullName?: true
     username?: true
     email?: true
@@ -934,6 +939,7 @@ export namespace Prisma {
 
   export type UserCountAggregateInputType = {
     id?: true
+    supabaseId?: true
     fullName?: true
     username?: true
     email?: true
@@ -1019,10 +1025,11 @@ export namespace Prisma {
 
   export type UserGroupByOutputType = {
     id: string
+    supabaseId: string | null
     fullName: string
     username: string
     email: string
-    passwordHash: string
+    passwordHash: string | null
     emailVerified: boolean
     avatarUrl: string | null
     createdAt: Date
@@ -1048,6 +1055,7 @@ export namespace Prisma {
 
   export type UserSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    supabaseId?: boolean
     fullName?: boolean
     username?: boolean
     email?: boolean
@@ -1060,6 +1068,7 @@ export namespace Prisma {
 
   export type UserSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    supabaseId?: boolean
     fullName?: boolean
     username?: boolean
     email?: boolean
@@ -1072,6 +1081,7 @@ export namespace Prisma {
 
   export type UserSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    supabaseId?: boolean
     fullName?: boolean
     username?: boolean
     email?: boolean
@@ -1084,6 +1094,7 @@ export namespace Prisma {
 
   export type UserSelectScalar = {
     id?: boolean
+    supabaseId?: boolean
     fullName?: boolean
     username?: boolean
     email?: boolean
@@ -1094,17 +1105,18 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "fullName" | "username" | "email" | "passwordHash" | "emailVerified" | "avatarUrl" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "supabaseId" | "fullName" | "username" | "email" | "passwordHash" | "emailVerified" | "avatarUrl" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 
   export type $UserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "User"
     objects: {}
     scalars: $Extensions.GetPayloadResult<{
       id: string
+      supabaseId: string | null
       fullName: string
       username: string
       email: string
-      passwordHash: string
+      passwordHash: string | null
       emailVerified: boolean
       avatarUrl: string | null
       createdAt: Date
@@ -1533,6 +1545,7 @@ export namespace Prisma {
    */
   interface UserFieldRefs {
     readonly id: FieldRef<"User", 'String'>
+    readonly supabaseId: FieldRef<"User", 'String'>
     readonly fullName: FieldRef<"User", 'String'>
     readonly username: FieldRef<"User", 'String'>
     readonly email: FieldRef<"User", 'String'>
@@ -1923,6 +1936,7 @@ export namespace Prisma {
 
   export const UserScalarFieldEnum: {
     id: 'id',
+    supabaseId: 'supabaseId',
     fullName: 'fullName',
     username: 'username',
     email: 'email',
@@ -2022,10 +2036,11 @@ export namespace Prisma {
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
     id?: StringFilter<"User"> | string
+    supabaseId?: StringNullableFilter<"User"> | string | null
     fullName?: StringFilter<"User"> | string
     username?: StringFilter<"User"> | string
     email?: StringFilter<"User"> | string
-    passwordHash?: StringFilter<"User"> | string
+    passwordHash?: StringNullableFilter<"User"> | string | null
     emailVerified?: BoolFilter<"User"> | boolean
     avatarUrl?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
@@ -2034,10 +2049,11 @@ export namespace Prisma {
 
   export type UserOrderByWithRelationInput = {
     id?: SortOrder
+    supabaseId?: SortOrderInput | SortOrder
     fullName?: SortOrder
     username?: SortOrder
     email?: SortOrder
-    passwordHash?: SortOrder
+    passwordHash?: SortOrderInput | SortOrder
     emailVerified?: SortOrder
     avatarUrl?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -2046,25 +2062,27 @@ export namespace Prisma {
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    supabaseId?: string
     username?: string
     email?: string
     AND?: UserWhereInput | UserWhereInput[]
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
     fullName?: StringFilter<"User"> | string
-    passwordHash?: StringFilter<"User"> | string
+    passwordHash?: StringNullableFilter<"User"> | string | null
     emailVerified?: BoolFilter<"User"> | boolean
     avatarUrl?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
-  }, "id" | "username" | "email">
+  }, "id" | "supabaseId" | "username" | "email">
 
   export type UserOrderByWithAggregationInput = {
     id?: SortOrder
+    supabaseId?: SortOrderInput | SortOrder
     fullName?: SortOrder
     username?: SortOrder
     email?: SortOrder
-    passwordHash?: SortOrder
+    passwordHash?: SortOrderInput | SortOrder
     emailVerified?: SortOrder
     avatarUrl?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -2079,10 +2097,11 @@ export namespace Prisma {
     OR?: UserScalarWhereWithAggregatesInput[]
     NOT?: UserScalarWhereWithAggregatesInput | UserScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"User"> | string
+    supabaseId?: StringNullableWithAggregatesFilter<"User"> | string | null
     fullName?: StringWithAggregatesFilter<"User"> | string
     username?: StringWithAggregatesFilter<"User"> | string
     email?: StringWithAggregatesFilter<"User"> | string
-    passwordHash?: StringWithAggregatesFilter<"User"> | string
+    passwordHash?: StringNullableWithAggregatesFilter<"User"> | string | null
     emailVerified?: BoolWithAggregatesFilter<"User"> | boolean
     avatarUrl?: StringNullableWithAggregatesFilter<"User"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
@@ -2091,10 +2110,11 @@ export namespace Prisma {
 
   export type UserCreateInput = {
     id?: string
+    supabaseId?: string | null
     fullName: string
     username: string
     email: string
-    passwordHash: string
+    passwordHash?: string | null
     emailVerified?: boolean
     avatarUrl?: string | null
     createdAt?: Date | string
@@ -2103,10 +2123,11 @@ export namespace Prisma {
 
   export type UserUncheckedCreateInput = {
     id?: string
+    supabaseId?: string | null
     fullName: string
     username: string
     email: string
-    passwordHash: string
+    passwordHash?: string | null
     emailVerified?: boolean
     avatarUrl?: string | null
     createdAt?: Date | string
@@ -2115,10 +2136,11 @@ export namespace Prisma {
 
   export type UserUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    supabaseId?: NullableStringFieldUpdateOperationsInput | string | null
     fullName?: StringFieldUpdateOperationsInput | string
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    passwordHash?: StringFieldUpdateOperationsInput | string
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -2127,10 +2149,11 @@ export namespace Prisma {
 
   export type UserUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    supabaseId?: NullableStringFieldUpdateOperationsInput | string | null
     fullName?: StringFieldUpdateOperationsInput | string
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    passwordHash?: StringFieldUpdateOperationsInput | string
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -2139,10 +2162,11 @@ export namespace Prisma {
 
   export type UserCreateManyInput = {
     id?: string
+    supabaseId?: string | null
     fullName: string
     username: string
     email: string
-    passwordHash: string
+    passwordHash?: string | null
     emailVerified?: boolean
     avatarUrl?: string | null
     createdAt?: Date | string
@@ -2151,10 +2175,11 @@ export namespace Prisma {
 
   export type UserUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    supabaseId?: NullableStringFieldUpdateOperationsInput | string | null
     fullName?: StringFieldUpdateOperationsInput | string
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    passwordHash?: StringFieldUpdateOperationsInput | string
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -2163,10 +2188,11 @@ export namespace Prisma {
 
   export type UserUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    supabaseId?: NullableStringFieldUpdateOperationsInput | string | null
     fullName?: StringFieldUpdateOperationsInput | string
     username?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
-    passwordHash?: StringFieldUpdateOperationsInput | string
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -2188,11 +2214,6 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
-  export type BoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
-  }
-
   export type StringNullableFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -2206,6 +2227,11 @@ export namespace Prisma {
     endsWith?: string | StringFieldRefInput<$PrismaModel>
     mode?: QueryMode
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
   export type DateTimeFilter<$PrismaModel = never> = {
@@ -2226,6 +2252,7 @@ export namespace Prisma {
 
   export type UserCountOrderByAggregateInput = {
     id?: SortOrder
+    supabaseId?: SortOrder
     fullName?: SortOrder
     username?: SortOrder
     email?: SortOrder
@@ -2238,6 +2265,7 @@ export namespace Prisma {
 
   export type UserMaxOrderByAggregateInput = {
     id?: SortOrder
+    supabaseId?: SortOrder
     fullName?: SortOrder
     username?: SortOrder
     email?: SortOrder
@@ -2250,6 +2278,7 @@ export namespace Prisma {
 
   export type UserMinOrderByAggregateInput = {
     id?: SortOrder
+    supabaseId?: SortOrder
     fullName?: SortOrder
     username?: SortOrder
     email?: SortOrder
@@ -2278,14 +2307,6 @@ export namespace Prisma {
     _max?: NestedStringFilter<$PrismaModel>
   }
 
-  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
-  }
-
   export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -2302,6 +2323,14 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedStringNullableFilter<$PrismaModel>
     _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
@@ -2322,12 +2351,12 @@ export namespace Prisma {
     set?: string
   }
 
-  export type BoolFieldUpdateOperationsInput = {
-    set?: boolean
-  }
-
   export type NullableStringFieldUpdateOperationsInput = {
     set?: string | null
+  }
+
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
   }
 
   export type DateTimeFieldUpdateOperationsInput = {
@@ -2348,11 +2377,6 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
-  export type NestedBoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
-  }
-
   export type NestedStringNullableFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -2365,6 +2389,11 @@ export namespace Prisma {
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
   export type NestedDateTimeFilter<$PrismaModel = never> = {
@@ -2406,14 +2435,6 @@ export namespace Prisma {
     not?: NestedIntFilter<$PrismaModel> | number
   }
 
-  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
-  }
-
   export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -2440,6 +2461,14 @@ export namespace Prisma {
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
