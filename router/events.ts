@@ -11,12 +11,20 @@ const sanitizeString = (value: unknown) =>
   typeof value === "string" ? value.trim() : "";
 
 const parseDate = (value: unknown) => {
-  // Trata a string de data como UTC para evitar problemas de fuso horário.
-  // "2025-09-27" se torna "2025-09-27T00:00:00.000Z"
   if (typeof value === "string") {
-    const date = new Date(`${value}Z`);
-    if (!Number.isNaN(date.getTime())) {
-      return date;
+    // Trata datas no formato "YYYY-MM-DD" ou "YYYY-MM-DDTHH:mm:ss"
+    // como UTC para evitar problemas de fuso horário.
+    const dateStr = value.trim();
+    const parts = dateStr.split("T")[0].split("-");
+    if (parts.length === 3) {
+      const year = parseInt(parts[0], 10);
+      const month = parseInt(parts[1], 10) - 1; // mês é 0-indexado
+      const day = parseInt(parts[2], 10);
+      if (!isNaN(year) && !isNaN(month) && !isNaN(day)) {
+        // Cria a data como UTC, meia-noite
+        const date = new Date(Date.UTC(year, month, day, 12, 0, 0, 0));
+        return date;
+      }
     }
   }
 
