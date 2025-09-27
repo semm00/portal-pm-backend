@@ -360,6 +360,7 @@ router.get("/", async (req, res) => {
       take,
       orderBy: { createdAt: "desc" },
       include: {
+        author: true,
         media: true,
         reports: includeReports
           ? {

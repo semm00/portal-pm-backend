@@ -209,6 +209,7 @@ router.post("/login", async (req, res) => {
   return res.json({
     success: true,
     user: {
+      id: userRecord.id,
       name: userRecord.fullName,
       email: userRecord.email,
       username: userRecord.username,
