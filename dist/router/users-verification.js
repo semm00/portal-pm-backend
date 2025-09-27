@@ -69,9 +69,7 @@ router.post("/verify-email", async (req, res) => {
             }
             const alreadyVerified = fallbackAlreadyVerified || adminUserEmailConfirmed;
             if (!alreadyVerified) {
-                return res
-                    .status(400)
-                    .json({ success: false, message: error.message });
+                return res.status(400).json({ success: false, message: error.message });
             }
             await markEmailAsVerified(email, adminUserId);
             return res.json({

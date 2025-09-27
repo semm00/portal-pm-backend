@@ -23,6 +23,8 @@ model User {
   passwordHash  String?
   emailVerified Boolean  @default(false)
   avatarUrl     String?  @db.Text
+  bio           String?  @db.Text
+  city          String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }

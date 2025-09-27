@@ -3,27 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const prisma_1 = require("../../generated/prisma");
 const supabaseClient_1 = require("../../services/supabaseClient");
+const userHelpers_1 = require("../../lib/userHelpers");
 const router = (0, express_1.Router)();
 const prisma = new prisma_1.PrismaClient();
-const ensureUniqueUsername = async (desired) => {
-    const base = desired
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-+|-+$/g, "")
-        .replace(/-{2,}/g, "-") || `google-user-${Date.now()}`;
-    let candidate = base;
-    let counter = 1;
-    while (true) {
-        const existing = await prisma.user.findFirst({
-            where: { username: candidate },
-        });
-        if (!existing) {
-            return candidate;
-        }
-        candidate = `${base}-${counter}`;
-        counter += 1;
-    }
-};
 router.post("/login/google", async (req, res) => {
     const { idToken } = req.body;
     if (!idToken) {
@@ -58,7 +40,7 @@ router.post("/login/google", async (req, res) => {
         });
         const username = existingUser
             ? existingUser.username
-            : await ensureUniqueUsername(email.split("@")[0]);
+            : await (0, userHelpers_1.ensureUniqueUsername)(prisma, email.split("@")[0]);
         const userRecord = await prisma.user.upsert({
             where: { email },
             update: {

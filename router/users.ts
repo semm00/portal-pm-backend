@@ -4,6 +4,7 @@ import {
   createSupabaseAdminClient,
   createSupabaseServerClient,
 } from "../services/supabaseClient";
+import { ensureUniqueUsername } from "../lib/userHelpers";
 
 const prisma = new PrismaClient();
 const router = Router();
@@ -27,43 +28,10 @@ const normalizeSupabaseError = (message: string) => {
   return message;
 };
 
-const sanitizeUsername = (value: string) =>
-  value
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .replace(/-{2,}/g, "-");
-
-const ensureUniqueUsername = async (
+const ensureUniqueUsernameForPrisma = (
   desired: string,
   excludeUserId?: string
-): Promise<string> => {
-  const base = sanitizeUsername(desired) || `usuario-${Date.now()}`;
-  let candidate = base;
-  let counter = 1;
-
-  while (true) {
-    const existing = await prisma.user.findFirst({
-      where: {
-        username: candidate,
-        ...(excludeUserId
-          ? {
-              NOT: {
-                id: excludeUserId,
-              },
-            }
-          : {}),
-      },
-    });
-
-    if (!existing) {
-      return candidate;
-    }
-
-    candidate = `${base}-${counter}`;
-    counter += 1;
-  }
-};
+) => ensureUniqueUsername(prisma, desired, excludeUserId);
 
 router.post("/register", async (req, res) => {
   const { fullName, username, email, password } = req.body as {
@@ -211,7 +179,7 @@ router.post("/login", async (req, res) => {
   const desiredUsername = (metadata.username as string) ?? supabaseUser.email;
   const username = existingUser
     ? existingUser.username
-    : await ensureUniqueUsername(desiredUsername);
+    : await ensureUniqueUsernameForPrisma(desiredUsername);
 
   const avatarUrl =
     (metadata.avatarUrl as string | undefined) ??

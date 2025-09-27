@@ -1,37 +1,10 @@
 import { Router } from "express";
 import { PrismaClient } from "../../generated/prisma";
-import {
-  createSupabaseServerClient,
-  createSupabaseAdminClient,
-} from "../../services/supabaseClient";
+import { createSupabaseServerClient } from "../../services/supabaseClient";
+import { ensureUniqueUsername } from "../../lib/userHelpers";
 
 const router = Router();
 const prisma = new PrismaClient();
-
-const ensureUniqueUsername = async (desired: string): Promise<string> => {
-  const base =
-    desired
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-+|-+$/g, "")
-      .replace(/-{2,}/g, "-") || `google-user-${Date.now()}`;
-
-  let candidate = base;
-  let counter = 1;
-
-  while (true) {
-    const existing = await prisma.user.findFirst({
-      where: { username: candidate },
-    });
-
-    if (!existing) {
-      return candidate;
-    }
-
-    candidate = `${base}-${counter}`;
-    counter += 1;
-  }
-};
 
 router.post("/login/google", async (req, res) => {
   const { idToken } = req.body;
@@ -78,7 +51,7 @@ router.post("/login/google", async (req, res) => {
 
     const username = existingUser
       ? existingUser.username
-      : await ensureUniqueUsername(email.split("@")[0]);
+      : await ensureUniqueUsername(prisma, email.split("@")[0]);
 
     const userRecord = await prisma.user.upsert({
       where: { email },

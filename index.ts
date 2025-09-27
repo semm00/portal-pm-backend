@@ -6,6 +6,7 @@ import usersRouter from "./router/users";
 import usersRecoveryRouter from "./router/users-recovery";
 import usersVerificationRouter from "./router/users-verification";
 import googleAuthRouter from "./router/auth/google";
+import profileRouter from "./router/profile";
 
 const app = express();
 
@@ -30,6 +31,7 @@ app.use("/api/users", usersRouter);
 app.use("/api/users", usersRecoveryRouter);
 app.use("/api/users", usersVerificationRouter);
 app.use("/api/users", googleAuthRouter);
+app.use("/api/profile", profileRouter);
 
 const PORT = Number(process.env.PORT ?? 4000);
 

@@ -10,6 +10,7 @@ const users_1 = __importDefault(require("./router/users"));
 const users_recovery_1 = __importDefault(require("./router/users-recovery"));
 const users_verification_1 = __importDefault(require("./router/users-verification"));
 const google_1 = __importDefault(require("./router/auth/google"));
+const profile_1 = __importDefault(require("./router/profile"));
 const app = (0, express_1.default)();
 const allowedOrigins = process.env.CORS_ORIGIN?.split(",")
     .map((origin) => origin.trim())
@@ -28,6 +29,7 @@ app.use("/api/users", users_1.default);
 app.use("/api/users", users_recovery_1.default);
 app.use("/api/users", users_verification_1.default);
 app.use("/api/users", google_1.default);
+app.use("/api/profile", profile_1.default);
 const PORT = Number(process.env.PORT ?? 4000);
 app.listen(PORT, () => {
     console.log(`🚀 Server ready on http://localhost:${PORT}`);

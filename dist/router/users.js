@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const prisma_1 = require("../generated/prisma");
 const supabaseClient_1 = require("../services/supabaseClient");
+const userHelpers_1 = require("../lib/userHelpers");
 const prisma = new prisma_1.PrismaClient();
 const router = (0, express_1.Router)();
 const FRONTEND_URL = process.env.FRONTEND_URL ?? "http://localhost:3000";
@@ -23,35 +24,7 @@ const normalizeSupabaseError = (message) => {
     }
     return message;
 };
-const sanitizeUsername = (value) => value
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .replace(/-{2,}/g, "-");
-const ensureUniqueUsername = async (desired, excludeUserId) => {
-    const base = sanitizeUsername(desired) || `usuario-${Date.now()}`;
-    let candidate = base;
-    let counter = 1;
-    while (true) {
-        const existing = await prisma.user.findFirst({
-            where: {
-                username: candidate,
-                ...(excludeUserId
-                    ? {
-                        NOT: {
-                            id: excludeUserId,
-                        },
-                    }
-                    : {}),
-            },
-        });
-        if (!existing) {
-            return candidate;
-        }
-        candidate = `${base}-${counter}`;
-        counter += 1;
-    }
-};
+const ensureUniqueUsernameForPrisma = (desired, excludeUserId) => (0, userHelpers_1.ensureUniqueUsername)(prisma, desired, excludeUserId);
 router.post("/register", async (req, res) => {
     const { fullName, username, email, password } = req.body;
     if (!fullName || !username || !email || !password) {
@@ -165,7 +138,7 @@ router.post("/login", async (req, res) => {
     const desiredUsername = metadata.username ?? supabaseUser.email;
     const username = existingUser
         ? existingUser.username
-        : await ensureUniqueUsername(desiredUsername);
+        : await ensureUniqueUsernameForPrisma(desiredUsername);
     const avatarUrl = metadata.avatarUrl ??
         metadata.avatar_url ??
         metadata.picture ??
