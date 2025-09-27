@@ -29,11 +29,25 @@ const isAllowedMimeType = (mime: string | undefined) => {
   return mime.startsWith("image/") || mime.startsWith("video/");
 };
 
-const sanitizeString = (value: unknown) =>
-  typeof value === "string" ? value.trim() : "";
+const sanitizeString = (value: unknown): string => {
+  if (typeof value === "string") {
+    return value.trim();
+  }
+
+  if (Array.isArray(value)) {
+    const firstString = value.find((item) => typeof item === "string");
+    return typeof firstString === "string" ? firstString.trim() : "";
+  }
+
+  return "";
+};
 
 const parseBoolean = (value: unknown) => {
   if (typeof value === "boolean") return value;
+  if (Array.isArray(value)) {
+    const first = value[0];
+    return parseBoolean(first);
+  }
   if (typeof value === "string") {
     const normalized = value.trim().toLowerCase();
     return ["1", "true", "yes", "on"].includes(normalized);
@@ -185,6 +199,57 @@ const ensureAuthorUser = async (authUser: AuthenticatedRequest["authUser"]) => {
       supabaseId: authUser.id,
     },
   });
+};
+
+const extractPollOptions = (body: Record<string, unknown>) => {
+  const collected = new Map<number, string>();
+
+  const directOptions = body.pollOptions;
+
+  if (Array.isArray(directOptions)) {
+    directOptions.forEach((item, index) => {
+      const sanitized = sanitizeString(item);
+      if (sanitized) {
+        collected.set(index, sanitized);
+      }
+    });
+  } else if (typeof directOptions === "string") {
+    try {
+      const parsed = JSON.parse(directOptions);
+      if (Array.isArray(parsed)) {
+        parsed.forEach((item, index) => {
+          const sanitized = sanitizeString(item);
+          if (sanitized) {
+            collected.set(index, sanitized);
+          }
+        });
+      }
+    } catch (error) {
+      const sanitized = sanitizeString(directOptions);
+      if (sanitized) {
+        collected.set(0, sanitized);
+      }
+    }
+  }
+
+  Object.entries(body).forEach(([key, value]) => {
+    const match = key.match(/^pollOptions(?:\[(\d+)\])?$/);
+    if (!match) return;
+
+    const index = match[1] ? Number.parseInt(match[1], 10) : collected.size;
+    const sanitized = sanitizeString(value);
+    if (sanitized) {
+      collected.set(Number.isNaN(index) ? collected.size : index, sanitized);
+    }
+  });
+
+  return Array.from(collected.entries())
+    .sort((a, b) => a[0] - b[0])
+    .map(([, text], position) => ({
+      id: `opt${position + 1}`,
+      text,
+      votes: 0,
+    }));
 };
 
 const uploadMediaFiles = async (
@@ -353,11 +418,16 @@ router.post("/", requireAuth, upload.array("media", 6), async (req, res) => {
     }
 
     const pollQuestion = sanitizeString(req.body?.pollQuestion);
-    const pollOptions = Object.entries(req.body ?? {})
-      .filter(([key]) => key.startsWith("pollOptions"))
-      .map(([, value]) => sanitizeString(value))
-      .filter((value) => value.length > 0)
-      .map((text, index) => ({ id: `opt${index + 1}`, text, votes: 0 }));
+    const pollOptions = extractPollOptions(
+      (req.body ?? {}) as Record<string, unknown>
+    );
+
+    if (pollQuestion && pollOptions.length < 2) {
+      return res.status(400).json({
+        success: false,
+        message: "Informe pelo menos duas opções para a enquete.",
+      });
+    }
 
     const files = (req.files as Express.Multer.File[]) ?? [];
     const mediaPayload = await uploadMediaFiles(files, authUser.id);
@@ -385,8 +455,10 @@ router.post("/", requireAuth, upload.array("media", 6), async (req, res) => {
         category,
         location: location || null,
         eventDate: eventDate ?? null,
-        pollQuestion: pollQuestion || null,
-        pollOptions: pollOptions.length > 0 ? pollOptions : undefined,
+        pollQuestion:
+          pollQuestion && pollOptions.length >= 2 ? pollQuestion : null,
+        pollOptions:
+          pollQuestion && pollOptions.length >= 2 ? pollOptions : undefined,
         alertUsers,
         media: mediaPayload.length
           ? {
