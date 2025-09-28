@@ -25,6 +25,69 @@ const normalizeSupabaseError = (message) => {
     return message;
 };
 const ensureUniqueUsernameForPrisma = (desired, excludeUserId) => (0, userHelpers_1.ensureUniqueUsername)(prisma, desired, excludeUserId);
+const computeTokenExpiry = (session) => {
+    if (typeof session.expires_at === "number") {
+        return session.expires_at * 1000;
+    }
+    const expiresInSeconds = session.expires_in ?? 3600;
+    return Date.now() + expiresInSeconds * 1000;
+};
+const syncUserRecordFromSupabase = async (supabaseUser) => {
+    const email = supabaseUser.email;
+    if (!email) {
+        throw new Error("Usuário Supabase sem e-mail");
+    }
+    const metadata = (supabaseUser.user_metadata ?? {});
+    const fullName = metadata.fullName ??
+        metadata.name ??
+        email.split("@")[0];
+    const desiredUsername = metadata.username ?? email.split("@")[0] ?? email;
+    const avatarUrl = metadata.avatarUrl ??
+        metadata.avatar_url ??
+        metadata.picture ??
+        undefined;
+    const existingUser = await prisma.user.findUnique({ where: { email } });
+    const username = existingUser
+        ? existingUser.username
+        : await ensureUniqueUsernameForPrisma(desiredUsername, supabaseUser.id);
+    const userRecord = await prisma.user.upsert({
+        where: { email },
+        update: {
+            fullName,
+            username,
+            avatarUrl,
+            emailVerified: Boolean(supabaseUser.email_confirmed_at),
+            supabaseId: supabaseUser.id,
+        },
+        create: {
+            fullName,
+            username,
+            email,
+            avatarUrl,
+            emailVerified: Boolean(supabaseUser.email_confirmed_at),
+            supabaseId: supabaseUser.id,
+        },
+    });
+    return { userRecord, fullName, username, avatarUrl };
+};
+const buildAuthResponse = (userRecord, session) => {
+    const tokenExpiresAt = computeTokenExpiry(session);
+    return {
+        success: true,
+        user: {
+            id: userRecord.id,
+            name: userRecord.fullName,
+            email: userRecord.email,
+            username: userRecord.username,
+            avatarUrl: userRecord.avatarUrl ?? undefined,
+            token: session.access_token,
+        },
+        token: session.access_token,
+        refreshToken: session.refresh_token,
+        tokenExpiresAt,
+        expiresIn: session.expires_in,
+    };
+};
 router.post("/register", async (req, res) => {
     const { fullName, username, email, password } = req.body;
     if (!fullName || !username || !email || !password) {
@@ -128,50 +191,33 @@ router.post("/login", async (req, res) => {
             message: "Credenciais inválidas.",
         });
     }
-    const metadata = (supabaseUser.user_metadata ?? {});
-    const fullName = metadata.fullName ??
-        metadata.name ??
-        supabaseUser.email.split("@")[0];
-    const existingUser = await prisma.user.findUnique({
-        where: { email: supabaseUser.email },
+    const { userRecord } = await syncUserRecordFromSupabase(supabaseUser);
+    return res.json(buildAuthResponse(userRecord, session));
+});
+router.post("/refresh", async (req, res) => {
+    const { refreshToken } = req.body;
+    if (!refreshToken) {
+        return res.status(400).json({
+            success: false,
+            message: "Token de atualização ausente.",
+        });
+    }
+    const supabase = (0, supabaseClient_1.createSupabaseServerClient)();
+    const { data, error } = await supabase.auth.refreshSession({
+        refresh_token: refreshToken,
     });
-    const desiredUsername = metadata.username ?? supabaseUser.email;
-    const username = existingUser
-        ? existingUser.username
-        : await ensureUniqueUsernameForPrisma(desiredUsername);
-    const avatarUrl = metadata.avatarUrl ??
-        metadata.avatar_url ??
-        metadata.picture ??
-        undefined;
-    const userRecord = await prisma.user.upsert({
-        where: { email: supabaseUser.email },
-        update: {
-            fullName,
-            username,
-            avatarUrl,
-            emailVerified: Boolean(supabaseUser.email_confirmed_at),
-            supabaseId: supabaseUser.id,
-        },
-        create: {
-            fullName,
-            username,
-            email: supabaseUser.email,
-            avatarUrl,
-            emailVerified: Boolean(supabaseUser.email_confirmed_at),
-            supabaseId: supabaseUser.id,
-        },
-    });
+    if (error || !data.session || !data.user || !data.user.email) {
+        console.error("Falha ao atualizar sessão Supabase:", error);
+        return res.status(401).json({
+            success: false,
+            message: "Sessão expirada. Faça login novamente.",
+        });
+    }
+    const { userRecord } = await syncUserRecordFromSupabase(data.user);
+    const payload = buildAuthResponse(userRecord, data.session);
     return res.json({
-        success: true,
-        user: {
-            name: userRecord.fullName,
-            email: userRecord.email,
-            username: userRecord.username,
-            avatarUrl: userRecord.avatarUrl ?? undefined,
-            token: session.access_token,
-        },
-        token: session.access_token,
-        refreshToken: session.refresh_token,
+        ...payload,
+        refreshToken: payload.refreshToken ?? refreshToken,
     });
 });
 router.post("/logout", async (_req, res) => {

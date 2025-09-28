@@ -3,6 +3,18 @@ import { PrismaClient } from "../../generated/prisma";
 import { createSupabaseServerClient } from "../../services/supabaseClient";
 import { ensureUniqueUsername } from "../../lib/userHelpers";
 
+const computeTokenExpiry = (session: {
+  expires_at?: number | null;
+  expires_in?: number | null;
+}): number => {
+  if (typeof session.expires_at === "number") {
+    return session.expires_at * 1000;
+  }
+
+  const expiresInSeconds = session.expires_in ?? 3600;
+  return Date.now() + expiresInSeconds * 1000;
+};
+
 const router = Router();
 const prisma = new PrismaClient();
 
@@ -72,6 +84,8 @@ router.post("/login/google", async (req, res) => {
       },
     });
 
+    const tokenExpiresAt = computeTokenExpiry(data.session);
+
     return res.json({
       success: true,
       user: {
@@ -84,6 +98,8 @@ router.post("/login/google", async (req, res) => {
       },
       token: data.session.access_token,
       refreshToken: data.session.refresh_token,
+      tokenExpiresAt,
+      expiresIn: data.session.expires_in,
     });
   } catch (err) {
     console.error("Erro inesperado ao autenticar com Google:", err);

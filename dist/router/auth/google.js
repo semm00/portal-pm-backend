@@ -4,6 +4,13 @@ const express_1 = require("express");
 const prisma_1 = require("../../generated/prisma");
 const supabaseClient_1 = require("../../services/supabaseClient");
 const userHelpers_1 = require("../../lib/userHelpers");
+const computeTokenExpiry = (session) => {
+    if (typeof session.expires_at === "number") {
+        return session.expires_at * 1000;
+    }
+    const expiresInSeconds = session.expires_in ?? 3600;
+    return Date.now() + expiresInSeconds * 1000;
+};
 const router = (0, express_1.Router)();
 const prisma = new prisma_1.PrismaClient();
 router.post("/login/google", async (req, res) => {
@@ -59,9 +66,11 @@ router.post("/login/google", async (req, res) => {
                 supabaseId: supabaseUser.id,
             },
         });
+        const tokenExpiresAt = computeTokenExpiry(data.session);
         return res.json({
             success: true,
             user: {
+                id: userRecord.id,
                 name: userRecord.fullName,
                 email: userRecord.email,
                 username: userRecord.username,
@@ -70,6 +79,8 @@ router.post("/login/google", async (req, res) => {
             },
             token: data.session.access_token,
             refreshToken: data.session.refresh_token,
+            tokenExpiresAt,
+            expiresIn: data.session.expires_in,
         });
     }
     catch (err) {

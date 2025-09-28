@@ -9,6 +9,7 @@ const node_path_1 = __importDefault(require("node:path"));
 const node_crypto_1 = require("node:crypto");
 const prisma_1 = require("../generated/prisma");
 const requireAuth_1 = __importDefault(require("../middlewares/requireAuth"));
+const requireAdminSecret_1 = __importDefault(require("../middlewares/requireAdminSecret"));
 const supabaseClient_1 = require("../services/supabaseClient");
 const userHelpers_1 = require("../lib/userHelpers");
 const router = (0, express_1.Router)();
@@ -27,10 +28,23 @@ const isAllowedMimeType = (mime) => {
         return false;
     return mime.startsWith("image/") || mime.startsWith("video/");
 };
-const sanitizeString = (value) => typeof value === "string" ? value.trim() : "";
+const sanitizeString = (value) => {
+    if (typeof value === "string") {
+        return value.trim();
+    }
+    if (Array.isArray(value)) {
+        const firstString = value.find((item) => typeof item === "string");
+        return typeof firstString === "string" ? firstString.trim() : "";
+    }
+    return "";
+};
 const parseBoolean = (value) => {
     if (typeof value === "boolean")
         return value;
+    if (Array.isArray(value)) {
+        const first = value[0];
+        return parseBoolean(first);
+    }
     if (typeof value === "string") {
         const normalized = value.trim().toLowerCase();
         return ["1", "true", "yes", "on"].includes(normalized);
@@ -62,7 +76,9 @@ const normalizeStatus = (value) => {
 };
 const mapPostResponse = (post) => ({
     id: post.id,
+    authorId: post.authorId,
     authorName: post.authorName,
+    authorUsername: post.author?.username || null,
     authorAvatarUrl: post.authorAvatarUrl,
     content: post.content,
     category: post.category,
@@ -110,10 +126,7 @@ const ensureAuthorUser = async (authUser) => {
     const email = authUser.email?.toLowerCase?.() ?? null;
     const existing = await prisma.user.findFirst({
         where: {
-            OR: [
-                { supabaseId: authUser.id },
-                ...(email ? [{ email }] : []),
-            ],
+            OR: [{ supabaseId: authUser.id }, ...(email ? [{ email }] : [])],
         },
     });
     const fullName = extractMetadataString(metadata, [
@@ -124,11 +137,8 @@ const ensureAuthorUser = async (authUser) => {
     ]) ||
         (email ? email.split("@")[0] : null) ||
         "Morador";
-    const avatarUrl = extractMetadataString(metadata, [
-        "avatarUrl",
-        "avatar_url",
-        "picture",
-    ]) || null;
+    const avatarUrl = extractMetadataString(metadata, ["avatarUrl", "avatar_url", "picture"]) ||
+        null;
     if (existing) {
         const needsUpdate = existing.supabaseId !== authUser.id ||
             (avatarUrl && existing.avatarUrl !== avatarUrl) ||
@@ -167,6 +177,60 @@ const ensureAuthorUser = async (authUser) => {
             supabaseId: authUser.id,
         },
     });
+};
+const extractPollOptions = (body) => {
+    const collected = new Map();
+    const directOptions = body.pollOptions;
+    const hasDirectArray = Array.isArray(directOptions);
+    const hasDirectValue = typeof directOptions === "string";
+    if (hasDirectArray) {
+        directOptions.forEach((item, index) => {
+            const sanitized = sanitizeString(item);
+            if (sanitized) {
+                collected.set(index, sanitized);
+            }
+        });
+    }
+    else if (hasDirectValue) {
+        try {
+            const parsed = JSON.parse(directOptions);
+            if (Array.isArray(parsed)) {
+                parsed.forEach((item, index) => {
+                    const sanitized = sanitizeString(item);
+                    if (sanitized) {
+                        collected.set(index, sanitized);
+                    }
+                });
+            }
+        }
+        catch (error) {
+            const sanitized = sanitizeString(directOptions);
+            if (sanitized) {
+                collected.set(0, sanitized);
+            }
+        }
+    }
+    Object.entries(body).forEach(([key, value]) => {
+        const match = key.match(/^pollOptions(?:\[(\d+)\])?$/);
+        if (!match)
+            return;
+        if (!match[1] && (hasDirectArray || hasDirectValue)) {
+            // Já tratamos o campo "pollOptions" acima.
+            return;
+        }
+        const index = match[1] ? Number.parseInt(match[1], 10) : collected.size;
+        const sanitized = sanitizeString(value);
+        if (sanitized) {
+            collected.set(Number.isNaN(index) ? collected.size : index, sanitized);
+        }
+    });
+    return Array.from(collected.entries())
+        .sort((a, b) => a[0] - b[0])
+        .map(([, text], position) => ({
+        id: `opt${position + 1}`,
+        text,
+        votes: 0,
+    }));
 };
 const uploadMediaFiles = async (files, ownerId) => {
     if (!files.length) {
@@ -241,6 +305,7 @@ router.get("/", async (req, res) => {
             take,
             orderBy: { createdAt: "desc" },
             include: {
+                author: true,
                 media: true,
                 reports: includeReports
                     ? {
@@ -275,6 +340,7 @@ router.post("/", requireAuth_1.default, upload.array("media", 6), async (req, re
                 message: "Sessão inválida. Faça login novamente.",
             });
         }
+        const metadata = (authUser.user_metadata ?? {});
         const content = sanitizeString(req.body?.content);
         const rawCategory = sanitizeString(req.body?.category || "outro");
         const location = sanitizeString(req.body?.location);
@@ -296,22 +362,24 @@ router.post("/", requireAuth_1.default, upload.array("media", 6), async (req, re
             });
         }
         const pollQuestion = sanitizeString(req.body?.pollQuestion);
-        const pollOptions = Object.entries(req.body ?? {})
-            .filter(([key]) => key.startsWith("pollOptions"))
-            .map(([, value]) => sanitizeString(value))
-            .filter((value) => value.length > 0)
-            .map((text, index) => ({ id: `opt${index + 1}`, text, votes: 0 }));
+        const pollOptions = extractPollOptions((req.body ?? {}));
+        if (pollQuestion && pollOptions.length < 2) {
+            return res.status(400).json({
+                success: false,
+                message: "Informe pelo menos duas opções para a enquete.",
+            });
+        }
         const files = req.files ?? [];
         const mediaPayload = await uploadMediaFiles(files, authUser.id);
         const authorRecord = await ensureAuthorUser(authUser);
         const authorName = sanitizeString(req.body?.authorName) ||
-            sanitizeString(authUser.user_metadata?.full_name) ||
-            sanitizeString(authUser.user_metadata?.name) ||
+            extractMetadataString(metadata, ["fullName", "full_name", "name"]) ||
             (authorRecord?.fullName ?? null) ||
             authUser.email ||
             "Morador";
         const authorAvatarUrl = sanitizeString(req.body?.authorAvatarUrl) ||
-            sanitizeString(authUser.user_metadata?.avatar_url);
+            extractMetadataString(metadata, ["avatarUrl", "avatar_url", "picture"]) ||
+            (authorRecord?.avatarUrl ?? null);
         const post = await prisma.post.create({
             data: {
                 authorId: authorRecord?.id ?? null,
@@ -321,8 +389,8 @@ router.post("/", requireAuth_1.default, upload.array("media", 6), async (req, re
                 category,
                 location: location || null,
                 eventDate: eventDate ?? null,
-                pollQuestion: pollQuestion || null,
-                pollOptions: pollOptions.length > 0 ? pollOptions : undefined,
+                pollQuestion: pollQuestion && pollOptions.length >= 2 ? pollQuestion : null,
+                pollOptions: pollQuestion && pollOptions.length >= 2 ? pollOptions : undefined,
                 alertUsers,
                 media: mediaPayload.length
                     ? {
@@ -361,7 +429,7 @@ router.post("/", requireAuth_1.default, upload.array("media", 6), async (req, re
         });
     }
 });
-router.patch("/:id/approve", requireAuth_1.default, async (req, res) => {
+router.patch("/:id/approve", requireAdminSecret_1.default, async (req, res) => {
     try {
         const { id } = req.params;
         const existing = await prisma.post.findUnique({
@@ -396,7 +464,7 @@ router.patch("/:id/approve", requireAuth_1.default, async (req, res) => {
         res.status(500).json({ success: false, message: "Erro ao aprovar post." });
     }
 });
-router.patch("/:id/reject", requireAuth_1.default, async (req, res) => {
+router.patch("/:id/reject", requireAdminSecret_1.default, async (req, res) => {
     try {
         const { id } = req.params;
         const reason = sanitizeString(req.body?.reason);
@@ -426,7 +494,7 @@ router.patch("/:id/reject", requireAuth_1.default, async (req, res) => {
         res.status(500).json({ success: false, message: "Erro ao rejeitar post." });
     }
 });
-router.patch("/:id/alert", requireAuth_1.default, async (req, res) => {
+router.patch("/:id/alert", requireAdminSecret_1.default, async (req, res) => {
     try {
         const { id } = req.params;
         const alertUsers = parseBoolean(req.body?.alertUsers);
@@ -509,6 +577,135 @@ router.post("/:id/share", async (req, res) => {
             .json({ success: false, message: "Erro ao compartilhar post." });
     }
 });
+router.post("/:id/poll/vote", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { optionId } = req.body;
+        if (!optionId) {
+            return res
+                .status(400)
+                .json({ success: false, message: "Informe a opção desejada." });
+        }
+        const post = await prisma.post.findUnique({
+            where: { id },
+            select: {
+                pollQuestion: true,
+                pollOptions: true,
+                status: true,
+            },
+        });
+        if (!post) {
+            return res
+                .status(404)
+                .json({ success: false, message: "Post não encontrado." });
+        }
+        if (post.status !== prisma_1.PostStatus.APPROVED) {
+            return res.status(400).json({
+                success: false,
+                message: "Somente enquetes de posts publicados podem receber votos.",
+            });
+        }
+        if (!Array.isArray(post.pollOptions) || !post.pollOptions.length) {
+            return res.status(400).json({
+                success: false,
+                message: "Esta publicação não possui enquete ativa.",
+            });
+        }
+        const updatedOptions = post.pollOptions.map((option) => {
+            if (!option || typeof option !== "object")
+                return option;
+            if (option.id !== optionId)
+                return option;
+            const currentVotes = Number.isFinite(option.votes)
+                ? Number(option.votes)
+                : 0;
+            return {
+                ...option,
+                votes: currentVotes + 1,
+            };
+        });
+        const optionExists = updatedOptions.some((option) => option?.id === optionId);
+        if (!optionExists) {
+            return res.status(404).json({
+                success: false,
+                message: "Opção da enquete não encontrada.",
+            });
+        }
+        await prisma.post.update({
+            where: { id },
+            data: {
+                pollOptions: updatedOptions,
+            },
+        });
+        return res.json({
+            success: true,
+            poll: {
+                question: post.pollQuestion,
+                options: updatedOptions,
+            },
+        });
+    }
+    catch (error) {
+        console.error("Failed to vote on poll", error);
+        res.status(500).json({
+            success: false,
+            message: "Não foi possível registrar o voto. Tente novamente.",
+        });
+    }
+});
+router.delete("/:id", requireAuth_1.default, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const supabaseUserId = req.authUser.id;
+        const user = await prisma.user.findUnique({
+            where: { supabaseId: supabaseUserId },
+        });
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "Usuário não encontrado.",
+            });
+        }
+        const post = await prisma.post.findUnique({
+            where: { id },
+            include: { media: true },
+        });
+        if (!post) {
+            return res
+                .status(404)
+                .json({ success: false, message: "Post não encontrado." });
+        }
+        // Verificar se o usuário é o autor ou admin
+        if (post.authorId !== user.id) {
+            return res.status(403).json({
+                success: false,
+                message: "Você não tem permissão para excluir este post.",
+            });
+        }
+        if (post.status !== prisma_1.PostStatus.APPROVED) {
+            return res.status(400).json({
+                success: false,
+                message: "Apenas posts aprovados podem ser excluídos.",
+            });
+        }
+        const storagePaths = post.media
+            .map((item) => item.storagePath)
+            .filter((value) => Boolean(value));
+        if (storagePaths.length) {
+            const storage = supabaseAdmin.storage.from(POSTS_BUCKET);
+            const { error: removeError } = await storage.remove(storagePaths);
+            if (removeError) {
+                console.warn("Falha ao remover mídias antes da exclusão", removeError);
+            }
+        }
+        await prisma.post.delete({ where: { id } });
+        res.json({ success: true, message: "Post excluído com sucesso." });
+    }
+    catch (error) {
+        console.error("Failed to delete post", error);
+        res.status(500).json({ success: false, message: "Erro ao excluir post." });
+    }
+});
 router.post("/:id/report", async (req, res) => {
     try {
         const { id } = req.params;
@@ -534,7 +731,7 @@ router.post("/:id/report", async (req, res) => {
             .json({ success: false, message: "Erro ao denunciar post." });
     }
 });
-router.get("/reports/all", requireAuth_1.default, async (_req, res) => {
+router.get("/reports/all", requireAdminSecret_1.default, async (_req, res) => {
     try {
         const reports = await prisma.post.findMany({
             where: {
